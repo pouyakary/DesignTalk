@@ -14,7 +14,7 @@ namespace BasiceShapeEditor.Render.Layers.Selection {
     //
 
         export function render ( model: Storage.IModel ) {
-            return [ Render.SelectionTool.render( model ) ]
+            return Render.SelectionTool.render( model )
         }
 
     // ────────────────────────────────────────────────────────────────────────────────

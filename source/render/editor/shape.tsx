@@ -60,7 +60,7 @@ namespace BasiceShapeEditor.Render.Editor {
 
                 private renderShape ( shape: Storage.IShape ): JSX.Element {
                     const color =
-                        ( this.isShapeHovered( )
+                        ( !this.isShapedSelected( ) && this.isShapeHovered( )
                             ? 'green'
                             : this.props.shape.color
                             )

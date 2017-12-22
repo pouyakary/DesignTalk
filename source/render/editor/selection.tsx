@@ -16,7 +16,7 @@ namespace BasiceShapeEditor.Render.SelectionTool {
             if ( model.selectedId )
                 return createSelectionTool( model )
             else
-                return undefined
+                return [ undefined ]
         }
 
     //
@@ -38,13 +38,43 @@ namespace BasiceShapeEditor.Render.SelectionTool {
             const size =
                 shape.width + margin * 2
 
-            return  <rect   fill = "transparent"
-                          stroke = "black"
-                     strokeWidth = "2"
-                               x = { x }
-                               y = { y }
-                           width = { size }
-                          height = { size } />
+            const descriptionText =
+                'X: ' + x + ' / Y: ' + y + ' / Size: ' + size
+
+            const rectangle =
+                <rect   fill = "transparent"
+                      stroke = "black"
+                 strokeWidth = "2"
+                           x = { x }
+                           y = { y }
+                       width = { size }
+                      height = { size } />
+
+            const descriptionBackgroundHeight =
+                25
+            const descriptionBackground =
+                <rect   fill = "yellow"
+                           x = { x }
+                           y = { y - descriptionBackgroundHeight - 10 }
+                       width = { descriptionText.length * 7.5 + 10 }
+                      height = { descriptionBackgroundHeight }
+                      stroke = "black"
+                 strokeWidth = { 2 } />
+
+            const description =
+                <text x = { x + storkeWidth + 6 }
+                      y = { y - descriptionBackgroundHeight + 7 }
+                   fill = "black"
+            font-family = "Hasklig-Bold"
+              font-size = "12">
+                    { descriptionText }
+                </text>
+
+            return [
+                rectangle,
+                descriptionBackground,
+                description,
+            ]
         }
 
     // ────────────────────────────────────────────────────────────────────────────────

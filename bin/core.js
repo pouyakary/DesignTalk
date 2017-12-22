@@ -80,7 +80,7 @@ var BasiceShapeEditor;
                     return this.props.shape.id === this.lastState.hoveredId;
                 }
                 renderShape(shape) {
-                    const color = (this.isShapeHovered()
+                    const color = (!this.isShapedSelected() && this.isShapeHovered()
                         ? 'green'
                         : this.props.shape.color);
                     switch (shape.type) {
@@ -214,7 +214,7 @@ var BasiceShapeEditor;
                 if (model.selectedId)
                     return createSelectionTool(model);
                 else
-                    return undefined;
+                    return [undefined];
             }
             SelectionTool.render = render;
             function createSelectionTool(model) {
@@ -224,7 +224,16 @@ var BasiceShapeEditor;
                 const x = shape.x - margin;
                 const y = shape.y - margin;
                 const size = shape.width + margin * 2;
-                return React.createElement("rect", { fill: "transparent", stroke: "black", strokeWidth: "2", x: x, y: y, width: size, height: size });
+                const descriptionText = 'X: ' + x + ' / Y: ' + y + ' / Size: ' + size;
+                const rectangle = React.createElement("rect", { fill: "transparent", stroke: "black", strokeWidth: "2", x: x, y: y, width: size, height: size });
+                const descriptionBackgroundHeight = 25;
+                const descriptionBackground = React.createElement("rect", { fill: "yellow", x: x, y: y - descriptionBackgroundHeight - 10, width: descriptionText.length * 7.5 + 10, height: descriptionBackgroundHeight, stroke: "black", strokeWidth: 2 });
+                const description = React.createElement("text", { x: x + storkeWidth + 6, y: y - descriptionBackgroundHeight + 7, fill: "black", "font-family": "Hasklig-Bold", "font-size": "12" }, descriptionText);
+                return [
+                    rectangle,
+                    descriptionBackground,
+                    description,
+                ];
             }
         })(SelectionTool = Render.SelectionTool || (Render.SelectionTool = {}));
     })(Render = BasiceShapeEditor.Render || (BasiceShapeEditor.Render = {}));
@@ -238,7 +247,7 @@ var BasiceShapeEditor;
             var Selection;
             (function (Selection) {
                 function render(model) {
-                    return [Render.SelectionTool.render(model)];
+                    return Render.SelectionTool.render(model);
                 }
                 Selection.render = render;
             })(Selection = Layers.Selection || (Layers.Selection = {}));
