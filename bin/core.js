@@ -35,7 +35,7 @@ var BasiceShapeEditor;
             return arr[Math.floor(Math.random() * arr.length)];
         }
         function getRandomCoordinates() {
-            const randomSize = (size) => Math.floor(Math.random() * (size - 200)) + 100;
+            const randomSize = (size) => Math.floor(Math.random() * (size - 300)) + 100;
             return {
                 x: randomSize(window.innerWidth),
                 y: randomSize(window.innerHeight),
@@ -108,7 +108,7 @@ var BasiceShapeEditor;
             var Shapes;
             (function (Shapes) {
                 function render(model) {
-                    return model.shapes.map(shape => React.createElement(Render.Editor.Shape, { shape: shape }));
+                    return model.shapes.map(shape => React.createElement(Render.Editor.Shape, { shape: shape, key: BasiceShapeEditor.generateKey() }));
                 }
                 Shapes.render = render;
             })(Shapes = Layers.Shapes || (Layers.Shapes = {}));
@@ -133,20 +133,10 @@ var BasiceShapeEditor;
             return createMainSVG(layers);
         }
         function createMainSVG(layers) {
-            return React.createElement("svg", { style: {
-                    width: "100vw",
-                    height: "100vh",
-                } }, layers);
+            return React.createElement("svg", { style: { width: "100vw", height: "100vh" } }, layers);
         }
         function renderLayer(layer, elements) {
-            return React.createElement("g", { key: BasiceShapeEditor.generateKey(), style: {
-                    position: 'fixed',
-                    top: 0,
-                    left: 0,
-                    width: "100vw",
-                    height: "100vh",
-                    zIndex: layer,
-                } }, elements);
+            return React.createElement("g", { key: BasiceShapeEditor.generateKey() }, elements);
         }
     })(Render = BasiceShapeEditor.Render || (BasiceShapeEditor.Render = {}));
 })(BasiceShapeEditor || (BasiceShapeEditor = {}));
@@ -189,7 +179,5 @@ var BasiceShapeEditor;
     window.onload = () => main();
     function main() {
         BasiceShapeEditor.Storage.initStorage();
-        const state = BasiceShapeEditor.Storage.createInitialModelState();
-        BasiceShapeEditor.Render.renderApp(state);
     }
 })(BasiceShapeEditor || (BasiceShapeEditor = {}));

@@ -44,12 +44,9 @@ namespace BasiceShapeEditor.Render {
     //
 
         function createMainSVG ( layers: JSX.Element[ ] ) {
-            return <svg style = {{
-                width:      "100vw",
-                height:     "100vh",
-            }}>
-                { layers }
-            </svg>
+            return  <svg style = {{ width: "100vw", height: "100vh" }}>
+                        { layers }
+                    </svg>
         }
 
     //
@@ -57,16 +54,9 @@ namespace BasiceShapeEditor.Render {
     //
 
         function renderLayer ( layer: number, elements: JSX.Element[ ] ) {
-            return <g key={ generateKey( ) } style={{
-                position:   'fixed',
-                top:        0,
-                left:       0,
-                width:      "100vw",
-                height:     "100vh",
-                zIndex:     layer,
-             }}>
-                { elements }
-            </g>
+            return  <g key = { generateKey( ) }>
+                        { elements }
+                    </g>
         }
 
     // ────────────────────────────────────────────────────────────────────────────────

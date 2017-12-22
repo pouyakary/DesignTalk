@@ -5,7 +5,7 @@
 
 /// <reference path="../../storage/model.ts" />
 /// <reference path="../editor/shape.tsx" />
-
+/// <reference path="../../globals/key.ts" />
 
 namespace BasiceShapeEditor.Render.Layers.Shapes {
 
@@ -15,7 +15,7 @@ namespace BasiceShapeEditor.Render.Layers.Shapes {
 
         export function render ( model: Storage.IModel ) {
             return model.shapes.map( shape =>
-                <Editor.Shape shape = { shape } />
+                <Editor.Shape shape = { shape } key = { generateKey( ) } />
             )
         }
 

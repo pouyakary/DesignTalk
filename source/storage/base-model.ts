@@ -38,7 +38,7 @@ namespace BasiceShapeEditor.Storage {
 
         function getRandomCoordinates ( ) {
             const randomSize = ( size: number ) =>
-                Math.floor( Math.random( ) * ( size - 200 ) ) + 100
+                Math.floor( Math.random( ) * ( size - 300 ) ) + 100
 
             return {
                 x: randomSize( window.innerWidth ),
