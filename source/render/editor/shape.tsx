@@ -4,8 +4,8 @@
 //
 
 /// <reference path="../../storage/model.ts" />
-/// <reference path="../../globals/key.ts" />
 /// <reference path="../../storage/storage.ts" />
+/// <reference path="../../globals/key.ts" />
 
 
 namespace BasiceShapeEditor.Render.Editor {
@@ -25,6 +25,12 @@ namespace BasiceShapeEditor.Render.Editor {
         export class Shape extends React.Component<IShapeContainerProps, { }> {
 
             //
+            // ─── STORAGE ─────────────────────────────────────────────────────
+            //
+
+                private lastState = Storage.getState( )
+
+            //
             // ─── RENDER ──────────────────────────────────────────────────────
             //
 
@@ -36,8 +42,16 @@ namespace BasiceShapeEditor.Render.Editor {
             // ─── IS THIS SHAPE SELECTED ──────────────────────────────────────
             //
 
-                private isShapeSelected ( ) {
-                    return this.props.shape.id === Storage.getState( ).selectedId
+                private isShapedSelected ( ) {
+                    return this.props.shape.id === this.lastState.selectedId
+                }
+
+            //
+            // ─── IS SHAPE HOVERED ────────────────────────────────────────────
+            //
+
+                private isShapeHovered ( ) {
+                    return this.props.shape.id === this.lastState.hoveredId
                 }
 
             //
@@ -46,9 +60,10 @@ namespace BasiceShapeEditor.Render.Editor {
 
                 private renderShape ( shape: Storage.IShape ): JSX.Element {
                     const color =
-                        ( this.isShapeSelected( )
+                        ( this.isShapeHovered( )
                             ? 'green'
-                            : this.props.shape.color )
+                            : this.props.shape.color
+                            )
 
                     switch ( shape.type ) {
                         case 'rect':
@@ -60,19 +75,45 @@ namespace BasiceShapeEditor.Render.Editor {
                 }
 
             //
-            // ─── SHAPES ON CLICK ─────────────────────────────────────────────
+            // ─── ON HOVER ────────────────────────────────────────────────────
             //
 
                 private onMouseEnter ( ) {
                     Storage.setState( state => ({ ...state,
-                        selectedId: this.props.shape.id
+                        hoveredId: this.props.shape.id
                     }))
                 }
 
                 private onMouseLeave ( ) {
                     Storage.setState( state => ({ ...state,
-                        selectedId: null
+                        hoveredId: null
                     }))
+                }
+
+            //
+            // ─── ON SELECT ───────────────────────────────────────────────────
+            //
+
+                private onClick ( ) {
+                    Storage.setState( state => {
+                        const maxZindexOfShapes =
+                            Math.max(
+                                ...this.lastState.shapes.map( x => x.zIndex )
+                            )
+
+                        const newShapes =
+                            state.shapes.map( shape => {
+                                if ( shape.id === this.props.shape.id )
+                                    shape.zIndex = maxZindexOfShapes + 1
+
+                                return shape
+                            })
+
+                        return { ...state,
+                            selectedId: this.props.shape.id,
+                            shapes: newShapes
+                        }
+                    })
                 }
 
             //
@@ -83,13 +124,14 @@ namespace BasiceShapeEditor.Render.Editor {
                     const radius = shape.width / 2
 
                     return <circle
-                        cx           = { shape.x + radius }
-                        cy           = { shape.y + radius }
-                        fill         = { color }
-                        r            = { radius }
-                        key          = { generateKey( ) }
-                        onMouseEnter = { event => this.onMouseEnter( ) }
-                        onMouseLeave = { event => this.onMouseLeave( ) }
+                        cx              = { shape.x + radius }
+                        cy              = { shape.y + radius }
+                        fill            = { color }
+                        r               = { radius }
+                        key             = { generateKey( ) }
+                        onMouseEnter    = { event => this.onMouseEnter( ) }
+                        onMouseLeave    = { event => this.onMouseLeave( ) }
+                        onClick         = { event => this.onClick( ) }
                     />
                 }
 
@@ -107,6 +149,7 @@ namespace BasiceShapeEditor.Render.Editor {
                         fill            = { color }
                         onMouseEnter    = { event => this.onMouseEnter( ) }
                         onMouseLeave    = { event => this.onMouseLeave( ) }
+                        onClick         = { event => this.onClick( ) }
                     />
                 }
 

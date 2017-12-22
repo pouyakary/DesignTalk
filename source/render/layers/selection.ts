@@ -4,26 +4,17 @@
 //
 
 /// <reference path="../../storage/model.ts" />
-/// <reference path="../editor/shape.tsx" />
+/// <reference path="../editor/selection.tsx" />
 /// <reference path="../../globals/key.ts" />
 
-namespace BasiceShapeEditor.Render.Layers.Shapes {
+namespace BasiceShapeEditor.Render.Layers.Selection {
 
     //
     // ─── RENDER SHAPES LAYER ────────────────────────────────────────────────────────
     //
 
         export function render ( model: Storage.IModel ) {
-            const sortedShapes =
-                model.shapes.sort(( a, b ) =>
-                    a.zIndex - b.zIndex )
-
-            const elementedShapes =
-                sortedShapes.map( shape =>
-                    <Editor.Shape shape = { shape } key = { generateKey( ) } />
-                )
-
-            return elementedShapes
+            return [ Render.SelectionTool.render( model ) ]
         }
 
     // ────────────────────────────────────────────────────────────────────────────────

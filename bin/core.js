@@ -23,11 +23,12 @@ var BasiceShapeEditor;
     (function (Storage) {
         function createInitialModelState() {
             const someShapes = new Array();
-            for (let i = 0; i < 20; i++)
-                someShapes.push(createShape());
+            for (let i = 0; i < 10; i++)
+                someShapes.push(createShape(i));
             return {
                 shapes: someShapes,
-                selectedId: null
+                hoveredId: null,
+                selectedId: null,
             };
         }
         Storage.createInitialModelState = createInitialModelState;
@@ -41,7 +42,7 @@ var BasiceShapeEditor;
                 y: randomSize(window.innerHeight),
             };
         }
-        function createShape() {
+        function createShape(no) {
             const color = chooseRandom(['red', 'black', 'blue']);
             const type = chooseRandom(['rect', 'circle']);
             const { x, y } = getRandomCoordinates();
@@ -53,6 +54,7 @@ var BasiceShapeEditor;
                 width: 100,
                 x: x,
                 y: y,
+                zIndex: no,
             };
         }
     })(Storage = BasiceShapeEditor.Storage || (BasiceShapeEditor.Storage = {}));
@@ -64,14 +66,21 @@ var BasiceShapeEditor;
         var Editor;
         (function (Editor) {
             class Shape extends React.Component {
+                constructor() {
+                    super(...arguments);
+                    this.lastState = BasiceShapeEditor.Storage.getState();
+                }
                 render() {
                     return this.renderShape(this.props.shape);
                 }
-                isShapeSelected() {
-                    return this.props.shape.id === BasiceShapeEditor.Storage.getState().selectedId;
+                isShapedSelected() {
+                    return this.props.shape.id === this.lastState.selectedId;
+                }
+                isShapeHovered() {
+                    return this.props.shape.id === this.lastState.hoveredId;
                 }
                 renderShape(shape) {
-                    const color = (this.isShapeSelected()
+                    const color = (this.isShapeHovered()
                         ? 'green'
                         : this.props.shape.color);
                     switch (shape.type) {
@@ -82,17 +91,28 @@ var BasiceShapeEditor;
                     }
                 }
                 onMouseEnter() {
-                    BasiceShapeEditor.Storage.setState(state => (Object.assign({}, state, { selectedId: this.props.shape.id })));
+                    BasiceShapeEditor.Storage.setState(state => (Object.assign({}, state, { hoveredId: this.props.shape.id })));
                 }
                 onMouseLeave() {
-                    BasiceShapeEditor.Storage.setState(state => (Object.assign({}, state, { selectedId: null })));
+                    BasiceShapeEditor.Storage.setState(state => (Object.assign({}, state, { hoveredId: null })));
+                }
+                onClick() {
+                    BasiceShapeEditor.Storage.setState(state => {
+                        const maxZindexOfShapes = Math.max(...this.lastState.shapes.map(x => x.zIndex));
+                        const newShapes = state.shapes.map(shape => {
+                            if (shape.id === this.props.shape.id)
+                                shape.zIndex = maxZindexOfShapes + 1;
+                            return shape;
+                        });
+                        return Object.assign({}, state, { selectedId: this.props.shape.id, shapes: newShapes });
+                    });
                 }
                 createCircle(shape, color) {
                     const radius = shape.width / 2;
-                    return React.createElement("circle", { cx: shape.x + radius, cy: shape.y + radius, fill: color, r: radius, key: BasiceShapeEditor.generateKey(), onMouseEnter: event => this.onMouseEnter(), onMouseLeave: event => this.onMouseLeave() });
+                    return React.createElement("circle", { cx: shape.x + radius, cy: shape.y + radius, fill: color, r: radius, key: BasiceShapeEditor.generateKey(), onMouseEnter: event => this.onMouseEnter(), onMouseLeave: event => this.onMouseLeave(), onClick: event => this.onClick() });
                 }
                 createRect(shape, color) {
-                    return React.createElement("rect", { x: shape.x, y: shape.y, width: shape.width, height: shape.height, key: BasiceShapeEditor.generateKey(), fill: color, onMouseEnter: event => this.onMouseEnter(), onMouseLeave: event => this.onMouseLeave() });
+                    return React.createElement("rect", { x: shape.x, y: shape.y, width: shape.width, height: shape.height, key: BasiceShapeEditor.generateKey(), fill: color, onMouseEnter: event => this.onMouseEnter(), onMouseLeave: event => this.onMouseLeave(), onClick: event => this.onClick() });
                 }
             }
             Editor.Shape = Shape;
@@ -108,7 +128,9 @@ var BasiceShapeEditor;
             var Shapes;
             (function (Shapes) {
                 function render(model) {
-                    return model.shapes.map(shape => React.createElement(Render.Editor.Shape, { shape: shape, key: BasiceShapeEditor.generateKey() }));
+                    const sortedShapes = model.shapes.sort((a, b) => a.zIndex - b.zIndex);
+                    const elementedShapes = sortedShapes.map(shape => React.createElement(Render.Editor.Shape, { shape: shape, key: BasiceShapeEditor.generateKey() }));
+                    return elementedShapes;
                 }
                 Shapes.render = render;
             })(Shapes = Layers.Shapes || (Layers.Shapes = {}));
@@ -127,7 +149,8 @@ var BasiceShapeEditor;
         Render.renderApp = renderApp;
         function createScence(model) {
             const layerElements = [
-                Render.Layers.Shapes.render(model)
+                Render.Layers.Shapes.render(model),
+                Render.Layers.Selection.render(model),
             ];
             const layers = layerElements.map((elements, index) => renderLayer(index, elements));
             return createMainSVG(layers);
@@ -181,3 +204,45 @@ var BasiceShapeEditor;
         BasiceShapeEditor.Storage.initStorage();
     }
 })(BasiceShapeEditor || (BasiceShapeEditor = {}));
+var BasiceShapeEditor;
+(function (BasiceShapeEditor) {
+    var Render;
+    (function (Render) {
+        var SelectionTool;
+        (function (SelectionTool) {
+            function render(model) {
+                if (model.selectedId)
+                    return createSelectionTool(model);
+                else
+                    return undefined;
+            }
+            SelectionTool.render = render;
+            function createSelectionTool(model) {
+                const shape = model.shapes.find(shape => shape.id === model.selectedId);
+                const storkeWidth = 2;
+                const margin = 10;
+                const x = shape.x - margin;
+                const y = shape.y - margin;
+                const size = shape.width + margin * 2;
+                return React.createElement("rect", { fill: "transparent", stroke: "black", strokeWidth: "2", x: x, y: y, width: size, height: size });
+            }
+        })(SelectionTool = Render.SelectionTool || (Render.SelectionTool = {}));
+    })(Render = BasiceShapeEditor.Render || (BasiceShapeEditor.Render = {}));
+})(BasiceShapeEditor || (BasiceShapeEditor = {}));
+var BasiceShapeEditor;
+(function (BasiceShapeEditor) {
+    var Render;
+    (function (Render) {
+        var Layers;
+        (function (Layers) {
+            var Selection;
+            (function (Selection) {
+                function render(model) {
+                    return [Render.SelectionTool.render(model)];
+                }
+                Selection.render = render;
+            })(Selection = Layers.Selection || (Layers.Selection = {}));
+        })(Layers = Render.Layers || (Render.Layers = {}));
+    })(Render = BasiceShapeEditor.Render || (BasiceShapeEditor.Render = {}));
+})(BasiceShapeEditor || (BasiceShapeEditor = {}));
+//# sourceMappingURL=core.js.map

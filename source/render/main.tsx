@@ -29,7 +29,8 @@ namespace BasiceShapeEditor.Render {
 
         function createScence ( model: Storage.IModel ) {
             const layerElements = [
-                Render.Layers.Shapes.render( model )
+                Render.Layers.Shapes.render( model ),
+                Render.Layers.Selection.render( model ),
             ]
 
             const layers =
@@ -53,7 +54,7 @@ namespace BasiceShapeEditor.Render {
     // ─── COMPOSE LAYERS ─────────────────────────────────────────────────────────────
     //
 
-        function renderLayer ( layer: number, elements: JSX.Element[ ] ) {
+        function renderLayer ( layer: number, elements: ( JSX.Element | undefined )[ ] ) {
             return  <g key = { generateKey( ) }>
                         { elements }
                     </g>

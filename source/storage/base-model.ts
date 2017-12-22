@@ -15,12 +15,13 @@ namespace BasiceShapeEditor.Storage {
         export function createInitialModelState ( ): IModel {
             const someShapes = new Array<IShape>( )
 
-            for ( let i = 0; i < 20; i++ )
-                someShapes.push( createShape( ) )
+            for ( let i = 0; i < 10; i++ )
+                someShapes.push( createShape( i ) )
 
             return {
-                shapes: someShapes,
-                selectedId: null
+                shapes:     someShapes,
+                hoveredId:  null,
+                selectedId: null,
             }
         }
 
@@ -50,7 +51,7 @@ namespace BasiceShapeEditor.Storage {
     // ─── CREATE SHAPE ───────────────────────────────────────────────────────────────
     //
 
-        function createShape ( ): IShape {
+        function createShape ( no: number ): IShape {
             const color =
                 chooseRandom([ 'red', 'black', 'blue' ])
             const type =
@@ -66,6 +67,7 @@ namespace BasiceShapeEditor.Storage {
                 width:      100,
                 x:          x,
                 y:          y,
+                zIndex:     no,
             }
         }
 

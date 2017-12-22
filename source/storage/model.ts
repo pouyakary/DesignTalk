@@ -11,6 +11,7 @@ namespace BasiceShapeEditor.Storage {
 
         export interface IModel {
             shapes:         IShape[ ]
+            hoveredId:      string | null
             selectedId:     string | null
         }
 
@@ -22,6 +23,7 @@ namespace BasiceShapeEditor.Storage {
             "rect" | "circle"
 
         export interface IShape {
+            zIndex:     number
             id:         string
             type:       IShapeType
             color:      string
