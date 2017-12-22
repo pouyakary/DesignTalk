@@ -3,8 +3,8 @@
 // Copyright 2017-present by Pouya Kary. All Rights Reserved.
 //
 
-/// <reference path="model" />
-/// <reference path="../globals/key" />
+/// <reference path="model.ts" />
+/// <reference path="../globals/key.ts" />
 
 namespace BasiceShapeEditor.Storage {
 
@@ -13,11 +13,10 @@ namespace BasiceShapeEditor.Storage {
     //
 
         export function createInitialModelState ( ): IModel {
-            const someShapes = [
-                createShape( 100, 200 ),
-                createShape( 200, 500 ),
-                createShape( 400, 200 ),
-            ]
+            const someShapes = new Array<IShape>( )
+
+            for ( let i = 0; i < 20; i++ )
+                someShapes.push( createShape( ) )
 
             return {
                 shapes: someShapes,
@@ -34,14 +33,30 @@ namespace BasiceShapeEditor.Storage {
         }
 
     //
+    // ─── RANDOM COORDINATES ─────────────────────────────────────────────────────────
+    //
+
+        function getRandomCoordinates ( ) {
+            const randomSize = ( size: number ) =>
+                Math.floor( Math.random( ) * ( size - 200 ) ) + 100
+
+            return {
+                x: randomSize( window.innerWidth ),
+                y: randomSize( window.innerHeight ),
+            }
+        }
+
+    //
     // ─── CREATE SHAPE ───────────────────────────────────────────────────────────────
     //
 
-        function createShape ( x: number, y: number ): IShape {
+        function createShape ( ): IShape {
             const color =
                 chooseRandom([ 'red', 'black', 'blue' ])
             const type =
                 chooseRandom([ 'rect', 'circle' ]) as IShapeType
+            const { x, y } =
+                getRandomCoordinates( )
 
             return {
                 color:      color,

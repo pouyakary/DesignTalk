@@ -9,9 +9,9 @@ namespace BasiceShapeEditor {
     // ─── CREATE UNIQUE KEY ──────────────────────────────────────────────────────────
     //
 
-        let keyValue = 1;
+        let __KeyValueStorage = 1;
         export function generateKey ( ) {
-            return ( keyValue++ ).toString( )
+            return ( __KeyValueStorage++ ).toString( )
         }
 
     // ────────────────────────────────────────────────────────────────────────────────

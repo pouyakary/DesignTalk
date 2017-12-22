@@ -3,8 +3,8 @@
 // Copyright 2017-present by Pouya Kary. All Rights Reserved.
 //
 
-/// <reference path="../../storage/model" />
-/// <reference path="../editor/container" />
+/// <reference path="../../storage/model.ts" />
+/// <reference path="../editor/shape.tsx" />
 
 
 namespace BasiceShapeEditor.Render.Layers.Shapes {
@@ -15,7 +15,7 @@ namespace BasiceShapeEditor.Render.Layers.Shapes {
 
         export function render ( model: Storage.IModel ) {
             return model.shapes.map( shape =>
-                <Editor.ShapeContainer shape = { shape } />
+                <Editor.Shape shape = { shape } />
             )
         }
 

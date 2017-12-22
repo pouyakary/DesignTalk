@@ -1,9 +1,19 @@
 "use strict";
 var BasiceShapeEditor;
 (function (BasiceShapeEditor) {
-    let keyValue = 1;
+    var Storage;
+    (function (Storage) {
+        let EActionType;
+        (function (EActionType) {
+            EActionType[EActionType["Select"] = 0] = "Select";
+        })(EActionType = Storage.EActionType || (Storage.EActionType = {}));
+    })(Storage = BasiceShapeEditor.Storage || (BasiceShapeEditor.Storage = {}));
+})(BasiceShapeEditor || (BasiceShapeEditor = {}));
+var BasiceShapeEditor;
+(function (BasiceShapeEditor) {
+    let __KeyValueStorage = 1;
     function generateKey() {
-        return (keyValue++).toString();
+        return (__KeyValueStorage++).toString();
     }
     BasiceShapeEditor.generateKey = generateKey;
 })(BasiceShapeEditor || (BasiceShapeEditor = {}));
@@ -12,11 +22,9 @@ var BasiceShapeEditor;
     var Storage;
     (function (Storage) {
         function createInitialModelState() {
-            const someShapes = [
-                createShape(100, 200),
-                createShape(200, 500),
-                createShape(400, 200),
-            ];
+            const someShapes = new Array();
+            for (let i = 0; i < 20; i++)
+                someShapes.push(createShape());
             return {
                 shapes: someShapes,
                 selectedId: null
@@ -26,9 +34,17 @@ var BasiceShapeEditor;
         function chooseRandom(arr) {
             return arr[Math.floor(Math.random() * arr.length)];
         }
-        function createShape(x, y) {
+        function getRandomCoordinates() {
+            const randomSize = (size) => Math.floor(Math.random() * (size - 200)) + 100;
+            return {
+                x: randomSize(window.innerWidth),
+                y: randomSize(window.innerHeight),
+            };
+        }
+        function createShape() {
             const color = chooseRandom(['red', 'black', 'blue']);
             const type = chooseRandom(['rect', 'circle']);
+            const { x, y } = getRandomCoordinates();
             return {
                 color: color,
                 height: 100,
@@ -45,41 +61,41 @@ var BasiceShapeEditor;
 (function (BasiceShapeEditor) {
     var Render;
     (function (Render) {
-        var Helpers;
-        (function (Helpers) {
-            function renderShape(shape) {
-                switch (shape.type) {
-                    case 'rect':
-                        return createRect(shape);
-                    case 'circle':
-                        return createCircle(shape);
-                }
-            }
-            Helpers.renderShape = renderShape;
-            function createCircle(shape) {
-                return React.createElement("circle", { cx: shape.x, cy: shape.y, fill: shape.color, r: shape.height / 2, key: BasiceShapeEditor.generateKey() });
-            }
-            function createRect(shape) {
-                return React.createElement("rect", { x: shape.x, y: shape.y, width: shape.width, height: shape.height, key: BasiceShapeEditor.generateKey() });
-            }
-        })(Helpers = Render.Helpers || (Render.Helpers = {}));
-    })(Render = BasiceShapeEditor.Render || (BasiceShapeEditor.Render = {}));
-})(BasiceShapeEditor || (BasiceShapeEditor = {}));
-var BasiceShapeEditor;
-(function (BasiceShapeEditor) {
-    var Render;
-    (function (Render) {
         var Editor;
         (function (Editor) {
-            class ShapeContainer extends React.Component {
-                constructor(props) {
-                    super(props);
-                }
+            class Shape extends React.Component {
                 render() {
-                    return Render.Helpers.renderShape(this.props.shape);
+                    return this.renderShape(this.props.shape);
+                }
+                isShapeSelected() {
+                    return this.props.shape.id === BasiceShapeEditor.Storage.getState().selectedId;
+                }
+                renderShape(shape) {
+                    const color = (this.isShapeSelected()
+                        ? 'green'
+                        : this.props.shape.color);
+                    switch (shape.type) {
+                        case 'rect':
+                            return this.createRect(shape, color);
+                        case 'circle':
+                            return this.createCircle(shape, color);
+                    }
+                }
+                onMouseEnter() {
+                    BasiceShapeEditor.Storage.setState(state => (Object.assign({}, state, { selectedId: this.props.shape.id })));
+                }
+                onMouseLeave() {
+                    BasiceShapeEditor.Storage.setState(state => (Object.assign({}, state, { selectedId: null })));
+                }
+                createCircle(shape, color) {
+                    const radius = shape.width / 2;
+                    return React.createElement("circle", { cx: shape.x + radius, cy: shape.y + radius, fill: color, r: radius, key: BasiceShapeEditor.generateKey(), onMouseEnter: event => this.onMouseEnter(), onMouseLeave: event => this.onMouseLeave() });
+                }
+                createRect(shape, color) {
+                    return React.createElement("rect", { x: shape.x, y: shape.y, width: shape.width, height: shape.height, key: BasiceShapeEditor.generateKey(), fill: color, onMouseEnter: event => this.onMouseEnter(), onMouseLeave: event => this.onMouseLeave() });
                 }
             }
-            Editor.ShapeContainer = ShapeContainer;
+            Editor.Shape = Shape;
         })(Editor = Render.Editor || (Render.Editor = {}));
     })(Render = BasiceShapeEditor.Render || (BasiceShapeEditor.Render = {}));
 })(BasiceShapeEditor || (BasiceShapeEditor = {}));
@@ -92,7 +108,7 @@ var BasiceShapeEditor;
             var Shapes;
             (function (Shapes) {
                 function render(model) {
-                    return model.shapes.map(shape => React.createElement(Render.Editor.ShapeContainer, { shape: shape }));
+                    return model.shapes.map(shape => React.createElement(Render.Editor.Shape, { shape: shape }));
                 }
                 Shapes.render = render;
             })(Shapes = Layers.Shapes || (Layers.Shapes = {}));
@@ -136,19 +152,44 @@ var BasiceShapeEditor;
 })(BasiceShapeEditor || (BasiceShapeEditor = {}));
 var BasiceShapeEditor;
 (function (BasiceShapeEditor) {
-    window.onload = () => main();
-    function main() {
-        const state = BasiceShapeEditor.Storage.createInitialModelState();
-        BasiceShapeEditor.Render.renderApp(state);
-    }
+    var Storage;
+    (function (Storage) {
+        const StorageContainer = new Array();
+        const StorageSubcriptions = [
+            BasiceShapeEditor.Render.renderApp,
+        ];
+        function initStorage() {
+            StorageContainer.push(Storage.createInitialModelState());
+            setTimeout(() => runSubscribersOnChange(getState()), 100);
+        }
+        Storage.initStorage = initStorage;
+        function getLastElement(arr) {
+            return arr[arr.length - 1];
+        }
+        Storage.getLastElement = getLastElement;
+        function getState() {
+            return Object.assign({}, getLastElement(StorageContainer));
+        }
+        Storage.getState = getState;
+        function runSubscribersOnChange(state) {
+            for (const subscriber of StorageSubcriptions)
+                subscriber(state);
+        }
+        function setState(setter) {
+            const lastState = getState();
+            const newState = setter(lastState);
+            StorageContainer.push(newState);
+            runSubscribersOnChange(newState);
+        }
+        Storage.setState = setState;
+    })(Storage = BasiceShapeEditor.Storage || (BasiceShapeEditor.Storage = {}));
 })(BasiceShapeEditor || (BasiceShapeEditor = {}));
 var BasiceShapeEditor;
 (function (BasiceShapeEditor) {
-    var Storage;
-    (function (Storage) {
-        let EActionType;
-        (function (EActionType) {
-            EActionType[EActionType["Select"] = 0] = "Select";
-        })(EActionType = Storage.EActionType || (Storage.EActionType = {}));
-    })(Storage = BasiceShapeEditor.Storage || (BasiceShapeEditor.Storage = {}));
+    window.onload = () => main();
+    function main() {
+        BasiceShapeEditor.Storage.initStorage();
+        const state = BasiceShapeEditor.Storage.createInitialModelState();
+        BasiceShapeEditor.Render.renderApp(state);
+    }
 })(BasiceShapeEditor || (BasiceShapeEditor = {}));

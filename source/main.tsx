@@ -5,9 +5,7 @@
 //   to be used by anyone else in anyways.
 //
 
-/// <reference path="storage/base-model" />
-/// <reference path="render/main" />
-
+/// <reference path="./storage/storage.ts" />
 
 
 namespace BasiceShapeEditor {
@@ -19,6 +17,8 @@ namespace BasiceShapeEditor {
         window.onload = ( ) => main( )
 
         function main ( ) {
+            Storage.initStorage( )
+
             const state = Storage.createInitialModelState( )
             Render.renderApp( state )
         }

@@ -3,9 +3,9 @@
 // Copyright 2017-present by Pouya Kary. All Rights Reserved.
 //
 
-/// <reference path="../storage/model" />
-/// <reference path="layers/shapes" />
-/// <reference path="../globals/key" />
+/// <reference path="../storage/model.ts" />
+/// <reference path="layers/shapes.tsx" />
+/// <reference path="../globals/key.ts" />
 
 namespace BasiceShapeEditor.Render {
 
