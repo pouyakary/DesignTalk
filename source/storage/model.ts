@@ -27,8 +27,7 @@ namespace BasiceShapeEditor.Storage {
             id:         string
             type:       IShapeType
             color:      string
-            width:      number
-            height:     number
+            size:       number
             x:          number
             y:          number
         }

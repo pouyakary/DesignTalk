@@ -121,7 +121,7 @@ namespace BasiceShapeEditor.Render.Editor {
             //
 
                 private createCircle ( shape: Storage.IShape, color: string ) {
-                    const radius = shape.width / 2
+                    const radius = shape.size / 2
 
                     return <circle
                         cx              = { shape.x + radius }
@@ -143,8 +143,8 @@ namespace BasiceShapeEditor.Render.Editor {
                     return <rect
                         x               = { shape.x }
                         y               = { shape.y }
-                        width           = { shape.width }
-                        height          = { shape.height }
+                        width           = { shape.size }
+                        height          = { shape.size }
                         key             = { generateKey( ) }
                         fill            = { color }
                         onMouseEnter    = { event => this.onMouseEnter( ) }

@@ -48,10 +48,9 @@ var BasiceShapeEditor;
             const { x, y } = getRandomCoordinates();
             return {
                 color: color,
-                height: 100,
                 id: BasiceShapeEditor.generateKey(),
                 type: type,
-                width: 100,
+                size: 100,
                 x: x,
                 y: y,
                 zIndex: no,
@@ -108,11 +107,11 @@ var BasiceShapeEditor;
                     });
                 }
                 createCircle(shape, color) {
-                    const radius = shape.width / 2;
+                    const radius = shape.size / 2;
                     return React.createElement("circle", { cx: shape.x + radius, cy: shape.y + radius, fill: color, r: radius, key: BasiceShapeEditor.generateKey(), onMouseEnter: event => this.onMouseEnter(), onMouseLeave: event => this.onMouseLeave(), onClick: event => this.onClick() });
                 }
                 createRect(shape, color) {
-                    return React.createElement("rect", { x: shape.x, y: shape.y, width: shape.width, height: shape.height, key: BasiceShapeEditor.generateKey(), fill: color, onMouseEnter: event => this.onMouseEnter(), onMouseLeave: event => this.onMouseLeave(), onClick: event => this.onClick() });
+                    return React.createElement("rect", { x: shape.x, y: shape.y, width: shape.size, height: shape.size, key: BasiceShapeEditor.generateKey(), fill: color, onMouseEnter: event => this.onMouseEnter(), onMouseLeave: event => this.onMouseLeave(), onClick: event => this.onClick() });
                 }
             }
             Editor.Shape = Shape;
@@ -187,14 +186,14 @@ var BasiceShapeEditor;
             function createSelectionRectangle(shape) {
                 const x = shape.x - margin;
                 const y = shape.y - margin;
-                const size = shape.width + margin * 2;
+                const size = shape.size + margin * 2;
                 const rectangle = React.createElement("rect", { fill: "transparent", stroke: "black", strokeWidth: "2", x: x, y: y, width: size, height: size });
                 return rectangle;
             }
             function createToolTipShape(shape) {
                 const x = shape.x - margin;
                 const y = shape.y - margin;
-                const descriptionText = 'X: ' + x + ' / Y: ' + y + ' / Size: ' + shape.width;
+                const descriptionText = 'X: ' + x + ' / Y: ' + y + ' / Size: ' + shape.size;
                 const descriptionBackgroundHeight = 25;
                 const descriptionBackground = React.createElement("rect", { fill: "yellow", x: x, y: y - descriptionBackgroundHeight - 10, width: descriptionText.length * 7.5 + 10, height: descriptionBackgroundHeight, stroke: "black", strokeWidth: 2 });
                 const description = React.createElement("text", { x: x + strokeWidth + 6, y: y - descriptionBackgroundHeight + 6, fill: "black", fontFamily: "HaskligBold", fontSize: "12" }, descriptionText);

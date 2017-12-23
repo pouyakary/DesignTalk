@@ -56,7 +56,7 @@ namespace BasiceShapeEditor.Render.SelectionTool {
             const y =
                 shape.y - margin
             const size =
-                shape.width + margin * 2
+                shape.size + margin * 2
 
             const rectangle =
                 <rect   fill = "transparent"
@@ -81,7 +81,7 @@ namespace BasiceShapeEditor.Render.SelectionTool {
                 shape.y - margin
 
             const descriptionText =
-                'X: ' + x + ' / Y: ' + y + ' / Size: ' + shape.width
+                'X: ' + x + ' / Y: ' + y + ' / Size: ' + shape.size
 
             const descriptionBackgroundHeight =
                 25

@@ -61,10 +61,9 @@ namespace BasiceShapeEditor.Storage {
 
             return {
                 color:      color,
-                height:     100,
                 id:         generateKey( ),
                 type:       type,
-                width:      100,
+                size:      100,
                 x:          x,
                 y:          y,
                 zIndex:     no,
