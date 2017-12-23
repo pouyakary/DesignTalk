@@ -5,6 +5,7 @@
 
 /// <reference path="../../storage/model.ts" />
 /// <reference path="../../storage/storage.ts" />
+/// <reference path="../../drivers/mouse.ts" />
 
 namespace BasiceShapeEditor.Render.SelectionTool {
 
@@ -115,40 +116,41 @@ namespace BasiceShapeEditor.Render.SelectionTool {
     //
 
         function createGuideLines ( shape: Storage.IShape ) {
-            return [ ];
+            if ( !MouseDriver.Clicked )
+                return [ ]
 
-            // const createLine = ( x1: number, y1: number, x2: number, y2: number ) =>
-            //     <line
-            //               strokeWidth = { 1 }
-            //                    stroke = "#ccc"
-            //                       key = { generateKey( ) }
-            //                        x1 = { x1 }
-            //                        y1 = { y1 }
-            //                        x2 = { x2 }
-            //                        y2 = { y2 } />
+            const createLine = ( x1: number, y1: number, x2: number, y2: number ) =>
+                <line
+                          strokeWidth = { 1 }
+                               stroke = "#ccc"
+                                  key = { generateKey( ) }
+                                   x1 = { x1 }
+                                   y1 = { y1 }
+                                   x2 = { x2 }
+                                   y2 = { y2 } />
 
-            // const topGuideLine =
-            //     createLine( 0, shape.y,
-            //                 window.innerWidth, shape.y )
+            const topGuideLine =
+                createLine( 0, shape.y,
+                            window.innerWidth, shape.y )
 
-            // const bottomGuideLine =
-            //     createLine( 0, shape.y + shape.height,
-            //                 window.innerWidth, shape.y + shape.height )
+            const bottomGuideLine =
+                createLine( 0, shape.y + shape.size,
+                            window.innerWidth, shape.y + shape.size )
 
-            // const leftGuideLine =
-            //     createLine( shape.x, 0,
-            //                 shape.x, window.innerHeight )
+            const leftGuideLine =
+                createLine( shape.x, 0,
+                            shape.x, window.innerHeight )
 
-            // const rightGuideLine =
-            //     createLine( shape.x + shape.width, 0,
-            //                 shape.x + shape.width, window.innerHeight )
+            const rightGuideLine =
+                createLine( shape.x + shape.size, 0,
+                            shape.x + shape.size, window.innerHeight )
 
-            // return [
-            //     topGuideLine,
-            //     rightGuideLine,
-            //     bottomGuideLine,
-            //     leftGuideLine
-            // ]
+            return [
+                topGuideLine,
+                rightGuideLine,
+                bottomGuideLine,
+                leftGuideLine
+            ]
         }
 
     // ────────────────────────────────────────────────────────────────────────────────

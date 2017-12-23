@@ -159,6 +159,53 @@ var BasiceShapeEditor;
 })(BasiceShapeEditor || (BasiceShapeEditor = {}));
 var BasiceShapeEditor;
 (function (BasiceShapeEditor) {
+    var MouseDriver;
+    (function (MouseDriver) {
+        MouseDriver.X = 0;
+        MouseDriver.Y = 0;
+        MouseDriver.Clicked = false;
+        let shouldMove = false;
+        function init() {
+            mouseClcikeEvents();
+            mouseMoveEvents();
+        }
+        MouseDriver.init = init;
+        function mouseMoveEvents() {
+            window.onmousemove = event => {
+                updateSelectedShapePositionOnClick(event);
+                updateMousePosition(event);
+            };
+        }
+        function updateSelectedShapePositionOnClick(event) {
+            const state = BasiceShapeEditor.Storage.getState();
+            if (state.selectedId !== null && MouseDriver.Clicked) {
+                const selectedShape = state.shapes.find(x => x.id == state.selectedId);
+                const XDiff = selectedShape.x - MouseDriver.X;
+                const YDiff = selectedShape.y - MouseDriver.Y;
+                BasiceShapeEditor.Storage.setState(state => {
+                    const newShapes = state.shapes.map(shape => {
+                        if (shape.id === state.selectedId) {
+                            shape.x = event.clientX + XDiff;
+                            shape.y = event.clientY + YDiff;
+                        }
+                        return shape;
+                    });
+                    return Object.assign({}, state, { shapes: newShapes });
+                });
+            }
+        }
+        function updateMousePosition(event) {
+            MouseDriver.X = event.clientX;
+            MouseDriver.Y = event.clientY;
+        }
+        function mouseClcikeEvents() {
+            document.body.onmousedown = () => MouseDriver.Clicked = true;
+            document.body.onmouseup = () => MouseDriver.Clicked = false;
+        }
+    })(MouseDriver = BasiceShapeEditor.MouseDriver || (BasiceShapeEditor.MouseDriver = {}));
+})(BasiceShapeEditor || (BasiceShapeEditor = {}));
+var BasiceShapeEditor;
+(function (BasiceShapeEditor) {
     var Render;
     (function (Render) {
         var SelectionTool;
@@ -203,7 +250,19 @@ var BasiceShapeEditor;
                 ];
             }
             function createGuideLines(shape) {
-                return [];
+                if (!BasiceShapeEditor.MouseDriver.Clicked)
+                    return [];
+                const createLine = (x1, y1, x2, y2) => React.createElement("line", { strokeWidth: 1, stroke: "#ccc", key: BasiceShapeEditor.generateKey(), x1: x1, y1: y1, x2: x2, y2: y2 });
+                const topGuideLine = createLine(0, shape.y, window.innerWidth, shape.y);
+                const bottomGuideLine = createLine(0, shape.y + shape.size, window.innerWidth, shape.y + shape.size);
+                const leftGuideLine = createLine(shape.x, 0, shape.x, window.innerHeight);
+                const rightGuideLine = createLine(shape.x + shape.size, 0, shape.x + shape.size, window.innerHeight);
+                return [
+                    topGuideLine,
+                    rightGuideLine,
+                    bottomGuideLine,
+                    leftGuideLine
+                ];
             }
         })(SelectionTool = Render.SelectionTool || (Render.SelectionTool = {}));
     })(Render = BasiceShapeEditor.Render || (BasiceShapeEditor.Render = {}));
@@ -284,53 +343,6 @@ var BasiceShapeEditor;
         }
         Storage.setState = setState;
     })(Storage = BasiceShapeEditor.Storage || (BasiceShapeEditor.Storage = {}));
-})(BasiceShapeEditor || (BasiceShapeEditor = {}));
-var BasiceShapeEditor;
-(function (BasiceShapeEditor) {
-    var MouseDriver;
-    (function (MouseDriver) {
-        MouseDriver.X = 0;
-        MouseDriver.Y = 0;
-        MouseDriver.Clicked = false;
-        let shouldMove = false;
-        function init() {
-            mouseClcikeEvents();
-            mouseMoveEvents();
-        }
-        MouseDriver.init = init;
-        function mouseMoveEvents() {
-            window.onmousemove = event => {
-                updateSelectedShapePositionOnClick(event);
-                updateMousePosition(event);
-            };
-        }
-        function updateSelectedShapePositionOnClick(event) {
-            const state = BasiceShapeEditor.Storage.getState();
-            if (state.selectedId !== null && MouseDriver.Clicked) {
-                const selectedShape = state.shapes.find(x => x.id == state.selectedId);
-                const XDiff = selectedShape.x - MouseDriver.X;
-                const YDiff = selectedShape.y - MouseDriver.Y;
-                BasiceShapeEditor.Storage.setState(state => {
-                    const newShapes = state.shapes.map(shape => {
-                        if (shape.id === state.selectedId) {
-                            shape.x = event.clientX + XDiff;
-                            shape.y = event.clientY + YDiff;
-                        }
-                        return shape;
-                    });
-                    return Object.assign({}, state, { shapes: newShapes });
-                });
-            }
-        }
-        function updateMousePosition(event) {
-            MouseDriver.X = event.clientX;
-            MouseDriver.Y = event.clientY;
-        }
-        function mouseClcikeEvents() {
-            document.body.onmousedown = () => MouseDriver.Clicked = true;
-            document.body.onmouseup = () => MouseDriver.Clicked = false;
-        }
-    })(MouseDriver = BasiceShapeEditor.MouseDriver || (BasiceShapeEditor.MouseDriver = {}));
 })(BasiceShapeEditor || (BasiceShapeEditor = {}));
 var BasiceShapeEditor;
 (function (BasiceShapeEditor) {
