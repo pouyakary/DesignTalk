@@ -9,6 +9,13 @@
 namespace BasiceShapeEditor.Render.SelectionTool {
 
     //
+    // ─── SETTINGS ───────────────────────────────────────────────────────────────────
+    //
+
+        const margin = 10
+        const strokeWidth = 2
+
+    //
     // ─── SHOW SELECTION ─────────────────────────────────────────────────────────────
     //
 
@@ -25,22 +32,31 @@ namespace BasiceShapeEditor.Render.SelectionTool {
 
         function createSelectionTool ( model: Storage.IModel ) {
             const shape =
-                model.shapes.find(
-                    shape => shape.id === model.selectedId )!
-            const storkeWidth =
-                2
-            const margin =
-                10
+                model.shapes.find( shape =>
+                    shape.id === model.selectedId )!
+
+            const guideLines = createGuideLines( shape )
+            const tooltip = createToolTipShape( shape )
+            const rectangle = createSelectionRectangle( shape )
+
+            return [
+                ...guideLines,
+                ...tooltip,
+                rectangle,
+            ]
+        }
+
+    //
+    // ─── CREATE RECTANGLE ───────────────────────────────────────────────────────────
+    //
+
+        function createSelectionRectangle ( shape: Storage.IShape ) {
             const x =
                 shape.x - margin
             const y =
                 shape.y - margin
             const size =
                 shape.width + margin * 2
-
-            const descriptionText =
-                'X: ' + x + ' / Y: ' + y + ' / Size: ' + size
-
 
             const rectangle =
                 <rect   fill = "transparent"
@@ -51,6 +67,21 @@ namespace BasiceShapeEditor.Render.SelectionTool {
                        width = { size }
                       height = { size } />
 
+            return rectangle
+        }
+
+    //
+    // ─── TIP TEXT BOX ───────────────────────────────────────────────────────────────
+    //
+
+        function createToolTipShape ( shape: Storage.IShape ) {
+            const x =
+                shape.x - margin
+            const y =
+                shape.y - margin
+
+            const descriptionText =
+                'X: ' + x + ' / Y: ' + y + ' / Size: ' + shape.width
 
             const descriptionBackgroundHeight =
                 25
@@ -65,20 +96,59 @@ namespace BasiceShapeEditor.Render.SelectionTool {
 
 
             const description =
-                <text x = { x + storkeWidth + 6 }
+                <text x = { x + strokeWidth + 6 }
                       y = { y - descriptionBackgroundHeight + 6 }
                    fill = "black"
-            font-family = "HaskligBold"
-              font-size = "12">
+             fontFamily = "HaskligBold"
+               fontSize = "12">
                     { descriptionText }
                 </text>
 
-
             return [
-                rectangle,
                 descriptionBackground,
                 description,
             ]
+        }
+
+    //
+    // ─── CREATE GUIDE LINES ─────────────────────────────────────────────────────────
+    //
+
+        function createGuideLines ( shape: Storage.IShape ) {
+            return [ ];
+
+            // const createLine = ( x1: number, y1: number, x2: number, y2: number ) =>
+            //     <line
+            //               strokeWidth = { 1 }
+            //                    stroke = "#ccc"
+            //                       key = { generateKey( ) }
+            //                        x1 = { x1 }
+            //                        y1 = { y1 }
+            //                        x2 = { x2 }
+            //                        y2 = { y2 } />
+
+            // const topGuideLine =
+            //     createLine( 0, shape.y,
+            //                 window.innerWidth, shape.y )
+
+            // const bottomGuideLine =
+            //     createLine( 0, shape.y + shape.height,
+            //                 window.innerWidth, shape.y + shape.height )
+
+            // const leftGuideLine =
+            //     createLine( shape.x, 0,
+            //                 shape.x, window.innerHeight )
+
+            // const rightGuideLine =
+            //     createLine( shape.x + shape.width, 0,
+            //                 shape.x + shape.width, window.innerHeight )
+
+            // return [
+            //     topGuideLine,
+            //     rightGuideLine,
+            //     bottomGuideLine,
+            //     leftGuideLine
+            // ]
         }
 
     // ────────────────────────────────────────────────────────────────────────────────

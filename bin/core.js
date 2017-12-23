@@ -199,9 +199,57 @@ var BasiceShapeEditor;
 })(BasiceShapeEditor || (BasiceShapeEditor = {}));
 var BasiceShapeEditor;
 (function (BasiceShapeEditor) {
+    var MouseDriver;
+    (function (MouseDriver) {
+        MouseDriver.X = 0;
+        MouseDriver.Y = 0;
+        MouseDriver.Clicked = false;
+        let shouldMove = false;
+        function init() {
+            mouseClcikeEvents();
+            mouseMoveEvents();
+        }
+        MouseDriver.init = init;
+        function mouseMoveEvents() {
+            window.onmousemove = event => {
+                updateSelectedShapePositionOnClick(event);
+                updateMousePosition(event);
+            };
+        }
+        function updateSelectedShapePositionOnClick(event) {
+            const state = BasiceShapeEditor.Storage.getState();
+            if (state.selectedId !== null && MouseDriver.Clicked) {
+                const selectedShape = state.shapes.find(x => x.id == state.selectedId);
+                const XDiff = selectedShape.x - MouseDriver.X;
+                const YDiff = selectedShape.y - MouseDriver.Y;
+                BasiceShapeEditor.Storage.setState(state => {
+                    const newShapes = state.shapes.map(shape => {
+                        if (shape.id === state.selectedId) {
+                            shape.x = event.clientX + XDiff;
+                            shape.y = event.clientY + YDiff;
+                        }
+                        return shape;
+                    });
+                    return Object.assign({}, state, { shapes: newShapes });
+                });
+            }
+        }
+        function updateMousePosition(event) {
+            MouseDriver.X = event.clientX;
+            MouseDriver.Y = event.clientY;
+        }
+        function mouseClcikeEvents() {
+            document.body.onmousedown = () => MouseDriver.Clicked = true;
+            document.body.onmouseup = () => MouseDriver.Clicked = false;
+        }
+    })(MouseDriver = BasiceShapeEditor.MouseDriver || (BasiceShapeEditor.MouseDriver = {}));
+})(BasiceShapeEditor || (BasiceShapeEditor = {}));
+var BasiceShapeEditor;
+(function (BasiceShapeEditor) {
     window.onload = () => main();
     function main() {
         BasiceShapeEditor.Storage.initStorage();
+        BasiceShapeEditor.MouseDriver.init();
     }
 })(BasiceShapeEditor || (BasiceShapeEditor = {}));
 var BasiceShapeEditor;
@@ -210,6 +258,8 @@ var BasiceShapeEditor;
     (function (Render) {
         var SelectionTool;
         (function (SelectionTool) {
+            const margin = 10;
+            const strokeWidth = 2;
             function render(model) {
                 if (model.selectedId)
                     return createSelectionTool(model);
@@ -219,21 +269,36 @@ var BasiceShapeEditor;
             SelectionTool.render = render;
             function createSelectionTool(model) {
                 const shape = model.shapes.find(shape => shape.id === model.selectedId);
-                const storkeWidth = 2;
-                const margin = 10;
+                const guideLines = createGuideLines(shape);
+                const tooltip = createToolTipShape(shape);
+                const rectangle = createSelectionRectangle(shape);
+                return [
+                    ...guideLines,
+                    ...tooltip,
+                    rectangle,
+                ];
+            }
+            function createSelectionRectangle(shape) {
                 const x = shape.x - margin;
                 const y = shape.y - margin;
                 const size = shape.width + margin * 2;
-                const descriptionText = 'X: ' + x + ' / Y: ' + y + ' / Size: ' + size;
                 const rectangle = React.createElement("rect", { fill: "transparent", stroke: "black", strokeWidth: "2", x: x, y: y, width: size, height: size });
+                return rectangle;
+            }
+            function createToolTipShape(shape) {
+                const x = shape.x - margin;
+                const y = shape.y - margin;
+                const descriptionText = 'X: ' + x + ' / Y: ' + y + ' / Size: ' + shape.width;
                 const descriptionBackgroundHeight = 25;
                 const descriptionBackground = React.createElement("rect", { fill: "yellow", x: x, y: y - descriptionBackgroundHeight - 10, width: descriptionText.length * 7.5 + 10, height: descriptionBackgroundHeight, stroke: "black", strokeWidth: 2 });
-                const description = React.createElement("text", { x: x + storkeWidth + 6, y: y - descriptionBackgroundHeight + 6, fill: "black", "font-family": "HaskligBold", "font-size": "12" }, descriptionText);
+                const description = React.createElement("text", { x: x + strokeWidth + 6, y: y - descriptionBackgroundHeight + 6, fill: "black", fontFamily: "HaskligBold", fontSize: "12" }, descriptionText);
                 return [
-                    rectangle,
                     descriptionBackground,
                     description,
                 ];
+            }
+            function createGuideLines(shape) {
+                return [];
             }
         })(SelectionTool = Render.SelectionTool || (Render.SelectionTool = {}));
     })(Render = BasiceShapeEditor.Render || (BasiceShapeEditor.Render = {}));

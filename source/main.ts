@@ -6,6 +6,7 @@
 //
 
 /// <reference path="./storage/storage.ts" />
+/// <reference path="./drivers/mouse.ts" />
 
 namespace BasiceShapeEditor {
 
@@ -17,6 +18,7 @@ namespace BasiceShapeEditor {
 
         function main ( ) {
             Storage.initStorage( )
+            MouseDriver.init( )
         }
 
     // ────────────────────────────────────────────────────────────────────────────────
