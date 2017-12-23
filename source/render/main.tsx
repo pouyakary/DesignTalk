@@ -4,8 +4,11 @@
 //
 
 /// <reference path="../storage/model.ts" />
-/// <reference path="layers/shapes.tsx" />
 /// <reference path="../globals/key.ts" />
+/// <reference path="layers/background.tsx" />
+/// <reference path="layers/shapes.tsx" />
+/// <reference path="layers/selection.ts" />
+
 
 namespace BasiceShapeEditor.Render {
 
@@ -29,6 +32,7 @@ namespace BasiceShapeEditor.Render {
 
         function createScence ( model: Storage.IModel ) {
             const layerElements = [
+                Render.Layers.Background.render( ),
                 Render.Layers.Shapes.render( model ),
                 Render.Layers.Selection.render( model ),
             ]
