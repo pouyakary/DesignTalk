@@ -66,7 +66,7 @@ namespace BasiceShapeEditor.Render.SelectionTool {
 
             const description =
                 <text x = { x + storkeWidth + 6 }
-                      y = { y - descriptionBackgroundHeight + 7 }
+                      y = { y - descriptionBackgroundHeight + 6 }
                    fill = "black"
             font-family = "HaskligBold"
               font-size = "12">

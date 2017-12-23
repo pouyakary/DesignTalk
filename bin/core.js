@@ -228,7 +228,7 @@ var BasiceShapeEditor;
                 const rectangle = React.createElement("rect", { fill: "transparent", stroke: "black", strokeWidth: "2", x: x, y: y, width: size, height: size });
                 const descriptionBackgroundHeight = 25;
                 const descriptionBackground = React.createElement("rect", { fill: "yellow", x: x, y: y - descriptionBackgroundHeight - 10, width: descriptionText.length * 7.5 + 10, height: descriptionBackgroundHeight, stroke: "black", strokeWidth: 2 });
-                const description = React.createElement("text", { x: x + storkeWidth + 6, y: y - descriptionBackgroundHeight + 7, fill: "black", "font-family": "HaskligBold", "font-size": "12" }, descriptionText);
+                const description = React.createElement("text", { x: x + storkeWidth + 6, y: y - descriptionBackgroundHeight + 6, fill: "black", "font-family": "HaskligBold", "font-size": "12" }, descriptionText);
                 return [
                     rectangle,
                     descriptionBackground,
