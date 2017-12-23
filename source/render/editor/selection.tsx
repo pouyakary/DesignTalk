@@ -41,6 +41,7 @@ namespace BasiceShapeEditor.Render.SelectionTool {
             const descriptionText =
                 'X: ' + x + ' / Y: ' + y + ' / Size: ' + size
 
+
             const rectangle =
                 <rect   fill = "transparent"
                       stroke = "black"
@@ -49,6 +50,7 @@ namespace BasiceShapeEditor.Render.SelectionTool {
                            y = { y }
                        width = { size }
                       height = { size } />
+
 
             const descriptionBackgroundHeight =
                 25
@@ -61,14 +63,16 @@ namespace BasiceShapeEditor.Render.SelectionTool {
                       stroke = "black"
                  strokeWidth = { 2 } />
 
+
             const description =
                 <text x = { x + storkeWidth + 6 }
                       y = { y - descriptionBackgroundHeight + 7 }
                    fill = "black"
-            font-family = "Hasklig-Bold"
+            font-family = "HaskligBold"
               font-size = "12">
                     { descriptionText }
                 </text>
+
 
             return [
                 rectangle,
