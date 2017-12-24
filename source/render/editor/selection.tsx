@@ -36,7 +36,7 @@ namespace BasiceShapeEditor.Render.SelectionTool {
                 model.shapes.find( shape =>
                     shape.id === model.selectedId )!
 
-            const guideLines = createGuideLines( shape )
+            const guideLines = createGuideLines( shape, model )
             const tooltip = createToolTipShape( shape )
             const rectangle = createSelectionRectangle( shape )
 
@@ -115,35 +115,66 @@ namespace BasiceShapeEditor.Render.SelectionTool {
     // ─── CREATE GUIDE LINES ─────────────────────────────────────────────────────────
     //
 
-        function createGuideLines ( shape: Storage.IShape ) {
+        function createGuideLines ( shape: Storage.IShape, model: Storage.IModel ) {
             if ( !MouseDriver.Clicked )
                 return [ ]
 
-            const createLine = ( x1: number, y1: number, x2: number, y2: number ) =>
-                <line
-                          strokeWidth = { 1 }
-                               stroke = "#ccc"
-                                  key = { generateKey( ) }
-                                   x1 = { x1 }
-                                   y1 = { y1 }
-                                   x2 = { x2 }
-                                   y2 = { y2 } />
+            const collectionOfHoroizontalPoints = new Set<number>( )
+            const collectionOfVerticalPoints = new Set<number>( )
+            model.shapes.map( obj => {
+                if ( shape.id === obj.id ) return
+
+                collectionOfVerticalPoints.add( obj.x )
+                collectionOfHoroizontalPoints.add( obj.y )
+                collectionOfVerticalPoints.add( obj.x + obj.size )
+                collectionOfHoroizontalPoints.add( obj.y + obj.size )
+            })
+
+            enum LineDirection { Horoizantal, Vertical }
+            const createLine = ( x1: number, y1: number, x2: number, y2: number, direction: LineDirection ) => {
+                const collection =
+                    ( direction === LineDirection.Horoizantal
+                        ? collectionOfHoroizontalPoints
+                        : collectionOfVerticalPoints
+                        )
+
+                const isTherePoint = (
+                    collection.has( x1 ) || collection.has( y1 ) ||
+                    collection.has( x2 ) || collection.has( y2 ) )
+
+                const lineColor =
+                    ( isTherePoint? 'cyan' : '#ccc' )
+                const lineStrokeWidth =
+                    ( isTherePoint? 2 : 1 )
+
+                return  <line strokeWidth = { lineStrokeWidth }
+                                   stroke = { lineColor }
+                                      key = { generateKey( ) }
+                                       x1 = { x1 }
+                                       y1 = { y1 }
+                                       x2 = { x2 }
+                                       y2 = { y2 } />
+            }
 
             const topGuideLine =
                 createLine( 0, shape.y,
-                            window.innerWidth, shape.y )
+                            window.innerWidth, shape.y,
+                            LineDirection.Horoizantal )
 
             const bottomGuideLine =
                 createLine( 0, shape.y + shape.size,
-                            window.innerWidth, shape.y + shape.size )
+                            window.innerWidth, shape.y + shape.size,
+                            LineDirection.Horoizantal )
 
             const leftGuideLine =
                 createLine( shape.x, 0,
-                            shape.x, window.innerHeight )
+                            shape.x, window.innerHeight,
+                            LineDirection.Vertical )
 
             const rightGuideLine =
                 createLine( shape.x + shape.size, 0,
-                            shape.x + shape.size, window.innerHeight )
+                            shape.x + shape.size, window.innerHeight,
+                            LineDirection.Vertical )
 
             return [
                 topGuideLine,

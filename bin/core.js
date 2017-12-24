@@ -221,7 +221,7 @@ var BasiceShapeEditor;
             SelectionTool.render = render;
             function createSelectionTool(model) {
                 const shape = model.shapes.find(shape => shape.id === model.selectedId);
-                const guideLines = createGuideLines(shape);
+                const guideLines = createGuideLines(shape, model);
                 const tooltip = createToolTipShape(shape);
                 const rectangle = createSelectionRectangle(shape);
                 return [
@@ -249,14 +249,38 @@ var BasiceShapeEditor;
                     description,
                 ];
             }
-            function createGuideLines(shape) {
+            function createGuideLines(shape, model) {
                 if (!BasiceShapeEditor.MouseDriver.Clicked)
                     return [];
-                const createLine = (x1, y1, x2, y2) => React.createElement("line", { strokeWidth: 1, stroke: "#ccc", key: BasiceShapeEditor.generateKey(), x1: x1, y1: y1, x2: x2, y2: y2 });
-                const topGuideLine = createLine(0, shape.y, window.innerWidth, shape.y);
-                const bottomGuideLine = createLine(0, shape.y + shape.size, window.innerWidth, shape.y + shape.size);
-                const leftGuideLine = createLine(shape.x, 0, shape.x, window.innerHeight);
-                const rightGuideLine = createLine(shape.x + shape.size, 0, shape.x + shape.size, window.innerHeight);
+                const collectionOfHoroizontalPoints = new Set();
+                const collectionOfVerticalPoints = new Set();
+                model.shapes.map(obj => {
+                    if (shape.id === obj.id)
+                        return;
+                    collectionOfVerticalPoints.add(obj.x);
+                    collectionOfHoroizontalPoints.add(obj.y);
+                    collectionOfVerticalPoints.add(obj.x + obj.size);
+                    collectionOfHoroizontalPoints.add(obj.y + obj.size);
+                });
+                let LineDirection;
+                (function (LineDirection) {
+                    LineDirection[LineDirection["Horoizantal"] = 0] = "Horoizantal";
+                    LineDirection[LineDirection["Vertical"] = 1] = "Vertical";
+                })(LineDirection || (LineDirection = {}));
+                const createLine = (x1, y1, x2, y2, direction) => {
+                    const collection = (direction === LineDirection.Horoizantal
+                        ? collectionOfHoroizontalPoints
+                        : collectionOfVerticalPoints);
+                    const isTherePoint = (collection.has(x1) || collection.has(y1) ||
+                        collection.has(x2) || collection.has(y2));
+                    const lineColor = (isTherePoint ? 'cyan' : '#ccc');
+                    const lineStrokeWidth = (isTherePoint ? 2 : 1);
+                    return React.createElement("line", { strokeWidth: lineStrokeWidth, stroke: lineColor, key: BasiceShapeEditor.generateKey(), x1: x1, y1: y1, x2: x2, y2: y2 });
+                };
+                const topGuideLine = createLine(0, shape.y, window.innerWidth, shape.y, LineDirection.Horoizantal);
+                const bottomGuideLine = createLine(0, shape.y + shape.size, window.innerWidth, shape.y + shape.size, LineDirection.Horoizantal);
+                const leftGuideLine = createLine(shape.x, 0, shape.x, window.innerHeight, LineDirection.Vertical);
+                const rightGuideLine = createLine(shape.x + shape.size, 0, shape.x + shape.size, window.innerHeight, LineDirection.Vertical);
                 return [
                     topGuideLine,
                     rightGuideLine,
