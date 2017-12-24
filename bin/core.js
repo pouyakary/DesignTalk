@@ -315,7 +315,7 @@ var BasiceShapeEditor;
                     collectionOfVerticalPoints.add(obj.x);
                     collectionOfHoroizontalPoints.add(obj.y);
                     collectionOfVerticalPoints.add(obj.x + obj.width);
-                    collectionOfHoroizontalPoints.add(obj.y + obj.width);
+                    collectionOfHoroizontalPoints.add(obj.y + obj.height);
                 });
                 let LineDirection;
                 (function (LineDirection) {

@@ -136,12 +136,12 @@ namespace BasiceShapeEditor.Render.SelectionTool {
             const collectionOfVerticalPoints = new Set<number>( )
             model.shapes.map( obj => {
                 if ( shape.id === obj.id ) return
-
                 collectionOfVerticalPoints.add( obj.x )
                 collectionOfHoroizontalPoints.add( obj.y )
                 collectionOfVerticalPoints.add( obj.x + obj.width )
-                collectionOfHoroizontalPoints.add( obj.y + obj.width )
+                collectionOfHoroizontalPoints.add( obj.y + obj.height )
             })
+
 
             enum LineDirection { Horoizantal, Vertical }
             const createLine = ( x1: number, y1: number, x2: number, y2: number, direction: LineDirection ) => {
