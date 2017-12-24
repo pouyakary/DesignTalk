@@ -137,7 +137,10 @@ var BasiceShapeEditor;
             (function (Background) {
                 function render() {
                     return [
-                        React.createElement("rect", { fill: "white", onClick: onClick, key: BasiceShapeEditor.generateKey(), style: { width: "100vw", height: "100vh" } })
+                        React.createElement("g", { key: BasiceShapeEditor.generateKey() },
+                            React.createElement("rect", { fill: "white", onClick: onClick, style: { width: "100vw", height: "100vh" } }),
+                            React.createElement("text", { x: 30, y: 40, fill: "black", fontFamily: "Roboto", fontWeight: "500", fontSize: "30" }, "Shapes"),
+                            React.createElement("text", { x: window.innerWidth - 345, y: 38, fill: "#ccc", fontFamily: "Roboto", fontSize: "12" }, "Copyright \u00A9 2017-present by Pouya Kary, All rights reserved."))
                     ];
                 }
                 Background.render = render;

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Basic Shape Editor</title>
+    <title>Shapes &bullet; A simple shape editor</title>
 
     <!-- libs -->
     <script src="bin/react/react.development.js"></script>
@@ -14,6 +14,7 @@
     <script src="bin/core.js"></script>
 
     <!-- fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,500" rel="stylesheet">
     <link rel="stylesheet" href="assets/hasklig.css">
 
     <style>
@@ -25,6 +26,16 @@
         svg {
             width: 100vw;
             height: 100vh;
+        }
+
+        svg text {
+            -webkit-user-select: none;
+            -moz-user-select: none;
+                -ms-user-select: none;
+                    user-select: none;
+        }
+        svg text::selection {
+            background: none;
         }
     </style>
 </head>
