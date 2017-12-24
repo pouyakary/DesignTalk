@@ -142,7 +142,7 @@ var BasiceShapeEditor;
             (function (Background) {
                 function render() {
                     return [
-                        React.createElement("rect", { fill: "white", onClick: onClick, style: { width: "100vw", height: "100vh" } })
+                        React.createElement("rect", { fill: "white", onClick: onClick, key: BasiceShapeEditor.generateKey(), style: { width: "100vw", height: "100vh" } })
                     ];
                 }
                 Background.render = render;
@@ -287,16 +287,16 @@ var BasiceShapeEditor;
                 const y = shape.y - margin;
                 const width = shape.width + margin * 2;
                 const height = shape.height + margin * 2;
-                const rectangle = React.createElement("rect", { fill: "transparent", stroke: "black", strokeWidth: "2", x: x, y: y, width: width, height: height });
+                const rectangle = React.createElement("rect", { fill: "transparent", stroke: "black", strokeWidth: "2", key: BasiceShapeEditor.generateKey(), x: x, y: y, width: width, height: height });
                 return rectangle;
             }
             function createToolTipShape(shape) {
                 const x = shape.x - margin;
                 const y = shape.y - margin;
-                const descriptionText = 'X ' + x + ' / Y ' + y + ' / SIZE ' + shape.width + ':' + shape.height;
+                const descriptionText = 'X ' + x + ' • Y ' + y + ' • SIZE ' + shape.width + ':' + shape.height;
                 const descriptionBackgroundHeight = 25;
-                const descriptionBackground = React.createElement("rect", { fill: "yellow", x: x, y: y - descriptionBackgroundHeight - 10, width: descriptionText.length * 7.5 + 10, height: descriptionBackgroundHeight, stroke: "black", strokeWidth: 2 });
-                const description = React.createElement("text", { x: x + strokeWidth + 6, y: y - descriptionBackgroundHeight + 6, fill: "black", fontFamily: "HaskligBold", fontSize: "12" }, descriptionText);
+                const descriptionBackground = React.createElement("rect", { fill: "yellow", key: BasiceShapeEditor.generateKey(), x: x, y: y - descriptionBackgroundHeight - 10, width: descriptionText.length * 7.5 + 10, height: descriptionBackgroundHeight, stroke: "black", strokeWidth: 2 });
+                const description = React.createElement("text", { x: x + strokeWidth + 6, y: y - descriptionBackgroundHeight + 6, key: BasiceShapeEditor.generateKey(), fill: "black", fontFamily: "HaskligBold", fontSize: "12" }, descriptionText);
                 return [
                     descriptionBackground,
                     description,

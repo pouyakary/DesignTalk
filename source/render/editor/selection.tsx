@@ -68,6 +68,7 @@ namespace BasiceShapeEditor.Render.SelectionTool {
                 <rect   fill = "transparent"
                       stroke = "black"
                  strokeWidth = "2"
+                         key = { generateKey( ) }
                            x = { x }
                            y = { y }
                        width = { width }
@@ -87,12 +88,13 @@ namespace BasiceShapeEditor.Render.SelectionTool {
                 shape.y - margin
 
             const descriptionText =
-                'X ' + x + ' / Y ' + y + ' / SIZE ' + shape.width + ':' + shape.height
+                'X ' + x + ' • Y ' + y + ' • SIZE ' + shape.width + ':' + shape.height
 
             const descriptionBackgroundHeight =
                 25
             const descriptionBackground =
                 <rect   fill = "yellow"
+                         key = { generateKey( ) }
                            x = { x }
                            y = { y - descriptionBackgroundHeight - 10 }
                        width = { descriptionText.length * 7.5 + 10 }
@@ -104,6 +106,7 @@ namespace BasiceShapeEditor.Render.SelectionTool {
             const description =
                 <text x = { x + strokeWidth + 6 }
                       y = { y - descriptionBackgroundHeight + 6 }
+                    key = { generateKey( ) }
                    fill = "black"
              fontFamily = "HaskligBold"
                fontSize = "12">

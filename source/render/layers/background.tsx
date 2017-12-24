@@ -17,6 +17,7 @@ namespace BasiceShapeEditor.Render.Layers.Background {
             return [
                 <rect fill = "white"
                    onClick = { onClick }
+                       key = { generateKey( ) }
                      style = {{ width: "100vw", height: "100vh" }}
                 />
             ]
