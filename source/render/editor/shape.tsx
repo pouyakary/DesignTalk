@@ -47,23 +47,12 @@ namespace BasiceShapeEditor.Render.Editor {
                 }
 
             //
-            // ─── IS SHAPE HOVERED ────────────────────────────────────────────
-            //
-
-                private isShapeHovered ( ) {
-                    return this.props.shape.id === this.lastState.hoveredId
-                }
-
-            //
             // ─── RENDER SHAPE ────────────────────────────────────────────────
             //
 
                 private renderShape ( shape: Storage.IShape ): JSX.Element {
                     const color =
-                        ( !this.isShapedSelected( ) && this.isShapeHovered( )
-                            ? 'green'
-                            : this.props.shape.color
-                            )
+                        this.props.shape.color
 
                     switch ( shape.type ) {
                         case 'rect':

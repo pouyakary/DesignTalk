@@ -21,7 +21,6 @@ namespace BasiceShapeEditor.Storage {
             return {
                 shapes:         someShapes,
                 showLineGuides: false,
-                hoveredId:      null,
                 selectedId:     null,
                 mouseMode:      MouseMode.Move
             }

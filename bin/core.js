@@ -39,7 +39,6 @@ var BasiceShapeEditor;
             return {
                 shapes: someShapes,
                 showLineGuides: false,
-                hoveredId: null,
                 selectedId: null,
                 mouseMode: Storage.MouseMode.Move
             };
@@ -89,13 +88,8 @@ var BasiceShapeEditor;
                 isShapedSelected() {
                     return this.props.shape.id === this.lastState.selectedId;
                 }
-                isShapeHovered() {
-                    return this.props.shape.id === this.lastState.hoveredId;
-                }
                 renderShape(shape) {
-                    const color = (!this.isShapedSelected() && this.isShapeHovered()
-                        ? 'green'
-                        : this.props.shape.color);
+                    const color = this.props.shape.color;
                     switch (shape.type) {
                         case 'rect':
                             return this.createRect(shape, color);
