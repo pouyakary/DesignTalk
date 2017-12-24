@@ -293,7 +293,7 @@ var BasiceShapeEditor;
             function createToolTipShape(shape) {
                 const x = shape.x - margin;
                 const y = shape.y - margin;
-                const descriptionText = 'X: ' + x + ' / Y: ' + y + ' / Size: ' + shape.width;
+                const descriptionText = 'X ' + x + ' / Y ' + y + ' / SIZE ' + shape.width + ':' + shape.height;
                 const descriptionBackgroundHeight = 25;
                 const descriptionBackground = React.createElement("rect", { fill: "yellow", x: x, y: y - descriptionBackgroundHeight - 10, width: descriptionText.length * 7.5 + 10, height: descriptionBackgroundHeight, stroke: "black", strokeWidth: 2 });
                 const description = React.createElement("text", { x: x + strokeWidth + 6, y: y - descriptionBackgroundHeight + 6, fill: "black", fontFamily: "HaskligBold", fontSize: "12" }, descriptionText);

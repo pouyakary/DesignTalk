@@ -87,7 +87,7 @@ namespace BasiceShapeEditor.Render.SelectionTool {
                 shape.y - margin
 
             const descriptionText =
-                'X: ' + x + ' / Y: ' + y + ' / Size: ' + shape.width
+                'X ' + x + ' / Y ' + y + ' / SIZE ' + shape.width + ':' + shape.height
 
             const descriptionBackgroundHeight =
                 25
