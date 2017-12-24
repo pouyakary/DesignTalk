@@ -31,42 +31,109 @@ namespace BasiceShapeEditor.MouseDriver {
     //
 
         function mouseMoveEvents ( ) {
-             window.onmousemove = event => {
-                updateSelectedShapePositionOnClick( event )
+            window.onmousemove = event => {
+                handleMouseMove( event )
                 updateMousePosition( event )
             }
+        }
+
+    //
+    // ─── HANDLE MOUSE MOVE ──────────────────────────────────────────────────────────
+    //
+
+        function handleMouseMove ( event: MouseEvent ) {
+            const state =
+                Storage.getState( )
+
+            if ( Clicked ) {
+                if ( state.selectedId !== null ) {
+                    if ( state.mouseMode == Storage.MouseMode.Move ) {
+                        updateSelectedShapePositionOnMouseMove( event, state )
+                    } else {
+                        updateSelectedShapeSizeOnMouseMove( event, state )
+                    }
+                }
+            } else {
+
+            }
+        }
+
+    //
+    // ─── UPDATE SHAPE SIZE ON MOUSE MOVE ────────────────────────────────────────────
+    //
+
+        let moveReseter: NodeJS.Timer
+
+        function updateSelectedShapeSizeOnMouseMove ( event: MouseEvent, state: Storage.IModel ) {
+
+            clearTimeout( moveReseter )
+            moveReseter = setTimeout(( ) => {
+                if ( !Clicked )
+                    Storage.setState( state =>
+                        ({ ...state, mouseMode: Storage.MouseMode.Move }))
+            }, 30)
+
+
+            const selectedShape =
+                state.shapes.find( x => x.id == state.selectedId )!
+
+            Storage.setState( state => {
+                const margin = 10
+                const newShapes =
+                    state.shapes.map( shape => {
+                        if ( shape.id === state.selectedId ) {
+                            const width = event.clientX - ( shape.x + margin )
+                            const height = event.clientY - ( shape.y + margin )
+
+                            if ( width > 10 )
+                                shape.width = width
+                            if ( height > 10 )
+                                shape.height = height
+                        }
+
+                        return { ...shape,
+                            size: shape.width
+                        }
+                    })
+
+                return {
+                    ...state,
+                    hoveredId: null,
+                    shapes: newShapes
+                }
+            })
+
         }
 
     //
     // ─── UPDATE SHAPE POSITION ON CHANGE ────────────────────────────────────────────
     //
 
-        function updateSelectedShapePositionOnClick ( event: MouseEvent ) {
-            const state = Storage.getState( )
-            if ( state.selectedId !== null && Clicked ) {
-                const selectedShape =
-                    state.shapes.find( x => x.id == state.selectedId )!
-                const XDiff =
-                    selectedShape.x - X
-                const YDiff =
-                    selectedShape.y - Y
+        function updateSelectedShapePositionOnMouseMove ( event: MouseEvent, state: Storage.IModel ) {
 
-                Storage.setState( state => {
-                    const newShapes =
-                        state.shapes.map( shape => {
-                            if ( shape.id === state.selectedId ) {
-                                shape.x = event.clientX + XDiff
-                                shape.y = event.clientY + YDiff
-                            }
-                            return shape
-                        })
+            const selectedShape =
+                state.shapes.find( x => x.id == state.selectedId )!
+            const XDiff =
+                selectedShape.x - X
+            const YDiff =
+                selectedShape.y - Y
 
-                    return {
-                        ...state,
-                        shapes: newShapes
-                    }
-                })
-            }
+            Storage.setState( state => {
+                const newShapes =
+                    state.shapes.map( shape => {
+                        if ( shape.id === state.selectedId ) {
+                            shape.x = event.clientX + XDiff
+                            shape.y = event.clientY + YDiff
+                        }
+                        return shape
+                    })
+
+                return {
+                    ...state,
+                    hoveredId: null,
+                    shapes: newShapes
+                }
+            })
         }
 
     //

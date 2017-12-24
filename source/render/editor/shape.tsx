@@ -111,6 +111,7 @@ namespace BasiceShapeEditor.Render.Editor {
 
                         return { ...state,
                             selectedId: this.props.shape.id,
+                            hoveredId: null,
                             shapes: newShapes
                         }
                     })
@@ -121,13 +122,15 @@ namespace BasiceShapeEditor.Render.Editor {
             //
 
                 private createCircle ( shape: Storage.IShape, color: string ) {
-                    const radius = shape.size / 2
+                    const rX = shape.width / 2
+                    const rY = shape.height / 2
 
-                    return <circle
-                        cx              = { shape.x + radius }
-                        cy              = { shape.y + radius }
+                    return <ellipse
+                        cx              = { shape.x + rX }
+                        cy              = { shape.y + rY }
                         fill            = { color }
-                        r               = { radius }
+                        rx              = { rX }
+                        ry              = { rY }
                         key             = { generateKey( ) }
                         onMouseEnter    = { event => this.onMouseEnter( ) }
                         onMouseLeave    = { event => this.onMouseLeave( ) }
@@ -143,8 +146,8 @@ namespace BasiceShapeEditor.Render.Editor {
                     return <rect
                         x               = { shape.x }
                         y               = { shape.y }
-                        width           = { shape.size }
-                        height          = { shape.size }
+                        width           = { shape.width }
+                        height          = { shape.height }
                         key             = { generateKey( ) }
                         fill            = { color }
                         onMouseEnter    = { event => this.onMouseEnter( ) }

@@ -31,19 +31,22 @@ namespace BasiceShapeEditor.Render.SelectionTool {
     // ─── CREATE SELECTION TOOL ──────────────────────────────────────────────────────
     //
 
-        function createSelectionTool ( model: Storage.IModel ) {
+        function createSelectionTool ( state: Storage.IModel ) {
             const shape =
-                model.shapes.find( shape =>
-                    shape.id === model.selectedId )!
+                state.shapes.find( shape =>
+                    shape.id === state.selectedId )!
 
-            const guideLines = createGuideLines( shape, model )
+            // order is important
+            const guideLines = createGuideLines( shape, state )
             const tooltip = createToolTipShape( shape )
             const rectangle = createSelectionRectangle( shape )
+            const resizeHandle = createResizeHandle( shape, state )
 
             return [
                 ...guideLines,
                 ...tooltip,
                 rectangle,
+                resizeHandle
             ]
         }
 
@@ -56,8 +59,10 @@ namespace BasiceShapeEditor.Render.SelectionTool {
                 shape.x - margin
             const y =
                 shape.y - margin
-            const size =
-                shape.size + margin * 2
+            const width =
+                shape.width + margin * 2
+            const height =
+                shape.height + margin * 2
 
             const rectangle =
                 <rect   fill = "transparent"
@@ -65,8 +70,8 @@ namespace BasiceShapeEditor.Render.SelectionTool {
                  strokeWidth = "2"
                            x = { x }
                            y = { y }
-                       width = { size }
-                      height = { size } />
+                       width = { width }
+                      height = { height } />
 
             return rectangle
         }
@@ -82,7 +87,7 @@ namespace BasiceShapeEditor.Render.SelectionTool {
                 shape.y - margin
 
             const descriptionText =
-                'X: ' + x + ' / Y: ' + y + ' / Size: ' + shape.size
+                'X: ' + x + ' / Y: ' + y + ' / Size: ' + shape.width
 
             const descriptionBackgroundHeight =
                 25
@@ -126,8 +131,8 @@ namespace BasiceShapeEditor.Render.SelectionTool {
 
                 collectionOfVerticalPoints.add( obj.x )
                 collectionOfHoroizontalPoints.add( obj.y )
-                collectionOfVerticalPoints.add( obj.x + obj.size )
-                collectionOfHoroizontalPoints.add( obj.y + obj.size )
+                collectionOfVerticalPoints.add( obj.x + obj.width )
+                collectionOfHoroizontalPoints.add( obj.y + obj.width )
             })
 
             enum LineDirection { Horoizantal, Vertical }
@@ -156,14 +161,15 @@ namespace BasiceShapeEditor.Render.SelectionTool {
                                        y2 = { y2 } />
             }
 
+
             const topGuideLine =
                 createLine( 0, shape.y,
                             window.innerWidth, shape.y,
                             LineDirection.Horoizantal )
 
             const bottomGuideLine =
-                createLine( 0, shape.y + shape.size,
-                            window.innerWidth, shape.y + shape.size,
+                createLine( 0, shape.y + shape.height,
+                            window.innerWidth, shape.y + shape.height,
                             LineDirection.Horoizantal )
 
             const leftGuideLine =
@@ -172,8 +178,8 @@ namespace BasiceShapeEditor.Render.SelectionTool {
                             LineDirection.Vertical )
 
             const rightGuideLine =
-                createLine( shape.x + shape.size, 0,
-                            shape.x + shape.size, window.innerHeight,
+                createLine( shape.x + shape.width, 0,
+                            shape.x + shape.width, window.innerHeight,
                             LineDirection.Vertical )
 
             return [
@@ -182,6 +188,36 @@ namespace BasiceShapeEditor.Render.SelectionTool {
                 bottomGuideLine,
                 leftGuideLine
             ]
+        }
+
+    //
+    // ─── CREATE RESIZE BUTTON ───────────────────────────────────────────────────────
+    //
+
+        function createResizeHandle ( shape: Storage.IShape, state: Storage.IModel ) {
+            const x = shape.x + shape.width + margin
+            const y = shape.y + shape.height + margin
+
+            const setMouseMoveMode = ( mode: Storage.MouseMode ) =>
+                Storage.setState( state =>
+                    ({ ...state, mouseMode: mode }))
+
+            const setToResize = ( ) =>
+                setMouseMoveMode( Storage.MouseMode.Resize )
+
+            const setToMove = ( ) =>
+                setMouseMoveMode( Storage.MouseMode.Move )
+
+            const radius =
+                state.mouseMode === Storage.MouseMode.Resize ? 5 : 7
+
+            return  <circle fill = "black"
+                              cx = { x }
+                              cy = { y }
+                    onMouseEnter = { event => setToResize( ) }
+                    onMouseLeave = { event => setToMove( ) }
+                             key = { generateKey( ) }
+                               r = { radius } />
         }
 
     // ────────────────────────────────────────────────────────────────────────────────

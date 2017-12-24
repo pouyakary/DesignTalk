@@ -13,6 +13,15 @@ namespace BasiceShapeEditor.Storage {
             shapes:         IShape[ ]
             hoveredId:      string | null
             selectedId:     string | null
+            mouseMode:      MouseMode
+        }
+
+    //
+    // ─── MOUSE MODE ─────────────────────────────────────────────────────────────────
+    //
+
+        export enum MouseMode {
+            Move, Resize
         }
 
     //
@@ -27,7 +36,8 @@ namespace BasiceShapeEditor.Storage {
             id:         string
             type:       IShapeType
             color:      string
-            size:       number
+            width:      number
+            height:     number
             x:          number
             y:          number
         }

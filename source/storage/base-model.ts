@@ -15,13 +15,14 @@ namespace BasiceShapeEditor.Storage {
         export function createInitialModelState ( ): IModel {
             const someShapes = new Array<IShape>( )
 
-            for ( let i = 0; i < 10; i++ )
-                someShapes.push( createShape( i ) )
+            for ( let counter = 0; counter < 10; counter++ )
+                someShapes.push( createShape( counter ) )
 
             return {
-                shapes:     someShapes,
-                hoveredId:  null,
-                selectedId: null,
+                shapes:         someShapes,
+                hoveredId:      null,
+                selectedId:     null,
+                mouseMode:      MouseMode.Move
             }
         }
 
@@ -63,7 +64,8 @@ namespace BasiceShapeEditor.Storage {
                 color:      color,
                 id:         generateKey( ),
                 type:       type,
-                size:      100,
+                width:      100,
+                height:     100,
                 x:          x,
                 y:          y,
                 zIndex:     no,
