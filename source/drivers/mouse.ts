@@ -99,6 +99,7 @@ namespace BasiceShapeEditor.MouseDriver {
                 return {
                     ...state,
                     hoveredId: null,
+                    showLineGuides: true,
                     shapes: newShapes
                 }
             })
@@ -131,6 +132,7 @@ namespace BasiceShapeEditor.MouseDriver {
                 return {
                     ...state,
                     hoveredId: null,
+                    showLineGuides: true,
                     shapes: newShapes
                 }
             })

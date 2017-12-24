@@ -10,10 +10,11 @@ namespace BasiceShapeEditor.Storage {
     //
 
         export interface IModel {
-            shapes:         IShape[ ]
-            hoveredId:      string | null
-            selectedId:     string | null
-            mouseMode:      MouseMode
+            shapes:             IShape[ ]
+            hoveredId:          string | null
+            selectedId:         string | null
+            showLineGuides:     boolean
+            mouseMode:          MouseMode
         }
 
     //

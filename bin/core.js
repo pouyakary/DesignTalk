@@ -38,6 +38,7 @@ var BasiceShapeEditor;
                 someShapes.push(createShape(counter));
             return {
                 shapes: someShapes,
+                showLineGuides: false,
                 hoveredId: null,
                 selectedId: null,
                 mouseMode: Storage.MouseMode.Move
@@ -103,7 +104,7 @@ var BasiceShapeEditor;
                     }
                 }
                 onMouseEnter() {
-                    BasiceShapeEditor.Storage.setState(state => (Object.assign({}, state, { hoveredId: this.props.shape.id })));
+                    BasiceShapeEditor.Storage.setState(state => (Object.assign({}, state, { hoveredId: this.props.shape.id, showLineGuides: false })));
                 }
                 onMouseLeave() {
                     BasiceShapeEditor.Storage.setState(state => (Object.assign({}, state, { hoveredId: null })));
@@ -226,7 +227,7 @@ var BasiceShapeEditor;
                     }
                     return Object.assign({}, shape, { size: shape.width });
                 });
-                return Object.assign({}, state, { hoveredId: null, shapes: newShapes });
+                return Object.assign({}, state, { hoveredId: null, showLineGuides: true, shapes: newShapes });
             });
         }
         function updateSelectedShapePositionOnMouseMove(event, state) {
@@ -241,7 +242,7 @@ var BasiceShapeEditor;
                     }
                     return shape;
                 });
-                return Object.assign({}, state, { hoveredId: null, shapes: newShapes });
+                return Object.assign({}, state, { hoveredId: null, showLineGuides: true, shapes: newShapes });
             });
         }
         function updateMousePosition(event) {
@@ -287,7 +288,8 @@ var BasiceShapeEditor;
                 const y = shape.y - margin;
                 const width = shape.width + margin * 2;
                 const height = shape.height + margin * 2;
-                const rectangle = React.createElement("rect", { fill: "transparent", stroke: "black", strokeWidth: "2", key: BasiceShapeEditor.generateKey(), x: x, y: y, width: width, height: height });
+                const onMouseLeave = () => BasiceShapeEditor.Storage.setState(state => (Object.assign({}, state, { showLineGuides: false })));
+                const rectangle = React.createElement("rect", { fill: "transparent", stroke: "black", strokeWidth: "2", key: BasiceShapeEditor.generateKey(), onMouseLeave: event => onMouseLeave(), x: x, y: y, width: width, height: height });
                 return rectangle;
             }
             function createToolTipShape(shape) {
@@ -303,7 +305,7 @@ var BasiceShapeEditor;
                 ];
             }
             function createGuideLines(shape, model) {
-                if (!BasiceShapeEditor.MouseDriver.Clicked)
+                if (!model.showLineGuides)
                     return [];
                 const collectionOfHoroizontalPoints = new Set();
                 const collectionOfVerticalPoints = new Set();

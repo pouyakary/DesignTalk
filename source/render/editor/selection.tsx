@@ -64,11 +64,16 @@ namespace BasiceShapeEditor.Render.SelectionTool {
             const height =
                 shape.height + margin * 2
 
+            const onMouseLeave = ( ) =>
+                Storage.setState( state =>
+                    ({ ...state, showLineGuides: false }))
+
             const rectangle =
                 <rect   fill = "transparent"
                       stroke = "black"
                  strokeWidth = "2"
                          key = { generateKey( ) }
+                onMouseLeave = { event => onMouseLeave( ) }
                            x = { x }
                            y = { y }
                        width = { width }
@@ -124,7 +129,7 @@ namespace BasiceShapeEditor.Render.SelectionTool {
     //
 
         function createGuideLines ( shape: Storage.IShape, model: Storage.IModel ) {
-            if ( !MouseDriver.Clicked )
+            if ( !model.showLineGuides )
                 return [ ]
 
             const collectionOfHoroizontalPoints = new Set<number>( )

@@ -80,13 +80,14 @@ namespace BasiceShapeEditor.Render.Editor {
 
                 private onMouseEnter ( ) {
                     Storage.setState( state => ({ ...state,
-                        hoveredId: this.props.shape.id
+                        hoveredId: this.props.shape.id,
+                        showLineGuides: false,
                     }))
                 }
 
                 private onMouseLeave ( ) {
                     Storage.setState( state => ({ ...state,
-                        hoveredId: null
+                        hoveredId: null,
                     }))
                 }
 
