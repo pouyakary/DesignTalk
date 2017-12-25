@@ -69,7 +69,7 @@ namespace BasiceShapeEditor.Render {
             position:           "fixed",
             top:                '13pt',
             left:               '120pt',
-            backgroundColor:    'yellow',
+            backgroundColor:    '#eee',
             fontSize:           '12px',
             fontFamily:         'HaskligBold',
             borderWidth:        '2px',
