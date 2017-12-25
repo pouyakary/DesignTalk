@@ -40,7 +40,8 @@ var BasiceShapeEditor;
                 shapes: someShapes,
                 showLineGuides: false,
                 selectedId: null,
-                mouseMode: Storage.MouseMode.Move
+                mouseMode: Storage.MouseMode.Move,
+                maxZIndex: 10
             };
         }
         Storage.createInitialModelState = createInitialModelState;
@@ -106,13 +107,10 @@ var BasiceShapeEditor;
                 }
                 onClick() {
                     BasiceShapeEditor.Storage.setState(state => {
-                        const maxZindexOfShapes = Math.max(...this.lastState.shapes.map(x => x.zIndex));
-                        const newShapes = state.shapes.map(shape => {
-                            if (shape.id === this.props.shape.id)
-                                shape.zIndex = maxZindexOfShapes + 1;
-                            return shape;
-                        });
-                        return Object.assign({}, state, { selectedId: this.props.shape.id, hoveredId: null, shapes: newShapes });
+                        const newMaxZIndex = state.maxZIndex + 1;
+                        const newShapes = state.shapes.map(x => (Object.assign({}, x, { zIndex: (x.id === this.props.shape.id)
+                                ? newMaxZIndex : x.zIndex })));
+                        return Object.assign({}, state, { selectedId: this.props.shape.id, maxZIndex: newMaxZIndex, hoveredId: null, shapes: newShapes });
                     });
                 }
                 createCircle(shape, color) {
@@ -457,10 +455,10 @@ var BasiceShapeEditor;
         function addNewShapeButton() {
             function onAddNewShape() {
                 BasiceShapeEditor.Storage.setState(state => {
-                    const maxZIndex = Math.max(...state.shapes.map(x => x.zIndex));
-                    const newShape = BasiceShapeEditor.Storage.createShape(maxZIndex + 1);
+                    const newMaxZIndex = state.maxZIndex + 1;
+                    const newShape = BasiceShapeEditor.Storage.createShape(newMaxZIndex);
                     state.shapes.push(newShape);
-                    return Object.assign({}, state, { selectedId: newShape.id, mouseMode: BasiceShapeEditor.Storage.MouseMode.Move });
+                    return Object.assign({}, state, { selectedId: newShape.id, mouseMode: BasiceShapeEditor.Storage.MouseMode.Move, maxZIndex: newMaxZIndex, showLineGuides: false });
                 });
             }
             return React.createElement("div", { onClick: event => onAddNewShape(), style: Object.assign({}, WindowDivButtonStyle, { left: '120pt' }) }, "ADD NEW SHAPE");

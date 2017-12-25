@@ -14,6 +14,7 @@ namespace BasiceShapeEditor.Storage {
             selectedId:         string | null
             showLineGuides:     boolean
             mouseMode:          MouseMode
+            maxZIndex:          number
         }
 
     //

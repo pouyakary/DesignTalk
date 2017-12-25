@@ -91,16 +91,18 @@ namespace BasiceShapeEditor.Render {
         function addNewShapeButton ( ) {
             function onAddNewShape ( ) {
                 Storage.setState( state => {
-                    const maxZIndex =
-                        Math.max( ...state.shapes.map( x => x.zIndex ) )
+                    const newMaxZIndex =
+                        state.maxZIndex + 1
                     const newShape =
-                        Storage.createShape( maxZIndex + 1 )
+                        Storage.createShape( newMaxZIndex )
 
                     state.shapes.push( newShape )
 
                     return { ...state,
                         selectedId: newShape.id,
-                        mouseMode: Storage.MouseMode.Move
+                        mouseMode: Storage.MouseMode.Move,
+                        maxZIndex: newMaxZIndex,
+                        showLineGuides: false,
                     }
                 })
             }

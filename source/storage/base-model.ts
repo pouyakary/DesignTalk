@@ -22,7 +22,8 @@ namespace BasiceShapeEditor.Storage {
                 shapes:         someShapes,
                 showLineGuides: false,
                 selectedId:     null,
-                mouseMode:      MouseMode.Move
+                mouseMode:      MouseMode.Move,
+                maxZIndex:      10
             }
         }
 

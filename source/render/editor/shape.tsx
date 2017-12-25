@@ -86,21 +86,18 @@ namespace BasiceShapeEditor.Render.Editor {
 
                 private onClick ( ) {
                     Storage.setState( state => {
-                        const maxZindexOfShapes =
-                            Math.max(
-                                ...this.lastState.shapes.map( x => x.zIndex )
-                            )
+                        const newMaxZIndex =
+                            state.maxZIndex + 1
 
                         const newShapes =
-                            state.shapes.map( shape => {
-                                if ( shape.id === this.props.shape.id )
-                                    shape.zIndex = maxZindexOfShapes + 1
-
-                                return shape
-                            })
+                            state.shapes.map( x => ({ ...x,
+                                zIndex: ( x.id === this.props.shape.id )
+                                    ? newMaxZIndex : x.zIndex,
+                            }))
 
                         return { ...state,
                             selectedId: this.props.shape.id,
+                            maxZIndex: newMaxZIndex,
                             hoveredId: null,
                             shapes: newShapes
                         }
