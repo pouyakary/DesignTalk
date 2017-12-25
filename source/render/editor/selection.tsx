@@ -48,7 +48,7 @@ namespace BasiceShapeEditor.Render.SelectionTool {
 
             // order is important
             const guideLines = createGuideLines( shape, state )
-            const tooltip = createToolTipShape( shape )
+            const tooltip = createToolTipShape( shape, state )
             const rectangle = createSelectionRectangle( shape )
             const resizeHandle = createResizeHandle( shape, state )
             const deleteButton = createDeleteButton( shape, state )
@@ -100,14 +100,14 @@ namespace BasiceShapeEditor.Render.SelectionTool {
     // ─── TIP TEXT BOX ───────────────────────────────────────────────────────────────
     //
 
-        function createToolTipShape ( shape: Storage.IShape ) {
+        function createToolTipShape ( shape: Storage.IShape, state: Storage.IModel ) {
             const x =
                 shape.x - margin
             const y =
                 shape.y - margin
 
             const descriptionText =
-                'X ' + x + ' • Y ' + y + ' • SIZE ' + shape.width + ':' + shape.height
+                getDescriptionText( shape, state )
 
             const descriptionBackground =
                 <rect   fill = "yellow"
@@ -134,6 +134,20 @@ namespace BasiceShapeEditor.Render.SelectionTool {
                 descriptionBackground,
                 description,
             ]
+        }
+
+    //
+    // ─── DESCRIPTION TEXT ───────────────────────────────────────────────────────────
+    //
+
+        function getDescriptionText ( shape: Storage.IShape, state: Storage.IModel ) {
+            if ( state.showLineGuides && state.mouseMode === Storage.MouseMode.Resize )
+                return 'SIZE ' + shape.width + ':' + shape.height
+
+            if ( state.showLineGuides && state.mouseMode === Storage.MouseMode.Move )
+                return 'X ' + shape.x + ' • Y ' + shape.y
+
+            return 'X ' + shape.x + ' • Y ' + shape.y + ' • SIZE ' + shape.width + ':' + shape.height
         }
 
     //

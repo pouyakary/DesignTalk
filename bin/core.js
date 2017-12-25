@@ -273,7 +273,7 @@ var BasiceShapeEditor;
             function createSelectionTool(state) {
                 const shape = state.shapes.find(shape => shape.id === state.selectedId);
                 const guideLines = createGuideLines(shape, state);
-                const tooltip = createToolTipShape(shape);
+                const tooltip = createToolTipShape(shape, state);
                 const rectangle = createSelectionRectangle(shape);
                 const resizeHandle = createResizeHandle(shape, state);
                 const deleteButton = createDeleteButton(shape, state);
@@ -296,16 +296,23 @@ var BasiceShapeEditor;
                 const rectangle = React.createElement("rect", { fill: "transparent", stroke: "black", strokeWidth: "2", key: BasiceShapeEditor.generateKey(), onMouseLeave: event => onMouseLeave(), x: x, y: y, width: width, height: height });
                 return rectangle;
             }
-            function createToolTipShape(shape) {
+            function createToolTipShape(shape, state) {
                 const x = shape.x - margin;
                 const y = shape.y - margin;
-                const descriptionText = 'X ' + x + ' • Y ' + y + ' • SIZE ' + shape.width + ':' + shape.height;
+                const descriptionText = getDescriptionText(shape, state);
                 const descriptionBackground = React.createElement("rect", { fill: "yellow", key: BasiceShapeEditor.generateKey(), x: x, y: y - textBackgroundHeight - 10, width: computeHaskligBold12TextLength(descriptionText), height: textBackgroundHeight, stroke: "black", strokeWidth: 2 });
                 const description = React.createElement("text", { x: x + strokeWidth + 6, y: y - textBackgroundHeight + 6, key: BasiceShapeEditor.generateKey(), fill: "black", fontFamily: "HaskligBold", fontSize: "12" }, descriptionText);
                 return [
                     descriptionBackground,
                     description,
                 ];
+            }
+            function getDescriptionText(shape, state) {
+                if (state.showLineGuides && state.mouseMode === BasiceShapeEditor.Storage.MouseMode.Resize)
+                    return 'SIZE ' + shape.width + ':' + shape.height;
+                if (state.showLineGuides && state.mouseMode === BasiceShapeEditor.Storage.MouseMode.Move)
+                    return 'X ' + shape.x + ' • Y ' + shape.y;
+                return 'X ' + shape.x + ' • Y ' + shape.y + ' • SIZE ' + shape.width + ':' + shape.height;
             }
             function createGuideLines(shape, model) {
                 if (!model.showLineGuides)
