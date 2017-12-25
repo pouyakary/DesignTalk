@@ -16,6 +16,8 @@ namespace BasiceShapeEditor.Render.SelectionTool {
         const margin = 10
         const strokeWidth = 2
 
+        const textBackgroundHeight = 25
+
     //
     // ─── SHOW SELECTION ─────────────────────────────────────────────────────────────
     //
@@ -25,6 +27,14 @@ namespace BasiceShapeEditor.Render.SelectionTool {
                 return createSelectionTool( model )
             else
                 return [ undefined ]
+        }
+
+    //
+    // ─── TOOLS ──────────────────────────────────────────────────────────────────────
+    //
+
+        function computeHaskligBold12TextLength ( text: string ) {
+            return text.length * 7.5 + 10
         }
 
     //
@@ -41,12 +51,14 @@ namespace BasiceShapeEditor.Render.SelectionTool {
             const tooltip = createToolTipShape( shape )
             const rectangle = createSelectionRectangle( shape )
             const resizeHandle = createResizeHandle( shape, state )
+            const deleteButton = createDeleteButton( shape, state )
 
             return [
                 ...guideLines,
                 ...tooltip,
                 rectangle,
-                resizeHandle
+                resizeHandle,
+                deleteButton,
             ]
         }
 
@@ -95,22 +107,20 @@ namespace BasiceShapeEditor.Render.SelectionTool {
             const descriptionText =
                 'X ' + x + ' • Y ' + y + ' • SIZE ' + shape.width + ':' + shape.height
 
-            const descriptionBackgroundHeight =
-                25
             const descriptionBackground =
                 <rect   fill = "yellow"
                          key = { generateKey( ) }
                            x = { x }
-                           y = { y - descriptionBackgroundHeight - 10 }
-                       width = { descriptionText.length * 7.5 + 10 }
-                      height = { descriptionBackgroundHeight }
+                           y = { y - textBackgroundHeight - 10 }
+                       width = { computeHaskligBold12TextLength( descriptionText ) }
+                      height = { textBackgroundHeight }
                       stroke = "black"
                  strokeWidth = { 2 } />
 
 
             const description =
                 <text x = { x + strokeWidth + 6 }
-                      y = { y - descriptionBackgroundHeight + 6 }
+                      y = { y - textBackgroundHeight + 6 }
                     key = { generateKey( ) }
                    fill = "black"
              fontFamily = "HaskligBold"
@@ -226,6 +236,65 @@ namespace BasiceShapeEditor.Render.SelectionTool {
                     onMouseLeave = { event => setToMove( ) }
                              key = { generateKey( ) }
                                r = { radius } />
+        }
+
+    //
+    // ─── REMOVE BOTTON ──────────────────────────────────────────────────────────────
+    //
+
+        function createDeleteButton ( shape: Storage.IShape, state: Storage.IModel ) {
+            if ( state.showLineGuides )
+                return <g key = { generateKey( ) } />
+
+            const x =
+                shape.x - margin - computeHaskligBold12TextLength( 'DEL' ) - 10
+            const y =
+                shape.y - margin
+
+            function onDeleteButtonClicked ( ) {
+                const newShapes = state.shapes.filter( element =>
+                    element.id !== state.selectedId )
+                Storage.setState( state => ({
+                    ...state,
+                    shapes: newShapes,
+                    selectedId: null,
+                    mouseMode: Storage.MouseMode.Move,
+                    showLineGuides: false
+                }))
+            }
+
+            const backgroundRect =
+                <rect fill = "#eee"
+                         x = { x }
+                         y = { y - textBackgroundHeight - 10 }
+                     width = { computeHaskligBold12TextLength( 'DEL' ) }
+                    height = { textBackgroundHeight }
+               strokeWidth = { 2 }
+                    stroke = "black" />
+
+
+            const deleteText =
+                <text fill = "Black"
+                         x = { x + 6 }
+                         y = { y - textBackgroundHeight + 6 }
+                fontFamily = "HaskligBold"
+                  fontSize = "12">
+                    DEL
+                </text>
+
+            const buttonableLayer =
+                <rect  x = { x }
+                       y = { y - textBackgroundHeight - 10 }
+                   width = { computeHaskligBold12TextLength( 'DEL' ) }
+                  height = { textBackgroundHeight }
+                 onClick = { event => onDeleteButtonClicked( ) }
+                    fill = "transparent" />
+
+            return  <g key = { generateKey( ) }>
+                        { backgroundRect }
+                        { deleteText }
+                        { buttonableLayer }
+                    </g>
         }
 
     // ────────────────────────────────────────────────────────────────────────────────

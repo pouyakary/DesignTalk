@@ -260,6 +260,7 @@ var BasiceShapeEditor;
         (function (SelectionTool) {
             const margin = 10;
             const strokeWidth = 2;
+            const textBackgroundHeight = 25;
             function render(model) {
                 if (model.selectedId)
                     return createSelectionTool(model);
@@ -267,17 +268,22 @@ var BasiceShapeEditor;
                     return [undefined];
             }
             SelectionTool.render = render;
+            function computeHaskligBold12TextLength(text) {
+                return text.length * 7.5 + 10;
+            }
             function createSelectionTool(state) {
                 const shape = state.shapes.find(shape => shape.id === state.selectedId);
                 const guideLines = createGuideLines(shape, state);
                 const tooltip = createToolTipShape(shape);
                 const rectangle = createSelectionRectangle(shape);
                 const resizeHandle = createResizeHandle(shape, state);
+                const deleteButton = createDeleteButton(shape, state);
                 return [
                     ...guideLines,
                     ...tooltip,
                     rectangle,
-                    resizeHandle
+                    resizeHandle,
+                    deleteButton,
                 ];
             }
             function createSelectionRectangle(shape) {
@@ -293,9 +299,8 @@ var BasiceShapeEditor;
                 const x = shape.x - margin;
                 const y = shape.y - margin;
                 const descriptionText = 'X ' + x + ' • Y ' + y + ' • SIZE ' + shape.width + ':' + shape.height;
-                const descriptionBackgroundHeight = 25;
-                const descriptionBackground = React.createElement("rect", { fill: "yellow", key: BasiceShapeEditor.generateKey(), x: x, y: y - descriptionBackgroundHeight - 10, width: descriptionText.length * 7.5 + 10, height: descriptionBackgroundHeight, stroke: "black", strokeWidth: 2 });
-                const description = React.createElement("text", { x: x + strokeWidth + 6, y: y - descriptionBackgroundHeight + 6, key: BasiceShapeEditor.generateKey(), fill: "black", fontFamily: "HaskligBold", fontSize: "12" }, descriptionText);
+                const descriptionBackground = React.createElement("rect", { fill: "yellow", key: BasiceShapeEditor.generateKey(), x: x, y: y - textBackgroundHeight - 10, width: computeHaskligBold12TextLength(descriptionText), height: textBackgroundHeight, stroke: "black", strokeWidth: 2 });
+                const description = React.createElement("text", { x: x + strokeWidth + 6, y: y - textBackgroundHeight + 6, key: BasiceShapeEditor.generateKey(), fill: "black", fontFamily: "HaskligBold", fontSize: "12" }, descriptionText);
                 return [
                     descriptionBackground,
                     description,
@@ -348,6 +353,23 @@ var BasiceShapeEditor;
                 const setToMove = () => setMouseMoveMode(BasiceShapeEditor.Storage.MouseMode.Move);
                 const radius = state.mouseMode === BasiceShapeEditor.Storage.MouseMode.Resize ? 5 : 7;
                 return React.createElement("circle", { fill: "black", cx: x, cy: y, onMouseEnter: event => setToResize(), onMouseLeave: event => setToMove(), key: BasiceShapeEditor.generateKey(), r: radius });
+            }
+            function createDeleteButton(shape, state) {
+                if (state.showLineGuides)
+                    return React.createElement("g", { key: BasiceShapeEditor.generateKey() });
+                const x = shape.x - margin - computeHaskligBold12TextLength('DEL') - 10;
+                const y = shape.y - margin;
+                function onDeleteButtonClicked() {
+                    const newShapes = state.shapes.filter(element => element.id !== state.selectedId);
+                    BasiceShapeEditor.Storage.setState(state => (Object.assign({}, state, { shapes: newShapes, selectedId: null, mouseMode: BasiceShapeEditor.Storage.MouseMode.Move, showLineGuides: false })));
+                }
+                const backgroundRect = React.createElement("rect", { fill: "#eee", x: x, y: y - textBackgroundHeight - 10, width: computeHaskligBold12TextLength('DEL'), height: textBackgroundHeight, strokeWidth: 2, stroke: "black" });
+                const deleteText = React.createElement("text", { fill: "Black", x: x + 6, y: y - textBackgroundHeight + 6, fontFamily: "HaskligBold", fontSize: "12" }, "DEL");
+                const buttonableLayer = React.createElement("rect", { x: x, y: y - textBackgroundHeight - 10, width: computeHaskligBold12TextLength('DEL'), height: textBackgroundHeight, onClick: event => onDeleteButtonClicked(), fill: "transparent" });
+                return React.createElement("g", { key: BasiceShapeEditor.generateKey() },
+                    backgroundRect,
+                    deleteText,
+                    buttonableLayer);
             }
         })(SelectionTool = Render.SelectionTool || (Render.SelectionTool = {}));
     })(Render = BasiceShapeEditor.Render || (BasiceShapeEditor.Render = {}));
