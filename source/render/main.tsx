@@ -46,6 +46,7 @@ namespace BasiceShapeEditor.Render {
             return  <div>
                         { createMainSVG( layers ) }
                         { addNewShapeButton( ) }
+                        { clearDisplayButton( ) }
                     </div>
         }
 
@@ -58,6 +59,29 @@ namespace BasiceShapeEditor.Render {
                            key = { generateKey( ) }>
                         { layers }
                     </svg>
+        }
+
+    //
+    // ─── CONST WINDOW BUTTON STYLES ─────────────────────────────────────────────────
+    //
+
+        const WindowDivButtonStyle = {
+            position:           "fixed",
+            top:                '13pt',
+            left:               '120pt',
+            backgroundColor:    '#eee',
+            fontSize:           '12px',
+            fontFamily:         'HaskligBold',
+            borderWidth:        '2px',
+            borderStyle:        'solid',
+            borderColor:        'black',
+            paddingBottom:      '5px',
+            paddingTop:         '3px',
+            paddingLeft:        '7px',
+            paddingRight:       '8px',
+            MozUserSelect:      'none',
+            WebkitUserSelect:   'none',
+            msUserSelect:       'none',
         }
 
     //
@@ -82,25 +106,27 @@ namespace BasiceShapeEditor.Render {
             }
 
             return  <div onClick = { event => onAddNewShape( ) }
-                           style = {{
-                            position:           "fixed",
-                            top:                '13pt',
-                            left:               '120pt',
-                            backgroundColor:    'yellow',
-                            fontSize:           '12px',
-                            fontFamily:         'HaskligBold',
-                            borderWidth:        '2px',
-                            borderStyle:        'solid',
-                            borderColor:        'black',
-                            paddingBottom:      '5px',
-                            paddingTop:         '3px',
-                            paddingLeft:        '7px',
-                            paddingRight:       '8px',
-                            MozUserSelect:      'none',
-                            WebkitUserSelect:   'none',
-                            msUserSelect:       'none',
-                        }}>
+                           style = {{ ...WindowDivButtonStyle, left: '120pt' } as any }>
                         ADD NEW SHAPE
+                    </div>
+        }
+
+    //
+    // ─── ON CLEAR ALL SHAPES ────────────────────────────────────────────────────────
+    //
+
+        function clearDisplayButton ( ) {
+            function onDeleteAllShapes ( ) {
+                Storage.setState( state => ({ ...state,
+                    shapes: [ ],
+                    selectedId: null,
+                    mouseMode: Storage.MouseMode.Move
+                }))
+            }
+
+            return  <div onClick = { event => onDeleteAllShapes( ) }
+                           style = {{ ...WindowDivButtonStyle, left: '210pt' } as any }>
+                        DEL SHAPES
                     </div>
         }
 
