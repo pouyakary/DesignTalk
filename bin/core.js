@@ -278,12 +278,14 @@ var BasiceShapeEditor;
                 const rectangle = createSelectionRectangle(shape);
                 const resizeHandle = createResizeHandle(shape, state);
                 const deleteButton = createDeleteButton(shape, state);
+                const colorButtons = createColorButtons(shape, state);
                 return [
                     ...guideLines,
                     ...tooltip,
                     rectangle,
                     resizeHandle,
                     deleteButton,
+                    colorButtons,
                 ];
             }
             function createSelectionRectangle(shape) {
@@ -370,6 +372,24 @@ var BasiceShapeEditor;
                     backgroundRect,
                     deleteText,
                     buttonableLayer);
+            }
+            function createColorButtons(shape, state) {
+                if (state.showLineGuides)
+                    return React.createElement("g", { key: BasiceShapeEditor.generateKey() });
+                const colors = ['red', 'black', 'blue'].filter(x => shape.color !== x);
+                const buttons = colors.map((color, index) => createSingleColorButton(color, index + 1, shape));
+                return React.createElement("g", { key: BasiceShapeEditor.generateKey() }, buttons);
+            }
+            function createSingleColorButton(color, index, shape) {
+                const x = shape.x - margin - 5 - index * (textBackgroundHeight + 5);
+                function onSetColor() {
+                    BasiceShapeEditor.Storage.setState(state => {
+                        const newShapes = state.shapes.map(x => (Object.assign({}, x, { color: x.id === shape.id ? color : x.color })));
+                        return Object.assign({}, state, { shapes: newShapes });
+                    });
+                }
+                const button = React.createElement("rect", { x: x, y: shape.y - margin, width: textBackgroundHeight, height: textBackgroundHeight, fill: color, key: BasiceShapeEditor.generateKey(), onClick: event => onSetColor(), strokeWidth: "2", stroke: "black" });
+                return button;
             }
         })(SelectionTool = Render.SelectionTool || (Render.SelectionTool = {}));
     })(Render = BasiceShapeEditor.Render || (BasiceShapeEditor.Render = {}));

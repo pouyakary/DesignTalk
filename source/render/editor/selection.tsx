@@ -52,6 +52,7 @@ namespace BasiceShapeEditor.Render.SelectionTool {
             const rectangle = createSelectionRectangle( shape )
             const resizeHandle = createResizeHandle( shape, state )
             const deleteButton = createDeleteButton( shape, state )
+            const colorButtons = createColorButtons( shape, state )
 
             return [
                 ...guideLines,
@@ -59,6 +60,7 @@ namespace BasiceShapeEditor.Render.SelectionTool {
                 rectangle,
                 resizeHandle,
                 deleteButton,
+                colorButtons,
             ]
         }
 
@@ -295,6 +297,58 @@ namespace BasiceShapeEditor.Render.SelectionTool {
                         { deleteText }
                         { buttonableLayer }
                     </g>
+        }
+
+    //
+    // ─── COLOR BUTTONS ──────────────────────────────────────────────────────────────
+    //
+
+        function createColorButtons ( shape: Storage.IShape, state: Storage.IModel ) {
+            if ( state.showLineGuides )
+                return <g key = { generateKey( ) } />
+
+            const colors =
+                [ 'red', 'black', 'blue' ].filter( x => shape.color !== x )
+
+            const buttons =
+                colors.map(( color, index ) =>
+                    createSingleColorButton( color, index + 1, shape ))
+
+            return  <g key = { generateKey( ) }>
+                        { buttons }
+                    </g>
+        }
+
+        function createSingleColorButton ( color: string,
+                                           index: number,
+                                           shape: Storage.IShape ) {
+            const x =
+                shape.x - margin - 5 - index * ( textBackgroundHeight + 5 )
+
+            function onSetColor ( ) {
+                Storage.setState( state => {
+                    const newShapes =
+                        state.shapes.map( x => ({
+                            ...x,
+                            color: x.id === shape.id ? color : x.color,
+                        }))
+
+                    return { ...state, shapes: newShapes }
+                })
+            }
+
+            const button =
+                <rect x = { x }
+                      y = { shape.y - margin }
+                  width = { textBackgroundHeight }
+                 height = { textBackgroundHeight }
+                   fill = { color }
+                    key = { generateKey( ) }
+                onClick = { event => onSetColor( ) }
+            strokeWidth = "2"
+                 stroke = "black" />
+
+            return button
         }
 
     // ────────────────────────────────────────────────────────────────────────────────
