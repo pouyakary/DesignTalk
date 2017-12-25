@@ -8,6 +8,8 @@
 /// <reference path="layers/background.tsx" />
 /// <reference path="layers/shapes.tsx" />
 /// <reference path="layers/selection.ts" />
+/// <reference path="../storage/base-model.ts" />
+
 
 
 namespace BasiceShapeEditor.Render {
@@ -41,7 +43,10 @@ namespace BasiceShapeEditor.Render {
                 layerElements.map(( elements, index ) =>
                     renderLayer( index, elements ))
 
-            return createMainSVG( layers )
+            return  <div>
+                        { createMainSVG( layers ) }
+                        { addNewShapeButton( ) }
+                    </div>
         }
 
     //
@@ -49,9 +54,54 @@ namespace BasiceShapeEditor.Render {
     //
 
         function createMainSVG ( layers: JSX.Element[ ] ) {
-            return  <svg style = {{ width: "100vw", height: "100vh" }}>
+            return  <svg style = {{ width: "100vw", height: "100vh" }}
+                           key = { generateKey( ) }>
                         { layers }
                     </svg>
+        }
+
+    //
+    // ─── ON NEW SHAPE ───────────────────────────────────────────────────────────────
+    //
+
+        function addNewShapeButton ( ) {
+            function onAddNewShape ( ) {
+                Storage.setState( state => {
+                    const maxZIndex =
+                        Math.max( ...state.shapes.map( x => x.zIndex ) )
+                    const newShape =
+                        Storage.createShape( maxZIndex + 1 )
+
+                    state.shapes.push( newShape )
+
+                    return { ...state,
+                        selectedId: newShape.id,
+                        mouseMode: Storage.MouseMode.Move
+                    }
+                })
+            }
+
+            return  <div onClick = { event => onAddNewShape( ) }
+                           style = {{
+                            position:           "fixed",
+                            top:                '13pt',
+                            left:               '120pt',
+                            backgroundColor:    'yellow',
+                            fontSize:           '12px',
+                            fontFamily:         'HaskligBold',
+                            borderWidth:        '2px',
+                            borderStyle:        'solid',
+                            borderColor:        'black',
+                            paddingBottom:      '5px',
+                            paddingTop:         '3px',
+                            paddingLeft:        '7px',
+                            paddingRight:       '8px',
+                            MozUserSelect:      'none',
+                            WebkitUserSelect:   'none',
+                            msUserSelect:       'none',
+                        }}>
+                        ADD NEW SHAPE
+                    </div>
         }
 
     //

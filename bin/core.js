@@ -54,7 +54,7 @@ var BasiceShapeEditor;
                 y: randomSize(window.innerHeight),
             };
         }
-        function createShape(no) {
+        function createShape(zIndex) {
             const color = chooseRandom(['red', 'black', 'blue']);
             const type = chooseRandom(['rect', 'circle']);
             const { x, y } = getRandomCoordinates();
@@ -66,9 +66,10 @@ var BasiceShapeEditor;
                 height: 100,
                 x: x,
                 y: y,
-                zIndex: no,
+                zIndex: zIndex,
             };
         }
+        Storage.createShape = createShape;
     })(Storage = BasiceShapeEditor.Storage || (BasiceShapeEditor.Storage = {}));
 })(BasiceShapeEditor || (BasiceShapeEditor = {}));
 var BasiceShapeEditor;
@@ -427,10 +428,40 @@ var BasiceShapeEditor;
                 Render.Layers.Selection.render(model),
             ];
             const layers = layerElements.map((elements, index) => renderLayer(index, elements));
-            return createMainSVG(layers);
+            return React.createElement("div", null,
+                createMainSVG(layers),
+                addNewShapeButton());
         }
         function createMainSVG(layers) {
-            return React.createElement("svg", { style: { width: "100vw", height: "100vh" } }, layers);
+            return React.createElement("svg", { style: { width: "100vw", height: "100vh" }, key: BasiceShapeEditor.generateKey() }, layers);
+        }
+        function addNewShapeButton() {
+            function onAddNewShape() {
+                BasiceShapeEditor.Storage.setState(state => {
+                    const maxZIndex = Math.max(...state.shapes.map(x => x.zIndex));
+                    const newShape = BasiceShapeEditor.Storage.createShape(maxZIndex + 1);
+                    state.shapes.push(newShape);
+                    return Object.assign({}, state, { selectedId: newShape.id, mouseMode: BasiceShapeEditor.Storage.MouseMode.Move });
+                });
+            }
+            return React.createElement("div", { onClick: event => onAddNewShape(), style: {
+                    position: "fixed",
+                    top: '13pt',
+                    left: '120pt',
+                    backgroundColor: 'yellow',
+                    fontSize: '12px',
+                    fontFamily: 'HaskligBold',
+                    borderWidth: '2px',
+                    borderStyle: 'solid',
+                    borderColor: 'black',
+                    paddingBottom: '5px',
+                    paddingTop: '3px',
+                    paddingLeft: '7px',
+                    paddingRight: '8px',
+                    MozUserSelect: 'none',
+                    WebkitUserSelect: 'none',
+                    msUserSelect: 'none',
+                } }, "ADD NEW SHAPE");
         }
         function renderLayer(layer, elements) {
             return React.createElement("g", { key: BasiceShapeEditor.generateKey() }, elements);

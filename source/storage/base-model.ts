@@ -52,7 +52,7 @@ namespace BasiceShapeEditor.Storage {
     // ─── CREATE SHAPE ───────────────────────────────────────────────────────────────
     //
 
-        function createShape ( no: number ): IShape {
+        export function createShape ( zIndex: number ): IShape {
             const color =
                 chooseRandom([ 'red', 'black', 'blue' ])
             const type =
@@ -68,7 +68,7 @@ namespace BasiceShapeEditor.Storage {
                 height:     100,
                 x:          x,
                 y:          y,
-                zIndex:     no,
+                zIndex:     zIndex,
             }
         }
 
