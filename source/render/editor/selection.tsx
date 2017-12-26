@@ -53,6 +53,7 @@ namespace BasiceShapeEditor.Render.SelectionTool {
             const resizeHandle = createResizeHandle( shape, state )
             const deleteButton = createDeleteButton( shape, state )
             const colorButtons = createColorButtons( shape, state )
+            const shapeButtons = changeShapeModelButtons( shape, state )
 
             return [
                 ...guideLines,
@@ -61,6 +62,7 @@ namespace BasiceShapeEditor.Render.SelectionTool {
                 resizeHandle,
                 deleteButton,
                 colorButtons,
+                ...shapeButtons,
             ]
         }
 
@@ -363,6 +365,77 @@ namespace BasiceShapeEditor.Render.SelectionTool {
                  stroke = "black" />
 
             return button
+        }
+
+    //
+    // ─── CHANGE SHAPE BUTTON ────────────────────────────────────────────────────────
+    //
+
+        function changeShapeModelButtons ( shape: Storage.IShape, state: Storage.IModel ) {
+            if ( state.showLineGuides )
+                return [ <g key = { generateKey( ) } /> ]
+
+
+            function onChangeShapeType ( ) {
+                Storage.setState( state => {
+                    const newShapes =
+                        state.shapes.map( x => {
+                            if ( shape.id === x.id )
+                                return { ...x,
+                                    type: ( x.id == shape.id && x.type === 'rect' )?
+                                        'circle' : 'rect' as Storage.IShapeType
+                                }
+                            else
+                                return x
+                        })
+
+                    return {
+                        ...state, shapes: newShapes
+                    }
+                })
+            }
+
+            const x =
+                shape.x - 2 * margin - textBackgroundHeight
+            const y =
+                shape.y + 1 * ( textBackgroundHeight )
+
+            const mainBackground =
+                <rect x = { x }
+                      y = { y }
+                  width = { textBackgroundHeight }
+                 height = { textBackgroundHeight }
+                 stroke = "black"
+                    key = { generateKey( ) }
+            strokeWidth = "2"
+                   fill = "#eee" />
+
+
+            const shapeSize =
+                textBackgroundHeight - 10
+            const halfShape =
+                shapeSize / 2
+            const shapeIcon =
+                ( shape.type === 'circle'
+                    ? <rect x = { x + 5 } y = { y + 5 } width = { shapeSize } height = { shapeSize } fill="black" />
+                    : <circle cx = { x + 5 + halfShape } cy = { y + 5 + halfShape } r = { shapeSize / 2 }  fill="black" />
+                    )
+
+
+            const transparentButtonableRect =
+                <rect x = { x }
+                      y = { y }
+                 height = { textBackgroundHeight }
+                  width = { textBackgroundHeight }
+                onClick = { event => onChangeShapeType( ) }
+                   fill = "transparent" />
+
+
+            return [
+                mainBackground,
+                shapeIcon,
+                transparentButtonableRect,
+            ]
         }
 
     // ────────────────────────────────────────────────────────────────────────────────

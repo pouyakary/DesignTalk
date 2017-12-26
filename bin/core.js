@@ -278,6 +278,7 @@ var BasiceShapeEditor;
                 const resizeHandle = createResizeHandle(shape, state);
                 const deleteButton = createDeleteButton(shape, state);
                 const colorButtons = createColorButtons(shape, state);
+                const shapeButtons = changeShapeModelButtons(shape, state);
                 return [
                     ...guideLines,
                     ...tooltip,
@@ -285,6 +286,7 @@ var BasiceShapeEditor;
                     resizeHandle,
                     deleteButton,
                     colorButtons,
+                    ...shapeButtons,
                 ];
             }
             function createSelectionRectangle(shape) {
@@ -396,6 +398,36 @@ var BasiceShapeEditor;
                 }
                 const button = React.createElement("rect", { x: x, y: shape.y - margin, width: textBackgroundHeight, height: textBackgroundHeight, fill: color, key: BasiceShapeEditor.generateKey(), onClick: event => onSetColor(), strokeWidth: "2", stroke: "black" });
                 return button;
+            }
+            function changeShapeModelButtons(shape, state) {
+                if (state.showLineGuides)
+                    return [React.createElement("g", { key: BasiceShapeEditor.generateKey() })];
+                function onChangeShapeType() {
+                    BasiceShapeEditor.Storage.setState(state => {
+                        const newShapes = state.shapes.map(x => {
+                            if (shape.id === x.id)
+                                return Object.assign({}, x, { type: (x.id == shape.id && x.type === 'rect') ?
+                                        'circle' : 'rect' });
+                            else
+                                return x;
+                        });
+                        return Object.assign({}, state, { shapes: newShapes });
+                    });
+                }
+                const x = shape.x - 2 * margin - textBackgroundHeight;
+                const y = shape.y + 1 * (textBackgroundHeight);
+                const mainBackground = React.createElement("rect", { x: x, y: y, width: textBackgroundHeight, height: textBackgroundHeight, stroke: "black", key: BasiceShapeEditor.generateKey(), strokeWidth: "2", fill: "#eee" });
+                const shapeSize = textBackgroundHeight - 10;
+                const halfShape = shapeSize / 2;
+                const shapeIcon = (shape.type === 'circle'
+                    ? React.createElement("rect", { x: x + 5, y: y + 5, width: shapeSize, height: shapeSize, fill: "black" })
+                    : React.createElement("circle", { cx: x + 5 + halfShape, cy: y + 5 + halfShape, r: shapeSize / 2, fill: "black" }));
+                const transparentButtonableRect = React.createElement("rect", { x: x, y: y, height: textBackgroundHeight, width: textBackgroundHeight, onClick: event => onChangeShapeType(), fill: "transparent" });
+                return [
+                    mainBackground,
+                    shapeIcon,
+                    transparentButtonableRect,
+                ];
             }
         })(SelectionTool = Render.SelectionTool || (Render.SelectionTool = {}));
     })(Render = BasiceShapeEditor.Render || (BasiceShapeEditor.Render = {}));
