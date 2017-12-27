@@ -72,11 +72,11 @@ namespace BasiceShapeEditor.Render.Editor {
                 private getShapeOpacity ( shape: Storage.IShape ): number {
                     if ( this.lastState.selectedId !== null &&
                          this.lastState.selectedId !== shape.id ) {
-                            return 0.3
+                            return 0.5
                          }
 
                     if ( this.lastState.selectedId === shape.id )
-                        return 0.9
+                        return 0.95
 
                     return 1
                 }
