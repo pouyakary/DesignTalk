@@ -92,12 +92,22 @@ var BasiceShapeEditor;
                 }
                 renderShape(shape) {
                     const color = this.props.shape.color;
+                    const opacity = this.getShapeOpacity(shape);
                     switch (shape.type) {
                         case 'rect':
-                            return this.createRect(shape, color);
+                            return this.createRect(shape, color, opacity);
                         case 'circle':
-                            return this.createCircle(shape, color);
+                            return this.createCircle(shape, color, opacity);
                     }
+                }
+                getShapeOpacity(shape) {
+                    if (this.lastState.selectedId !== null &&
+                        this.lastState.selectedId !== shape.id) {
+                        return 0.3;
+                    }
+                    if (this.lastState.selectedId === shape.id)
+                        return 0.9;
+                    return 1;
                 }
                 onMouseEnter() {
                     BasiceShapeEditor.Storage.setState(state => (Object.assign({}, state, { hoveredId: this.props.shape.id, showLineGuides: false })));
@@ -106,20 +116,15 @@ var BasiceShapeEditor;
                     BasiceShapeEditor.Storage.setState(state => (Object.assign({}, state, { hoveredId: null })));
                 }
                 onClick() {
-                    BasiceShapeEditor.Storage.setState(state => {
-                        const newMaxZIndex = state.maxZIndex + 1;
-                        const newShapes = state.shapes.map(x => (Object.assign({}, x, { zIndex: (x.id === this.props.shape.id)
-                                ? newMaxZIndex : x.zIndex })));
-                        return Object.assign({}, state, { selectedId: this.props.shape.id, maxZIndex: newMaxZIndex, hoveredId: null, shapes: newShapes });
-                    });
+                    BasiceShapeEditor.Storage.setState(state => (Object.assign({}, state, { selectedId: this.props.shape.id, showLineGuides: false, mouseMode: BasiceShapeEditor.Storage.MouseMode.Move })));
                 }
-                createCircle(shape, color) {
+                createCircle(shape, color, opacity) {
                     const rX = shape.width / 2;
                     const rY = shape.height / 2;
-                    return React.createElement("ellipse", { cx: shape.x + rX, cy: shape.y + rY, fill: color, rx: rX, ry: rY, key: BasiceShapeEditor.generateKey(), onMouseEnter: event => this.onMouseEnter(), onMouseLeave: event => this.onMouseLeave(), onClick: event => this.onClick() });
+                    return React.createElement("ellipse", { cx: shape.x + rX, cy: shape.y + rY, fill: color, rx: rX, ry: rY, opacity: opacity, key: BasiceShapeEditor.generateKey(), onMouseEnter: event => this.onMouseEnter(), onMouseLeave: event => this.onMouseLeave(), onClick: event => this.onClick() });
                 }
-                createRect(shape, color) {
-                    return React.createElement("rect", { x: shape.x, y: shape.y, width: shape.width, height: shape.height, key: BasiceShapeEditor.generateKey(), fill: color, onMouseEnter: event => this.onMouseEnter(), onMouseLeave: event => this.onMouseLeave(), onClick: event => this.onClick() });
+                createRect(shape, color, opacity) {
+                    return React.createElement("rect", { x: shape.x, y: shape.y, width: shape.width, height: shape.height, key: BasiceShapeEditor.generateKey(), opacity: opacity, fill: color, onMouseEnter: event => this.onMouseEnter(), onMouseLeave: event => this.onMouseLeave(), onClick: event => this.onClick() });
                 }
             }
             Editor.Shape = Shape;

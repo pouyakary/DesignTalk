@@ -53,14 +53,32 @@ namespace BasiceShapeEditor.Render.Editor {
                 private renderShape ( shape: Storage.IShape ): JSX.Element {
                     const color =
                         this.props.shape.color
+                    const opacity =
+                        this.getShapeOpacity( shape )
 
                     switch ( shape.type ) {
                         case 'rect':
-                            return this.createRect( shape, color )
+                            return this.createRect( shape, color, opacity )
 
                         case 'circle':
-                            return this.createCircle( shape, color )
+                            return this.createCircle( shape, color, opacity )
                     }
+                }
+
+            //
+            // ─── GET SHAPE OPACITY ───────────────────────────────────────────
+            //
+
+                private getShapeOpacity ( shape: Storage.IShape ): number {
+                    if ( this.lastState.selectedId !== null &&
+                         this.lastState.selectedId !== shape.id ) {
+                            return 0.3
+                         }
+
+                    if ( this.lastState.selectedId === shape.id )
+                        return 0.9
+
+                    return 1
                 }
 
             //
@@ -85,30 +103,37 @@ namespace BasiceShapeEditor.Render.Editor {
             //
 
                 private onClick ( ) {
-                    Storage.setState( state => {
-                        const newMaxZIndex =
-                            state.maxZIndex + 1
+                    Storage.setState( state => ({
+                        ...state,
+                        selectedId: this.props.shape.id,
+                        showLineGuides: false,
+                        mouseMode: Storage.MouseMode.Move
+                    }))
 
-                        const newShapes =
-                            state.shapes.map( x => ({ ...x,
-                                zIndex: ( x.id === this.props.shape.id )
-                                    ? newMaxZIndex : x.zIndex,
-                            }))
+                    // Storage.setState( state => {
+                    //     const newMaxZIndex =
+                    //         state.maxZIndex + 1
 
-                        return { ...state,
-                            selectedId: this.props.shape.id,
-                            maxZIndex: newMaxZIndex,
-                            hoveredId: null,
-                            shapes: newShapes
-                        }
-                    })
+                    //     const newShapes =
+                    //         state.shapes.map( x => ({ ...x,
+                    //             zIndex: ( x.id === this.props.shape.id )
+                    //                 ? newMaxZIndex : x.zIndex,
+                    //         }))
+
+                    //     return { ...state,
+                    //         selectedId: this.props.shape.id,
+                    //         maxZIndex: newMaxZIndex,
+                    //         hoveredId: null,
+                    //         shapes: newShapes
+                    //     }
+                    // })
                 }
 
             //
             // ─── CREATE CIRCLE ───────────────────────────────────────────────
             //
 
-                private createCircle ( shape: Storage.IShape, color: string ) {
+                private createCircle ( shape: Storage.IShape, color: string, opacity: number ) {
                     const rX = shape.width / 2
                     const rY = shape.height / 2
 
@@ -118,6 +143,7 @@ namespace BasiceShapeEditor.Render.Editor {
                         fill            = { color }
                         rx              = { rX }
                         ry              = { rY }
+                        opacity         = { opacity }
                         key             = { generateKey( ) }
                         onMouseEnter    = { event => this.onMouseEnter( ) }
                         onMouseLeave    = { event => this.onMouseLeave( ) }
@@ -129,13 +155,14 @@ namespace BasiceShapeEditor.Render.Editor {
             // ─── CREATE RECT ─────────────────────────────────────────────────
             //
 
-                private createRect ( shape: Storage.IShape, color: string ) {
+                private createRect ( shape: Storage.IShape, color: string, opacity: number ) {
                     return <rect
                         x               = { shape.x }
                         y               = { shape.y }
                         width           = { shape.width }
                         height          = { shape.height }
                         key             = { generateKey( ) }
+                        opacity         = { opacity }
                         fill            = { color }
                         onMouseEnter    = { event => this.onMouseEnter( ) }
                         onMouseLeave    = { event => this.onMouseLeave( ) }
