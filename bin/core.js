@@ -103,10 +103,10 @@ var BasiceShapeEditor;
                 getShapeOpacity(shape) {
                     if (this.lastState.selectedId !== null &&
                         this.lastState.selectedId !== shape.id) {
-                        return 0.3;
+                        return 0.5;
                     }
                     if (this.lastState.selectedId === shape.id)
-                        return 0.9;
+                        return 0.95;
                     return 1;
                 }
                 onMouseEnter() {
@@ -372,15 +372,17 @@ var BasiceShapeEditor;
             function createDeleteButton(shape, state) {
                 if (state.showLineGuides)
                     return React.createElement("g", { key: BasiceShapeEditor.generateKey() });
-                const x = shape.x - margin - computeHaskligBold12TextLength('DEL') - 10;
+                const buttonText = 'DEL';
+                const textLength = computeHaskligBold12TextLength(buttonText);
+                const x = shape.x - margin - textLength - 10;
                 const y = shape.y - margin;
                 function onDeleteButtonClicked() {
                     const newShapes = state.shapes.filter(element => element.id !== state.selectedId);
                     BasiceShapeEditor.Storage.setState(state => (Object.assign({}, state, { shapes: newShapes, selectedId: null, mouseMode: BasiceShapeEditor.Storage.MouseMode.Move, showLineGuides: false })));
                 }
-                const backgroundRect = React.createElement("rect", { fill: "#eee", x: x, y: y - textBackgroundHeight - 10, width: computeHaskligBold12TextLength('DEL'), height: textBackgroundHeight, strokeWidth: 2, stroke: "black" });
-                const deleteText = React.createElement("text", { fill: "Black", x: x + 6, y: y - textBackgroundHeight + 6, fontFamily: "HaskligBold", fontSize: "12" }, "DEL");
-                const buttonableLayer = React.createElement("rect", { x: x, y: y - textBackgroundHeight - 10, width: computeHaskligBold12TextLength('DEL'), height: textBackgroundHeight, onClick: event => onDeleteButtonClicked(), fill: "transparent" });
+                const backgroundRect = React.createElement("rect", { fill: "#eee", x: x, y: y - textBackgroundHeight - 10, width: textLength, height: textBackgroundHeight, strokeWidth: 2, stroke: "black" });
+                const deleteText = React.createElement("text", { fill: "Black", x: x + 6, y: y - textBackgroundHeight + 6, fontFamily: "HaskligBold", fontSize: "12" }, buttonText);
+                const buttonableLayer = React.createElement("rect", { x: x, y: y - textBackgroundHeight - 10, width: textLength, height: textBackgroundHeight, onClick: event => onDeleteButtonClicked(), fill: "transparent" });
                 return React.createElement("g", { key: BasiceShapeEditor.generateKey() },
                     backgroundRect,
                     deleteText,
@@ -389,7 +391,8 @@ var BasiceShapeEditor;
             function createColorButtons(shape, state) {
                 if (state.showLineGuides)
                     return React.createElement("g", { key: BasiceShapeEditor.generateKey() });
-                const colors = ['red', 'black', 'blue'].filter(x => shape.color !== x);
+                const colors = ['red', 'black', 'blue']
+                    .filter(x => shape.color !== x);
                 const buttons = colors.map((color, index) => createSingleColorButton(color, index + 1, shape));
                 return React.createElement("g", { key: BasiceShapeEditor.generateKey() }, buttons);
             }

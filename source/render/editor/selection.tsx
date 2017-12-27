@@ -264,8 +264,12 @@ namespace BasiceShapeEditor.Render.SelectionTool {
             if ( state.showLineGuides )
                 return <g key = { generateKey( ) } />
 
+            const buttonText =
+                'DEL'
+            const textLength =
+                computeHaskligBold12TextLength( buttonText )
             const x =
-                shape.x - margin - computeHaskligBold12TextLength( 'DEL' ) - 10
+                shape.x - margin - textLength - 10
             const y =
                 shape.y - margin
 
@@ -285,7 +289,7 @@ namespace BasiceShapeEditor.Render.SelectionTool {
                 <rect fill = "#eee"
                          x = { x }
                          y = { y - textBackgroundHeight - 10 }
-                     width = { computeHaskligBold12TextLength( 'DEL' ) }
+                     width = { textLength }
                     height = { textBackgroundHeight }
                strokeWidth = { 2 }
                     stroke = "black" />
@@ -297,13 +301,13 @@ namespace BasiceShapeEditor.Render.SelectionTool {
                          y = { y - textBackgroundHeight + 6 }
                 fontFamily = "HaskligBold"
                   fontSize = "12">
-                    DEL
+                    { buttonText }
                 </text>
 
             const buttonableLayer =
                 <rect  x = { x }
                        y = { y - textBackgroundHeight - 10 }
-                   width = { computeHaskligBold12TextLength( 'DEL' ) }
+                   width = { textLength }
                   height = { textBackgroundHeight }
                  onClick = { event => onDeleteButtonClicked( ) }
                     fill = "transparent" />
@@ -324,7 +328,8 @@ namespace BasiceShapeEditor.Render.SelectionTool {
                 return <g key = { generateKey( ) } />
 
             const colors =
-                [ 'red', 'black', 'blue' ].filter( x => shape.color !== x )
+                [ 'red', 'black', 'blue' ]
+                .filter( x => shape.color !== x )
 
             const buttons =
                 colors.map(( color, index ) =>
