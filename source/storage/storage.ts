@@ -82,6 +82,21 @@ namespace BasiceShapeEditor.Storage {
             runSubscribersOnChange( newState )
         }
 
+    //
+    // ─── UNDO LAST STATE ────────────────────────────────────────────────────────────
+    //
+
+        export function undoState ( ) {
+            if ( StorageContainer.length > 1 ) {
+                StorageContainer.pop( )
+
+                const newTopOfTheStack =
+                    StorageContainer[ StorageContainer.length - 1 ]
+
+                runSubscribersOnChange( newTopOfTheStack )
+            }
+        }
+
     // ────────────────────────────────────────────────────────────────────────────────
 
 }
