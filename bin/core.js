@@ -326,6 +326,8 @@ var BasiceShapeEditor;
                     return [];
                 const collectionOfHoroizontalPoints = new Set();
                 const collectionOfVerticalPoints = new Set();
+                const collectionOfMiddleHoroizontalPoints = new Set();
+                const collectionOfMiddleVerticalPoints = new Set();
                 model.shapes.map(obj => {
                     if (shape.id === obj.id)
                         return;
@@ -333,6 +335,8 @@ var BasiceShapeEditor;
                     collectionOfHoroizontalPoints.add(obj.y);
                     collectionOfVerticalPoints.add(obj.x + obj.width);
                     collectionOfHoroizontalPoints.add(obj.y + obj.height);
+                    collectionOfMiddleVerticalPoints.add(obj.x + (obj.width / 2));
+                    collectionOfMiddleHoroizontalPoints.add(obj.y + (obj.height / 2));
                 });
                 let LineDirection;
                 (function (LineDirection) {
@@ -340,13 +344,22 @@ var BasiceShapeEditor;
                     LineDirection[LineDirection["Vertical"] = 1] = "Vertical";
                 })(LineDirection || (LineDirection = {}));
                 const createLine = (x1, y1, x2, y2, direction) => {
-                    const collection = (direction === LineDirection.Horoizantal
+                    const normalCollection = (direction === LineDirection.Horoizantal
                         ? collectionOfHoroizontalPoints
                         : collectionOfVerticalPoints);
-                    const isTherePoint = (collection.has(x1) || collection.has(y1) ||
-                        collection.has(x2) || collection.has(y2));
-                    const lineColor = (isTherePoint ? 'cyan' : '#ccc');
-                    const lineStrokeWidth = (isTherePoint ? 2 : 1);
+                    const middleCollection = (direction === LineDirection.Horoizantal
+                        ? collectionOfMiddleHoroizontalPoints
+                        : collectionOfMiddleVerticalPoints);
+                    function isThereANormalPoint() {
+                        return normalCollection.has(x1) || normalCollection.has(y1) ||
+                            normalCollection.has(x2) || normalCollection.has(y2);
+                    }
+                    const isThereMiddlePoint = (middleCollection.has(x1) || middleCollection.has(x2) ||
+                        middleCollection.has(y1) || middleCollection.has(y2));
+                    const lineColor = (isThereMiddlePoint
+                        ? 'red'
+                        : (isThereANormalPoint() ? 'cyan' : '#ccc'));
+                    const lineStrokeWidth = (lineColor !== '#ccc' ? 2 : 1);
                     return React.createElement("line", { strokeWidth: lineStrokeWidth, stroke: lineColor, key: BasiceShapeEditor.generateKey(), x1: x1, y1: y1, x2: x2, y2: y2 });
                 };
                 const topGuideLine = createLine(0, shape.y, window.innerWidth, shape.y, LineDirection.Horoizantal);

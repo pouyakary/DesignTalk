@@ -162,31 +162,53 @@ namespace BasiceShapeEditor.Render.SelectionTool {
 
             const collectionOfHoroizontalPoints = new Set<number>( )
             const collectionOfVerticalPoints = new Set<number>( )
+            const collectionOfMiddleHoroizontalPoints = new Set<number>( )
+            const collectionOfMiddleVerticalPoints = new Set<number>( )
+
             model.shapes.map( obj => {
                 if ( shape.id === obj.id ) return
+
                 collectionOfVerticalPoints.add( obj.x )
                 collectionOfHoroizontalPoints.add( obj.y )
                 collectionOfVerticalPoints.add( obj.x + obj.width )
                 collectionOfHoroizontalPoints.add( obj.y + obj.height )
+                collectionOfMiddleVerticalPoints.add( obj.x + ( obj.width / 2 ) )
+                collectionOfMiddleHoroizontalPoints.add( obj.y + ( obj.height / 2 ) )
             })
 
 
             enum LineDirection { Horoizantal, Vertical }
             const createLine = ( x1: number, y1: number, x2: number, y2: number, direction: LineDirection ) => {
-                const collection =
+                const normalCollection =
                     ( direction === LineDirection.Horoizantal
                         ? collectionOfHoroizontalPoints
                         : collectionOfVerticalPoints
                         )
 
-                const isTherePoint = (
-                    collection.has( x1 ) || collection.has( y1 ) ||
-                    collection.has( x2 ) || collection.has( y2 ) )
+                const middleCollection =
+                    ( direction === LineDirection.Horoizantal
+                        ? collectionOfMiddleHoroizontalPoints
+                        : collectionOfMiddleVerticalPoints
+                        )
+
+                function isThereANormalPoint ( ) {
+                    return  normalCollection.has( x1 ) || normalCollection.has( y1 ) ||
+                            normalCollection.has( x2 ) || normalCollection.has( y2 )
+                }
+
+                const isThereMiddlePoint = (
+                    middleCollection.has( x1 ) || middleCollection.has( x2 ) ||
+                    middleCollection.has( y1 ) || middleCollection.has( y2 )
+                )
 
                 const lineColor =
-                    ( isTherePoint? 'cyan' : '#ccc' )
+                    ( isThereMiddlePoint
+                        ?   'red'
+                        :   ( isThereANormalPoint( ) ? 'cyan' : '#ccc' )
+                        )
+
                 const lineStrokeWidth =
-                    ( isTherePoint? 2 : 1 )
+                    ( lineColor !== '#ccc' ? 2 : 1 )
 
                 return  <line strokeWidth = { lineStrokeWidth }
                                    stroke = { lineColor }
