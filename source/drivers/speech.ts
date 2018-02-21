@@ -119,7 +119,8 @@ namespace BasiceShapeEditor.SpeachCommandEngine {
                 case 'back':
                 case 'ignore':
                     const words = buffer.split(' ')
-                    return words.splice( words.length - 2 ).join(' ')
+                          words.pop( )
+                    return words.join(' ')
 
                 case 'clear':
                 case 'clean':
