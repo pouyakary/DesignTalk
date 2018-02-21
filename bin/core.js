@@ -489,8 +489,7 @@ var BasiceShapeEditor;
             return React.createElement("div", null,
                 createMainSVG(layers),
                 addNewShapeButton(),
-                clearDisplayButton(),
-                createUndoButton());
+                clearDisplayButton());
         }
         function createMainSVG(layers) {
             return React.createElement("svg", { style: { width: "100vw", height: "100vh" }, key: BasiceShapeEditor.generateKey() }, layers);
@@ -523,12 +522,6 @@ var BasiceShapeEditor;
                 });
             }
             return React.createElement("div", { onClick: event => onAddNewShape(), style: Object.assign({}, WindowDivButtonStyle, { left: '120pt' }) }, "ADD NEW SHAPE");
-        }
-        function createUndoButton() {
-            function onUndoClicked() {
-                BasiceShapeEditor.Storage.undoState();
-            }
-            return React.createElement("div", { onClick: event => onUndoClicked(), style: Object.assign({}, WindowDivButtonStyle, { left: '284pt' }) }, "UNDO");
         }
         function clearDisplayButton() {
             function onDeleteAllShapes() {

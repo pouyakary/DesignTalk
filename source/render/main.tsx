@@ -47,7 +47,6 @@ namespace BasiceShapeEditor.Render {
                         { createMainSVG( layers ) }
                         { addNewShapeButton( ) }
                         { clearDisplayButton( ) }
-                        { createUndoButton( ) }
                     </div>
         }
 
@@ -111,21 +110,6 @@ namespace BasiceShapeEditor.Render {
             return  <div onClick = { event => onAddNewShape( ) }
                            style = {{ ...WindowDivButtonStyle, left: '120pt' } as any }>
                         ADD NEW SHAPE
-                    </div>
-        }
-
-    //
-    // ─── UNDO BUTTON ────────────────────────────────────────────────────────────────
-    //
-
-        function createUndoButton ( ) {
-            function onUndoClicked ( ) {
-                Storage.undoState( )
-            }
-
-            return  <div onClick = { event => onUndoClicked( ) }
-                           style = {{ ...WindowDivButtonStyle, left: '284pt' } as any }>
-                        UNDO
                     </div>
         }
 
