@@ -503,7 +503,7 @@ var BasiceShapeEditor;
                     const buttonSize = 30;
                     return [
                         React.createElement("rect", { x: "0", r: "0", width: "100vw", height: "100vh", fill: "white", opacity: "0.9", key: BasiceShapeEditor.generateKey() }),
-                        React.createElement("circle", { cx: mouseX, cy: mouseY, r: 15, key: BasiceShapeEditor.generateKey(), fill: "red" })
+                        React.createElement("circle", { cx: mouseX, cy: mouseY, r: 15, className: "recoderIcon", key: BasiceShapeEditor.generateKey(), fill: "red" })
                     ];
                 }
             })(SpeachRecognizer = Layers.SpeachRecognizer || (Layers.SpeachRecognizer = {}));

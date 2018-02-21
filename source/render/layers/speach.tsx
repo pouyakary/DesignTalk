@@ -39,6 +39,7 @@ namespace BasiceShapeEditor.Render.Layers.SpeachRecognizer {
                 <circle cx = { mouseX }
                         cy = { mouseY }
                          r = { 15 }
+                 className = "recoderIcon"
                        key = { generateKey( ) }
                       fill = "red" />
             ]
