@@ -47,13 +47,13 @@ namespace BasiceShapeEditor.Render.SelectionTool {
                     shape.id === state.selectedId )!
 
             // order is important
-            const guideLines = createGuideLines( shape, state )
-            const tooltip = createToolTipShape( shape, state )
-            const rectangle = createSelectionRectangle( shape )
-            const resizeHandle = createResizeHandle( shape, state )
-            const deleteButton = createDeleteButton( shape, state )
-            const colorButtons = createColorButtons( shape, state )
-            const shapeButtons = changeShapeModelButtons( shape, state )
+            const guideLines    = createGuideLines( shape, state )
+            const tooltip       = createToolTipShape( shape, state )
+            const rectangle     = createSelectionRectangle( shape )
+            const resizeHandle  = createResizeHandle( shape, state )
+            const deleteButton  = createDeleteButton( shape, state )
+            const colorButtons  = createColorButtons( shape, state )
+            const shapeButtons  = changeShapeModelButtons( shape, state )
 
             return [
                 ...guideLines,

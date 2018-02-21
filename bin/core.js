@@ -44,7 +44,7 @@ var BasiceShapeEditor;
                 maxZIndex: 10,
                 speachRecognition: {
                     isRecording: false,
-                    currentText: "0",
+                    currentText: "select all the black shapes and move them to 10 20",
                     mouseX: 0,
                     mouseY: 0,
                 }
@@ -141,8 +141,8 @@ var BasiceShapeEditor;
 (function (BasiceShapeEditor) {
     var Render;
     (function (Render) {
-        var Layers;
-        (function (Layers) {
+        var SVGLayers;
+        (function (SVGLayers) {
             var Background;
             (function (Background) {
                 function render() {
@@ -157,16 +157,16 @@ var BasiceShapeEditor;
                 function onClick() {
                     BasiceShapeEditor.Storage.setState(state => (Object.assign({}, state, { selectedId: null })));
                 }
-            })(Background = Layers.Background || (Layers.Background = {}));
-        })(Layers = Render.Layers || (Render.Layers = {}));
+            })(Background = SVGLayers.Background || (SVGLayers.Background = {}));
+        })(SVGLayers = Render.SVGLayers || (Render.SVGLayers = {}));
     })(Render = BasiceShapeEditor.Render || (BasiceShapeEditor.Render = {}));
 })(BasiceShapeEditor || (BasiceShapeEditor = {}));
 var BasiceShapeEditor;
 (function (BasiceShapeEditor) {
     var Render;
     (function (Render) {
-        var Layers;
-        (function (Layers) {
+        var SVGLayers;
+        (function (SVGLayers) {
             var Shapes;
             (function (Shapes) {
                 function render(model) {
@@ -175,8 +175,8 @@ var BasiceShapeEditor;
                     return elementedShapes;
                 }
                 Shapes.render = render;
-            })(Shapes = Layers.Shapes || (Layers.Shapes = {}));
-        })(Layers = Render.Layers || (Render.Layers = {}));
+            })(Shapes = SVGLayers.Shapes || (SVGLayers.Shapes = {}));
+        })(SVGLayers = Render.SVGLayers || (Render.SVGLayers = {}));
     })(Render = BasiceShapeEditor.Render || (BasiceShapeEditor.Render = {}));
 })(BasiceShapeEditor || (BasiceShapeEditor = {}));
 var BasiceShapeEditor;
@@ -472,26 +472,28 @@ var BasiceShapeEditor;
 (function (BasiceShapeEditor) {
     var Render;
     (function (Render) {
-        var Layers;
-        (function (Layers) {
+        var SVGLayers;
+        (function (SVGLayers) {
             var Selection;
             (function (Selection) {
                 function render(model) {
                     return Render.SelectionTool.render(model);
                 }
                 Selection.render = render;
-            })(Selection = Layers.Selection || (Layers.Selection = {}));
-        })(Layers = Render.Layers || (Render.Layers = {}));
+            })(Selection = SVGLayers.Selection || (SVGLayers.Selection = {}));
+        })(SVGLayers = Render.SVGLayers || (Render.SVGLayers = {}));
     })(Render = BasiceShapeEditor.Render || (BasiceShapeEditor.Render = {}));
 })(BasiceShapeEditor || (BasiceShapeEditor = {}));
 var BasiceShapeEditor;
 (function (BasiceShapeEditor) {
     var Render;
     (function (Render) {
-        var Layers;
-        (function (Layers) {
+        var HTMLLayers;
+        (function (HTMLLayers) {
             var SpeachRecognizer;
             (function (SpeachRecognizer) {
+                const iconSize = 30;
+                const backgroundSize = iconSize + 14;
                 function render(model) {
                     return ((model.speachRecognition.isRecording)
                         ? shapeOnWorkingMode(model)
@@ -499,15 +501,52 @@ var BasiceShapeEditor;
                 }
                 SpeachRecognizer.render = render;
                 function shapeOnWorkingMode(model) {
-                    const { mouseX, mouseY } = model.speachRecognition;
-                    const buttonSize = 30;
-                    return [
-                        React.createElement("rect", { x: "0", r: "0", width: "100vw", height: "100vh", fill: "white", opacity: "0.9", key: BasiceShapeEditor.generateKey() }),
-                        React.createElement("circle", { cx: mouseX, cy: mouseY, r: 15, className: "recoderIcon", key: BasiceShapeEditor.generateKey(), fill: "red" })
-                    ];
+                    return React.createElement("div", { key: BasiceShapeEditor.generateKey(), style: {
+                            backgroundColor: "rgba(255, 255, 255, 0.9)",
+                            position: "fixed",
+                            left: "0",
+                            top: "0",
+                            width: "100vw",
+                            height: "100vh",
+                        } },
+                        recordingIcon(model),
+                        createTextView(model));
                 }
-            })(SpeachRecognizer = Layers.SpeachRecognizer || (Layers.SpeachRecognizer = {}));
-        })(Layers = Render.Layers || (Render.Layers = {}));
+                function recordingIcon(model) {
+                    const { mouseX, mouseY } = model.speachRecognition;
+                    return React.createElement("div", { style: {
+                            backgroundColor: "black",
+                            position: "fixed",
+                            left: mouseX - (backgroundSize / 2),
+                            top: mouseY - (backgroundSize / 2),
+                            padding: (backgroundSize - iconSize) / 2,
+                            width: iconSize,
+                            height: iconSize,
+                        } },
+                        React.createElement("div", { className: "recoderIcon", style: {
+                                width: iconSize,
+                                height: iconSize,
+                                borderRadius: iconSize / 2,
+                                backgroundColor: "red",
+                            } }));
+                }
+                function createTextView(model) {
+                    const { mouseX, mouseY } = model.speachRecognition;
+                    return React.createElement("div", { style: {
+                            maxWidth: "100px",
+                            position: "fixed",
+                            left: mouseX - backgroundSize + 75,
+                            top: mouseY - (backgroundSize / 2),
+                            fontFamily: "HaskligBold",
+                            fontSize: "16",
+                            color: "#ccc",
+                            textTransform: "uppercase",
+                            backgroundColor: "black",
+                            padding: "5px 10px 7px 10px",
+                        } }, model.speachRecognition.currentText);
+                }
+            })(SpeachRecognizer = HTMLLayers.SpeachRecognizer || (HTMLLayers.SpeachRecognizer = {}));
+        })(HTMLLayers = Render.HTMLLayers || (Render.HTMLLayers = {}));
     })(Render = BasiceShapeEditor.Render || (BasiceShapeEditor.Render = {}));
 })(BasiceShapeEditor || (BasiceShapeEditor = {}));
 var BasiceShapeEditor;
@@ -522,54 +561,17 @@ var BasiceShapeEditor;
         Render.renderApp = renderApp;
         function createScence(model) {
             const layerElements = [
-                Render.Layers.Background.render(),
-                Render.Layers.Shapes.render(model),
-                Render.Layers.Selection.render(model),
-                Render.Layers.SpeachRecognizer.render(model),
+                Render.SVGLayers.Background.render(),
+                Render.SVGLayers.Shapes.render(model),
+                Render.SVGLayers.Selection.render(model),
             ];
             const layers = layerElements.map((elements, index) => renderLayer(index, elements));
             return React.createElement("div", null,
                 createMainSVG(layers),
-                addNewShapeButton(),
-                clearDisplayButton());
+                Render.HTMLLayers.SpeachRecognizer.render(model));
         }
         function createMainSVG(layers) {
             return React.createElement("svg", { style: { width: "100vw", height: "100vh" }, key: BasiceShapeEditor.generateKey() }, layers);
-        }
-        const WindowDivButtonStyle = {
-            position: "fixed",
-            top: '13pt',
-            left: '120pt',
-            backgroundColor: '#eee',
-            fontSize: '12px',
-            fontFamily: 'HaskligBold',
-            borderWidth: '2px',
-            borderStyle: 'solid',
-            borderColor: 'black',
-            paddingBottom: '5px',
-            paddingTop: '3px',
-            paddingLeft: '7px',
-            paddingRight: '8px',
-            MozUserSelect: 'none',
-            WebkitUserSelect: 'none',
-            msUserSelect: 'none',
-        };
-        function addNewShapeButton() {
-            function onAddNewShape() {
-                BasiceShapeEditor.Storage.setState(state => {
-                    const newMaxZIndex = state.maxZIndex + 1;
-                    const newShape = BasiceShapeEditor.Storage.createShape(newMaxZIndex);
-                    state.shapes.push(newShape);
-                    return Object.assign({}, state, { selectedId: newShape.id, mouseMode: BasiceShapeEditor.Storage.MouseMode.Move, maxZIndex: newMaxZIndex, showLineGuides: false });
-                });
-            }
-            return React.createElement("div", { onClick: event => onAddNewShape(), style: Object.assign({}, WindowDivButtonStyle, { left: '120pt' }) }, "ADD NEW SHAPE");
-        }
-        function clearDisplayButton() {
-            function onDeleteAllShapes() {
-                BasiceShapeEditor.Storage.setState(state => (Object.assign({}, state, { shapes: [], selectedId: null, mouseMode: BasiceShapeEditor.Storage.MouseMode.Move })));
-            }
-            return React.createElement("div", { onClick: event => onDeleteAllShapes(), style: Object.assign({}, WindowDivButtonStyle, { left: '210pt' }) }, "DEL SHAPES");
         }
         function renderLayer(layer, elements) {
             return React.createElement("g", { key: BasiceShapeEditor.generateKey() }, elements);

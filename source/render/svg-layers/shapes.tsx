@@ -7,7 +7,7 @@
 /// <reference path="../editor/shape.tsx" />
 /// <reference path="../../globals/key.ts" />
 
-namespace BasiceShapeEditor.Render.Layers.Shapes {
+namespace BasiceShapeEditor.Render.SVGLayers.Shapes {
 
     //
     // ─── RENDER SHAPES LAYER ────────────────────────────────────────────────────────
