@@ -4,7 +4,7 @@
 
 @keyframes recodingAnimation {
     0% {
-        opacity: 0.2;
+        opacity: 0.3;
     }
 
     30% {
@@ -12,6 +12,6 @@
     }
     
     100% {
-        opacity: 0.2;
+        opacity: 0.3;
     }
 }
