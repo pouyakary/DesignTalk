@@ -10,11 +10,12 @@ namespace BasiceShapeEditor.Storage {
     //
 
         export interface IModel {
-            shapes:             IShape[ ]
-            selectedId:         string | null
-            showLineGuides:     boolean
-            mouseMode:          MouseMode
-            maxZIndex:          number
+            maxZIndex:              number
+            mouseMode:              MouseMode
+            selectedId:             string | null
+            shapes:                 IShape[ ]
+            showLineGuides:         boolean
+            speachRecognition:      ISpeachRecognition
         }
 
     //
@@ -41,6 +42,17 @@ namespace BasiceShapeEditor.Storage {
             height:     number
             x:          number
             y:          number
+        }
+
+    //
+    // ─── SPEACH RECOGNITION SYSTEM ──────────────────────────────────────────────────
+    //
+
+        export interface ISpeachRecognition {
+            isRecording:    boolean
+            currentText:    string
+            mouseX:         number
+            mouseY:         number
         }
 
     // ────────────────────────────────────────────────────────────────────────────────

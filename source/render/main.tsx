@@ -3,13 +3,14 @@
 // Copyright 2017-present by Pouya Kary. All Rights Reserved.
 //
 
-/// <reference path="../storage/model.ts" />
-/// <reference path="../globals/key.ts" />
 /// <reference path="layers/background.tsx" />
 /// <reference path="layers/shapes.tsx" />
 /// <reference path="layers/selection.ts" />
-/// <reference path="../storage/base-model.ts" />
+/// <reference path="layers/speach.tsx" />
 
+/// <reference path="../storage/model.ts" />
+/// <reference path="../globals/key.ts" />
+/// <reference path="../storage/base-model.ts" />
 
 
 namespace BasiceShapeEditor.Render {
@@ -37,6 +38,7 @@ namespace BasiceShapeEditor.Render {
                 Render.Layers.Background.render( ),
                 Render.Layers.Shapes.render( model ),
                 Render.Layers.Selection.render( model ),
+                Render.Layers.SpeachRecognizer.render( model ),
             ]
 
             const layers =

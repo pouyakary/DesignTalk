@@ -41,7 +41,13 @@ var BasiceShapeEditor;
                 showLineGuides: false,
                 selectedId: null,
                 mouseMode: Storage.MouseMode.Move,
-                maxZIndex: 10
+                maxZIndex: 10,
+                speachRecognition: {
+                    isRecording: false,
+                    currentText: "0",
+                    mouseX: 0,
+                    mouseY: 0,
+                }
             };
         }
         Storage.createInitialModelState = createInitialModelState;
@@ -182,7 +188,8 @@ var BasiceShapeEditor;
         MouseDriver.Clicked = false;
         let shouldMove = false;
         function init() {
-            mouseClcikeEvents();
+            mouseClickEvents();
+            onRightClick();
             mouseMoveEvents();
         }
         MouseDriver.init = init;
@@ -250,9 +257,17 @@ var BasiceShapeEditor;
             MouseDriver.X = event.clientX;
             MouseDriver.Y = event.clientY;
         }
-        function mouseClcikeEvents() {
+        function mouseClickEvents() {
             document.body.onmousedown = () => MouseDriver.Clicked = true;
             document.body.onmouseup = () => MouseDriver.Clicked = false;
+        }
+        function onRightClick() {
+            document.oncontextmenu = event => {
+                event.preventDefault();
+                BasiceShapeEditor.Storage.setState(state => {
+                    return Object.assign({}, state, { selectedId: null, showLineGuides: false, mouseMode: BasiceShapeEditor.Storage.MouseMode.Resize, speachRecognition: Object.assign({}, state.speachRecognition, { isRecording: !state.speachRecognition.isRecording, mouseX: MouseDriver.X, mouseY: MouseDriver.Y }) });
+                });
+            };
         }
     })(MouseDriver = BasiceShapeEditor.MouseDriver || (BasiceShapeEditor.MouseDriver = {}));
 })(BasiceShapeEditor || (BasiceShapeEditor = {}));
@@ -473,6 +488,32 @@ var BasiceShapeEditor;
 (function (BasiceShapeEditor) {
     var Render;
     (function (Render) {
+        var Layers;
+        (function (Layers) {
+            var SpeachRecognizer;
+            (function (SpeachRecognizer) {
+                function render(model) {
+                    return ((model.speachRecognition.isRecording)
+                        ? shapeOnWorkingMode(model)
+                        : []);
+                }
+                SpeachRecognizer.render = render;
+                function shapeOnWorkingMode(model) {
+                    const { mouseX, mouseY } = model.speachRecognition;
+                    const buttonSize = 30;
+                    return [
+                        React.createElement("rect", { x: "0", r: "0", width: "100vw", height: "100vh", fill: "white", opacity: "0.9", key: BasiceShapeEditor.generateKey() }),
+                        React.createElement("circle", { cx: mouseX, cy: mouseY, r: 15, key: BasiceShapeEditor.generateKey(), fill: "red" })
+                    ];
+                }
+            })(SpeachRecognizer = Layers.SpeachRecognizer || (Layers.SpeachRecognizer = {}));
+        })(Layers = Render.Layers || (Render.Layers = {}));
+    })(Render = BasiceShapeEditor.Render || (BasiceShapeEditor.Render = {}));
+})(BasiceShapeEditor || (BasiceShapeEditor = {}));
+var BasiceShapeEditor;
+(function (BasiceShapeEditor) {
+    var Render;
+    (function (Render) {
         function renderApp(model) {
             const container = document.getElementById('container');
             const scene = createScence(model);
@@ -484,6 +525,7 @@ var BasiceShapeEditor;
                 Render.Layers.Background.render(),
                 Render.Layers.Shapes.render(model),
                 Render.Layers.Selection.render(model),
+                Render.Layers.SpeachRecognizer.render(model),
             ];
             const layers = layerElements.map((elements, index) => renderLayer(index, elements));
             return React.createElement("div", null,

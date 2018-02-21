@@ -19,11 +19,18 @@ namespace BasiceShapeEditor.Storage {
                 someShapes.push( createShape( counter ) )
 
             return {
-                shapes:         someShapes,
-                showLineGuides: false,
-                selectedId:     null,
-                mouseMode:      MouseMode.Move,
-                maxZIndex:      10
+                shapes:             someShapes,
+                showLineGuides:     false,
+                selectedId:         null,
+                mouseMode:          MouseMode.Move,
+                maxZIndex:          10,
+
+                speachRecognition: {
+                    isRecording:    false,
+                    currentText:    "0",
+                    mouseX:         0,
+                    mouseY:         0,
+                }
             }
         }
 

@@ -22,7 +22,8 @@ namespace BasiceShapeEditor.MouseDriver {
     //
 
         export function init ( ) {
-            mouseClcikeEvents ( )
+            mouseClickEvents ( )
+            onRightClick( )
             mouseMoveEvents( )
         }
 
@@ -148,12 +149,36 @@ namespace BasiceShapeEditor.MouseDriver {
         }
 
     //
-    // ─── UPDATE CLICKE STATUES ──────────────────────────────────────────────────────
+    // ─── UPDATE CLICK STATUES ───────────────────────────────────────────────────────
     //
 
-        function mouseClcikeEvents ( ) {
+        function mouseClickEvents ( ) {
             document.body.onmousedown = ( ) => Clicked = true
             document.body.onmouseup = ( ) => Clicked = false
+        }
+
+    //
+    // ─── ON RIGHT CLICK ─────────────────────────────────────────────────────────────
+    //
+
+        function onRightClick ( ) {
+            document.oncontextmenu = event => {
+                event.preventDefault( )
+                
+                Storage.setState( state => {
+                    return { ...state,
+                        selectedId:         null,
+                        showLineGuides:     false,
+                        mouseMode:          Storage.MouseMode.Resize,
+
+                        speachRecognition: { ...state.speachRecognition,
+                            isRecording:    !state.speachRecognition.isRecording,
+                            mouseX:         X,
+                            mouseY:         Y,
+                        }
+                    }
+                })
+            }
         }
 
     // ────────────────────────────────────────────────────────────────────────────────
