@@ -229,6 +229,9 @@ var BasiceShapeEditor;
         function updateText(buffer, newPart) {
             switch (newPart.trim()) {
                 case 'oops':
+                case 'sorry':
+                case 'back':
+                case 'ignore':
                     const words = buffer.split(' ');
                     return words.splice(words.length - 2).join(' ');
                 case 'clear':

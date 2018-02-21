@@ -115,6 +115,9 @@ namespace BasiceShapeEditor.SpeachCommandEngine {
         function updateText ( buffer: string, newPart: string ) {
             switch ( newPart.trim( ) ) {
                 case 'oops':
+                case 'sorry':
+                case 'back':
+                case 'ignore':
                     const words = buffer.split(' ')
                     return words.splice( words.length - 2 ).join(' ')
 
