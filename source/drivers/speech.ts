@@ -118,6 +118,11 @@ namespace BasiceShapeEditor.SpeachCommandEngine {
                     const words = buffer.split(' ')
                     return words.splice( words.length - 2 ).join(' ')
 
+                case 'clear':
+                case 'clean':
+                case 'reset':
+                    return ''
+
                 default:
                     return buffer + newPart
             }
