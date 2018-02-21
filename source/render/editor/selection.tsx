@@ -7,7 +7,7 @@
 /// <reference path="../../storage/storage.ts" />
 /// <reference path="../../drivers/mouse.ts" />
 
-namespace BasiceShapeEditor.Render.SelectionTool {
+namespace Shapes.Render.SelectionTool {
 
     //
     // ─── SETTINGS ───────────────────────────────────────────────────────────────────

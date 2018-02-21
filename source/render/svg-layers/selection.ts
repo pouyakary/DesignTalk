@@ -7,7 +7,7 @@
 /// <reference path="../editor/selection.tsx" />
 /// <reference path="../../globals/key.ts" />
 
-namespace BasiceShapeEditor.Render.SVGLayers.Selection {
+namespace Shapes.Render.SVGLayers.Selection {
 
     //
     // ─── RENDER SHAPES LAYER ────────────────────────────────────────────────────────

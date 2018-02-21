@@ -8,7 +8,7 @@
 /// <reference path="../../globals/key.ts" />
 
 
-namespace BasiceShapeEditor.Render.Editor {
+namespace Shapes.Render.Editor {
 
     //
     // ─── PROPS ──────────────────────────────────────────────────────────────────────

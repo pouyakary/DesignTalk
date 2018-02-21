@@ -9,7 +9,7 @@
 /// <reference path="base-model.ts" />
 /// <reference path="../render/main.tsx" />
 
-namespace BasiceShapeEditor.Storage {
+namespace Shapes.Storage {
 
     //
     // ─── MAIN STORAGE ───────────────────────────────────────────────────────────────

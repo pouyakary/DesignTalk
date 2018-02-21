@@ -1,6 +1,6 @@
 "use strict";
-var BasiceShapeEditor;
-(function (BasiceShapeEditor) {
+var Shapes;
+(function (Shapes) {
     var Storage;
     (function (Storage) {
         let MouseMode;
@@ -8,28 +8,28 @@ var BasiceShapeEditor;
             MouseMode[MouseMode["Move"] = 0] = "Move";
             MouseMode[MouseMode["Resize"] = 1] = "Resize";
         })(MouseMode = Storage.MouseMode || (Storage.MouseMode = {}));
-    })(Storage = BasiceShapeEditor.Storage || (BasiceShapeEditor.Storage = {}));
-})(BasiceShapeEditor || (BasiceShapeEditor = {}));
-var BasiceShapeEditor;
-(function (BasiceShapeEditor) {
+    })(Storage = Shapes.Storage || (Shapes.Storage = {}));
+})(Shapes || (Shapes = {}));
+var Shapes;
+(function (Shapes) {
     var Storage;
     (function (Storage) {
         let EActionType;
         (function (EActionType) {
             EActionType[EActionType["Select"] = 0] = "Select";
         })(EActionType = Storage.EActionType || (Storage.EActionType = {}));
-    })(Storage = BasiceShapeEditor.Storage || (BasiceShapeEditor.Storage = {}));
-})(BasiceShapeEditor || (BasiceShapeEditor = {}));
-var BasiceShapeEditor;
-(function (BasiceShapeEditor) {
+    })(Storage = Shapes.Storage || (Shapes.Storage = {}));
+})(Shapes || (Shapes = {}));
+var Shapes;
+(function (Shapes) {
     let __KeyValueStorage = 1;
     function generateKey() {
         return (__KeyValueStorage++).toString();
     }
-    BasiceShapeEditor.generateKey = generateKey;
-})(BasiceShapeEditor || (BasiceShapeEditor = {}));
-var BasiceShapeEditor;
-(function (BasiceShapeEditor) {
+    Shapes.generateKey = generateKey;
+})(Shapes || (Shapes = {}));
+var Shapes;
+(function (Shapes) {
     var Storage;
     (function (Storage) {
         function createInitialModelState() {
@@ -68,7 +68,7 @@ var BasiceShapeEditor;
             const { x, y } = getRandomCoordinates();
             return {
                 color: color,
-                id: BasiceShapeEditor.generateKey(),
+                id: Shapes.generateKey(),
                 type: type,
                 width: 100,
                 height: 100,
@@ -78,10 +78,10 @@ var BasiceShapeEditor;
             };
         }
         Storage.createShape = createShape;
-    })(Storage = BasiceShapeEditor.Storage || (BasiceShapeEditor.Storage = {}));
-})(BasiceShapeEditor || (BasiceShapeEditor = {}));
-var BasiceShapeEditor;
-(function (BasiceShapeEditor) {
+    })(Storage = Shapes.Storage || (Shapes.Storage = {}));
+})(Shapes || (Shapes = {}));
+var Shapes;
+(function (Shapes) {
     var Render;
     (function (Render) {
         var Editor;
@@ -89,7 +89,7 @@ var BasiceShapeEditor;
             class Shape extends React.Component {
                 constructor() {
                     super(...arguments);
-                    this.lastState = BasiceShapeEditor.Storage.getState();
+                    this.lastState = Shapes.Storage.getState();
                 }
                 render() {
                     return this.renderShape(this.props.shape);
@@ -117,29 +117,29 @@ var BasiceShapeEditor;
                     return 1;
                 }
                 onMouseEnter() {
-                    BasiceShapeEditor.Storage.setState(state => (Object.assign({}, state, { hoveredId: this.props.shape.id, showLineGuides: false })));
+                    Shapes.Storage.setState(state => (Object.assign({}, state, { hoveredId: this.props.shape.id, showLineGuides: false })));
                 }
                 onMouseLeave() {
-                    BasiceShapeEditor.Storage.setState(state => (Object.assign({}, state, { hoveredId: null })));
+                    Shapes.Storage.setState(state => (Object.assign({}, state, { hoveredId: null })));
                 }
                 onClick() {
-                    BasiceShapeEditor.Storage.setState(state => (Object.assign({}, state, { selectedId: this.props.shape.id, showLineGuides: false, mouseMode: BasiceShapeEditor.Storage.MouseMode.Move })));
+                    Shapes.Storage.setState(state => (Object.assign({}, state, { selectedId: this.props.shape.id, showLineGuides: false, mouseMode: Shapes.Storage.MouseMode.Move })));
                 }
                 createCircle(shape, color, opacity) {
                     const rX = shape.width / 2;
                     const rY = shape.height / 2;
-                    return React.createElement("ellipse", { cx: shape.x + rX, cy: shape.y + rY, fill: color, rx: rX, ry: rY, opacity: opacity, key: BasiceShapeEditor.generateKey(), onMouseEnter: event => this.onMouseEnter(), onMouseLeave: event => this.onMouseLeave(), onClick: event => this.onClick() });
+                    return React.createElement("ellipse", { cx: shape.x + rX, cy: shape.y + rY, fill: color, rx: rX, ry: rY, opacity: opacity, key: Shapes.generateKey(), onMouseEnter: event => this.onMouseEnter(), onMouseLeave: event => this.onMouseLeave(), onClick: event => this.onClick() });
                 }
                 createRect(shape, color, opacity) {
-                    return React.createElement("rect", { x: shape.x, y: shape.y, width: shape.width, height: shape.height, key: BasiceShapeEditor.generateKey(), opacity: opacity, fill: color, onMouseEnter: event => this.onMouseEnter(), onMouseLeave: event => this.onMouseLeave(), onClick: event => this.onClick() });
+                    return React.createElement("rect", { x: shape.x, y: shape.y, width: shape.width, height: shape.height, key: Shapes.generateKey(), opacity: opacity, fill: color, onMouseEnter: event => this.onMouseEnter(), onMouseLeave: event => this.onMouseLeave(), onClick: event => this.onClick() });
                 }
             }
             Editor.Shape = Shape;
         })(Editor = Render.Editor || (Render.Editor = {}));
-    })(Render = BasiceShapeEditor.Render || (BasiceShapeEditor.Render = {}));
-})(BasiceShapeEditor || (BasiceShapeEditor = {}));
-var BasiceShapeEditor;
-(function (BasiceShapeEditor) {
+    })(Render = Shapes.Render || (Shapes.Render = {}));
+})(Shapes || (Shapes = {}));
+var Shapes;
+(function (Shapes) {
     var Render;
     (function (Render) {
         var SVGLayers;
@@ -148,7 +148,7 @@ var BasiceShapeEditor;
             (function (Background) {
                 function render() {
                     return [
-                        React.createElement("g", { key: BasiceShapeEditor.generateKey() },
+                        React.createElement("g", { key: Shapes.generateKey() },
                             React.createElement("rect", { fill: "white", onClick: onClick, style: { width: "100vw", height: "100vh" } }),
                             React.createElement("text", { x: 30, y: 40, fill: "black", fontFamily: "Roboto", fontWeight: "500", fontSize: "30" }, "Shapes"),
                             React.createElement("text", { x: window.innerWidth - 345, y: 38, fill: "#ccc", fontFamily: "Roboto", fontSize: "12" }, "Copyright \u00A9 2017-present by Pouya Kary, All rights reserved."))
@@ -156,14 +156,14 @@ var BasiceShapeEditor;
                 }
                 Background.render = render;
                 function onClick() {
-                    BasiceShapeEditor.Storage.setState(state => (Object.assign({}, state, { selectedId: null })));
+                    Shapes.Storage.setState(state => (Object.assign({}, state, { selectedId: null })));
                 }
             })(Background = SVGLayers.Background || (SVGLayers.Background = {}));
         })(SVGLayers = Render.SVGLayers || (Render.SVGLayers = {}));
-    })(Render = BasiceShapeEditor.Render || (BasiceShapeEditor.Render = {}));
-})(BasiceShapeEditor || (BasiceShapeEditor = {}));
-var BasiceShapeEditor;
-(function (BasiceShapeEditor) {
+    })(Render = Shapes.Render || (Shapes.Render = {}));
+})(Shapes || (Shapes = {}));
+var Shapes;
+(function (Shapes_1) {
     var Render;
     (function (Render) {
         var SVGLayers;
@@ -172,20 +172,20 @@ var BasiceShapeEditor;
             (function (Shapes) {
                 function render(model) {
                     const sortedShapes = model.shapes.sort((a, b) => a.zIndex - b.zIndex);
-                    const elementedShapes = sortedShapes.map(shape => React.createElement(Render.Editor.Shape, { shape: shape, key: BasiceShapeEditor.generateKey() }));
+                    const elementedShapes = sortedShapes.map(shape => React.createElement(Render.Editor.Shape, { shape: shape, key: Shapes_1.generateKey() }));
                     return elementedShapes;
                 }
                 Shapes.render = render;
             })(Shapes = SVGLayers.Shapes || (SVGLayers.Shapes = {}));
         })(SVGLayers = Render.SVGLayers || (Render.SVGLayers = {}));
-    })(Render = BasiceShapeEditor.Render || (BasiceShapeEditor.Render = {}));
-})(BasiceShapeEditor || (BasiceShapeEditor = {}));
-var BasiceShapeEditor;
-(function (BasiceShapeEditor) {
+    })(Render = Shapes_1.Render || (Shapes_1.Render = {}));
+})(Shapes || (Shapes = {}));
+var Shapes;
+(function (Shapes) {
     var SpeachCommandEngine;
     (function (SpeachCommandEngine) {
         function trigger() {
-            const state = BasiceShapeEditor.Storage.getState();
+            const state = Shapes.Storage.getState();
             if (state.speachRecognition.isRecording)
                 end();
             else
@@ -195,12 +195,12 @@ var BasiceShapeEditor;
         function start() {
             const recognizer = createNewRecognizer();
             recognizer.start();
-            BasiceShapeEditor.Storage.setState(state => {
-                return Object.assign({}, state, { selectedId: null, showLineGuides: false, mouseMode: BasiceShapeEditor.Storage.MouseMode.Resize, speachRecognition: Object.assign({}, state.speachRecognition, { isRecording: true, recognizer: recognizer, currentText: "", mouseX: BasiceShapeEditor.MouseDriver.X, mouseY: BasiceShapeEditor.MouseDriver.Y }) });
+            Shapes.Storage.setState(state => {
+                return Object.assign({}, state, { selectedId: null, showLineGuides: false, mouseMode: Shapes.Storage.MouseMode.Resize, speachRecognition: Object.assign({}, state.speachRecognition, { isRecording: true, recognizer: recognizer, currentText: "", mouseX: Shapes.MouseDriver.X, mouseY: Shapes.MouseDriver.Y }) });
             });
         }
         function end() {
-            BasiceShapeEditor.Storage.setState(state => {
+            Shapes.Storage.setState(state => {
                 state.speachRecognition.recognizer.stop();
                 return Object.assign({}, state, { speachRecognition: Object.assign({}, state.speachRecognition, { isRecording: false, recognizer: null, currentText: "" }) });
             });
@@ -221,7 +221,7 @@ var BasiceShapeEditor;
             }
         }
         function updateScreenText(newPart) {
-            BasiceShapeEditor.Storage.setState(state => {
+            Shapes.Storage.setState(state => {
                 console.log(state.speachRecognition);
                 return Object.assign({}, state, { speachRecognition: Object.assign({}, state.speachRecognition, { currentText: updateText(state.speachRecognition.currentText, newPart) }) });
             });
@@ -243,10 +243,10 @@ var BasiceShapeEditor;
                     return buffer + newPart;
             }
         }
-    })(SpeachCommandEngine = BasiceShapeEditor.SpeachCommandEngine || (BasiceShapeEditor.SpeachCommandEngine = {}));
-})(BasiceShapeEditor || (BasiceShapeEditor = {}));
-var BasiceShapeEditor;
-(function (BasiceShapeEditor) {
+    })(SpeachCommandEngine = Shapes.SpeachCommandEngine || (Shapes.SpeachCommandEngine = {}));
+})(Shapes || (Shapes = {}));
+var Shapes;
+(function (Shapes) {
     var MouseDriver;
     (function (MouseDriver) {
         MouseDriver.X = 0;
@@ -266,10 +266,10 @@ var BasiceShapeEditor;
             };
         }
         function handleMouseMove(event) {
-            const state = BasiceShapeEditor.Storage.getState();
+            const state = Shapes.Storage.getState();
             if (MouseDriver.Clicked) {
                 if (state.selectedId !== null) {
-                    if (state.mouseMode == BasiceShapeEditor.Storage.MouseMode.Move) {
+                    if (state.mouseMode == Shapes.Storage.MouseMode.Move) {
                         updateSelectedShapePositionOnMouseMove(event, state);
                     }
                     else {
@@ -285,10 +285,10 @@ var BasiceShapeEditor;
             clearTimeout(moveReseter);
             moveReseter = setTimeout(() => {
                 if (!MouseDriver.Clicked)
-                    BasiceShapeEditor.Storage.setState(state => (Object.assign({}, state, { mouseMode: BasiceShapeEditor.Storage.MouseMode.Move })));
+                    Shapes.Storage.setState(state => (Object.assign({}, state, { mouseMode: Shapes.Storage.MouseMode.Move })));
             }, 30);
             const selectedShape = state.shapes.find(x => x.id == state.selectedId);
-            BasiceShapeEditor.Storage.setState(state => {
+            Shapes.Storage.setState(state => {
                 const margin = 10;
                 const newShapes = state.shapes.map(shape => {
                     if (shape.id === state.selectedId) {
@@ -308,7 +308,7 @@ var BasiceShapeEditor;
             const selectedShape = state.shapes.find(x => x.id == state.selectedId);
             const XDiff = selectedShape.x - MouseDriver.X;
             const YDiff = selectedShape.y - MouseDriver.Y;
-            BasiceShapeEditor.Storage.setState(state => {
+            Shapes.Storage.setState(state => {
                 const newShapes = state.shapes.map(shape => {
                     if (shape.id === state.selectedId) {
                         shape.x = event.clientX + XDiff;
@@ -330,13 +330,13 @@ var BasiceShapeEditor;
         function onRightClick() {
             document.oncontextmenu = event => {
                 event.preventDefault();
-                BasiceShapeEditor.SpeachCommandEngine.trigger();
+                Shapes.SpeachCommandEngine.trigger();
             };
         }
-    })(MouseDriver = BasiceShapeEditor.MouseDriver || (BasiceShapeEditor.MouseDriver = {}));
-})(BasiceShapeEditor || (BasiceShapeEditor = {}));
-var BasiceShapeEditor;
-(function (BasiceShapeEditor) {
+    })(MouseDriver = Shapes.MouseDriver || (Shapes.MouseDriver = {}));
+})(Shapes || (Shapes = {}));
+var Shapes;
+(function (Shapes) {
     var Render;
     (function (Render) {
         var SelectionTool;
@@ -378,25 +378,25 @@ var BasiceShapeEditor;
                 const y = shape.y - margin;
                 const width = shape.width + margin * 2;
                 const height = shape.height + margin * 2;
-                const onMouseLeave = () => BasiceShapeEditor.Storage.setState(state => (Object.assign({}, state, { showLineGuides: false })));
-                const rectangle = React.createElement("rect", { fill: "transparent", stroke: "black", strokeWidth: "2", key: BasiceShapeEditor.generateKey(), onMouseLeave: event => onMouseLeave(), x: x, y: y, width: width, height: height });
+                const onMouseLeave = () => Shapes.Storage.setState(state => (Object.assign({}, state, { showLineGuides: false })));
+                const rectangle = React.createElement("rect", { fill: "transparent", stroke: "black", strokeWidth: "2", key: Shapes.generateKey(), onMouseLeave: event => onMouseLeave(), x: x, y: y, width: width, height: height });
                 return rectangle;
             }
             function createToolTipShape(shape, state) {
                 const x = shape.x - margin;
                 const y = shape.y - margin;
                 const descriptionText = getDescriptionText(shape, state);
-                const descriptionBackground = React.createElement("rect", { fill: "yellow", key: BasiceShapeEditor.generateKey(), x: x, y: y - textBackgroundHeight - 10, width: computeHaskligBold12TextLength(descriptionText), height: textBackgroundHeight, stroke: "black", strokeWidth: 2 });
-                const description = React.createElement("text", { x: x + strokeWidth + 6, y: y - textBackgroundHeight + 6, key: BasiceShapeEditor.generateKey(), fill: "black", fontFamily: "HaskligBold", fontSize: "12" }, descriptionText);
+                const descriptionBackground = React.createElement("rect", { fill: "yellow", key: Shapes.generateKey(), x: x, y: y - textBackgroundHeight - 10, width: computeHaskligBold12TextLength(descriptionText), height: textBackgroundHeight, stroke: "black", strokeWidth: 2 });
+                const description = React.createElement("text", { x: x + strokeWidth + 6, y: y - textBackgroundHeight + 6, key: Shapes.generateKey(), fill: "black", fontFamily: "HaskligBold", fontSize: "12" }, descriptionText);
                 return [
                     descriptionBackground,
                     description,
                 ];
             }
             function getDescriptionText(shape, state) {
-                if (state.showLineGuides && state.mouseMode === BasiceShapeEditor.Storage.MouseMode.Resize)
+                if (state.showLineGuides && state.mouseMode === Shapes.Storage.MouseMode.Resize)
                     return 'SIZE ' + shape.width + ':' + shape.height;
-                if (state.showLineGuides && state.mouseMode === BasiceShapeEditor.Storage.MouseMode.Move)
+                if (state.showLineGuides && state.mouseMode === Shapes.Storage.MouseMode.Move)
                     return 'X ' + shape.x + ' • Y ' + shape.y;
                 return 'X ' + shape.x + ' • Y ' + shape.y + ' • SIZE ' + shape.width + ':' + shape.height;
             }
@@ -439,7 +439,7 @@ var BasiceShapeEditor;
                         ? 'red'
                         : (isThereANormalPoint() ? 'cyan' : '#ccc'));
                     const lineStrokeWidth = (lineColor !== '#ccc' ? 2 : 1);
-                    return React.createElement("line", { strokeWidth: lineStrokeWidth, stroke: lineColor, key: BasiceShapeEditor.generateKey(), x1: x1, y1: y1, x2: x2, y2: y2 });
+                    return React.createElement("line", { strokeWidth: lineStrokeWidth, stroke: lineColor, key: Shapes.generateKey(), x1: x1, y1: y1, x2: x2, y2: y2 });
                 };
                 const topGuideLine = createLine(0, shape.y, window.innerWidth, shape.y, LineDirection.Horoizantal);
                 const bottomGuideLine = createLine(0, shape.y + shape.height, window.innerWidth, shape.y + shape.height, LineDirection.Horoizantal);
@@ -455,55 +455,55 @@ var BasiceShapeEditor;
             function createResizeHandle(shape, state) {
                 const x = shape.x + shape.width + margin;
                 const y = shape.y + shape.height + margin;
-                const setMouseMoveMode = (mode) => BasiceShapeEditor.Storage.setState(state => (Object.assign({}, state, { mouseMode: mode })));
-                const setToResize = () => setMouseMoveMode(BasiceShapeEditor.Storage.MouseMode.Resize);
-                const setToMove = () => setMouseMoveMode(BasiceShapeEditor.Storage.MouseMode.Move);
-                const radius = state.mouseMode === BasiceShapeEditor.Storage.MouseMode.Resize ? 5 : 7;
-                return React.createElement("circle", { fill: "black", cx: x, cy: y, onMouseEnter: event => setToResize(), onMouseLeave: event => setToMove(), key: BasiceShapeEditor.generateKey(), r: radius });
+                const setMouseMoveMode = (mode) => Shapes.Storage.setState(state => (Object.assign({}, state, { mouseMode: mode })));
+                const setToResize = () => setMouseMoveMode(Shapes.Storage.MouseMode.Resize);
+                const setToMove = () => setMouseMoveMode(Shapes.Storage.MouseMode.Move);
+                const radius = state.mouseMode === Shapes.Storage.MouseMode.Resize ? 5 : 7;
+                return React.createElement("circle", { fill: "black", cx: x, cy: y, onMouseEnter: event => setToResize(), onMouseLeave: event => setToMove(), key: Shapes.generateKey(), r: radius });
             }
             function createDeleteButton(shape, state) {
                 if (state.showLineGuides)
-                    return React.createElement("g", { key: BasiceShapeEditor.generateKey() });
+                    return React.createElement("g", { key: Shapes.generateKey() });
                 const buttonText = 'DEL';
                 const textLength = computeHaskligBold12TextLength(buttonText);
                 const x = shape.x - margin - textLength - 10;
                 const y = shape.y - margin;
                 function onDeleteButtonClicked() {
                     const newShapes = state.shapes.filter(element => element.id !== state.selectedId);
-                    BasiceShapeEditor.Storage.setState(state => (Object.assign({}, state, { shapes: newShapes, selectedId: null, mouseMode: BasiceShapeEditor.Storage.MouseMode.Move, showLineGuides: false })));
+                    Shapes.Storage.setState(state => (Object.assign({}, state, { shapes: newShapes, selectedId: null, mouseMode: Shapes.Storage.MouseMode.Move, showLineGuides: false })));
                 }
                 const backgroundRect = React.createElement("rect", { fill: "#eee", x: x, y: y - textBackgroundHeight - 10, width: textLength, height: textBackgroundHeight, strokeWidth: 2, stroke: "black" });
                 const deleteText = React.createElement("text", { fill: "Black", x: x + 6, y: y - textBackgroundHeight + 6, fontFamily: "HaskligBold", fontSize: "12" }, buttonText);
                 const buttonableLayer = React.createElement("rect", { x: x, y: y - textBackgroundHeight - 10, width: textLength, height: textBackgroundHeight, onClick: event => onDeleteButtonClicked(), fill: "transparent" });
-                return React.createElement("g", { key: BasiceShapeEditor.generateKey() },
+                return React.createElement("g", { key: Shapes.generateKey() },
                     backgroundRect,
                     deleteText,
                     buttonableLayer);
             }
             function createColorButtons(shape, state) {
                 if (state.showLineGuides)
-                    return React.createElement("g", { key: BasiceShapeEditor.generateKey() });
+                    return React.createElement("g", { key: Shapes.generateKey() });
                 const colors = ['red', 'black', 'blue']
                     .filter(x => shape.color !== x);
                 const buttons = colors.map((color, index) => createSingleColorButton(color, index + 1, shape));
-                return React.createElement("g", { key: BasiceShapeEditor.generateKey() }, buttons);
+                return React.createElement("g", { key: Shapes.generateKey() }, buttons);
             }
             function createSingleColorButton(color, index, shape) {
                 const x = shape.x - margin - 5 - index * (textBackgroundHeight + 5);
                 function onSetColor() {
-                    BasiceShapeEditor.Storage.setState(state => {
+                    Shapes.Storage.setState(state => {
                         const newShapes = state.shapes.map(x => (Object.assign({}, x, { color: x.id === shape.id ? color : x.color })));
                         return Object.assign({}, state, { shapes: newShapes });
                     });
                 }
-                const button = React.createElement("rect", { x: x, y: shape.y - margin, width: textBackgroundHeight, height: textBackgroundHeight, fill: color, key: BasiceShapeEditor.generateKey(), onClick: event => onSetColor(), strokeWidth: "2", stroke: "black" });
+                const button = React.createElement("rect", { x: x, y: shape.y - margin, width: textBackgroundHeight, height: textBackgroundHeight, fill: color, key: Shapes.generateKey(), onClick: event => onSetColor(), strokeWidth: "2", stroke: "black" });
                 return button;
             }
             function changeShapeModelButtons(shape, state) {
                 if (state.showLineGuides)
-                    return [React.createElement("g", { key: BasiceShapeEditor.generateKey() })];
+                    return [React.createElement("g", { key: Shapes.generateKey() })];
                 function onChangeShapeType() {
-                    BasiceShapeEditor.Storage.setState(state => {
+                    Shapes.Storage.setState(state => {
                         const newShapes = state.shapes.map(x => {
                             if (shape.id === x.id)
                                 return Object.assign({}, x, { type: (x.id == shape.id && x.type === 'rect') ?
@@ -516,7 +516,7 @@ var BasiceShapeEditor;
                 }
                 const x = shape.x - 2 * margin - textBackgroundHeight;
                 const y = shape.y + 1 * (textBackgroundHeight);
-                const mainBackground = React.createElement("rect", { x: x, y: y, width: textBackgroundHeight, height: textBackgroundHeight, stroke: "black", key: BasiceShapeEditor.generateKey(), strokeWidth: "2", fill: "#eee" });
+                const mainBackground = React.createElement("rect", { x: x, y: y, width: textBackgroundHeight, height: textBackgroundHeight, stroke: "black", key: Shapes.generateKey(), strokeWidth: "2", fill: "#eee" });
                 const shapeSize = textBackgroundHeight - 10;
                 const halfShape = shapeSize / 2;
                 const shapeIcon = (shape.type === 'circle'
@@ -530,10 +530,10 @@ var BasiceShapeEditor;
                 ];
             }
         })(SelectionTool = Render.SelectionTool || (Render.SelectionTool = {}));
-    })(Render = BasiceShapeEditor.Render || (BasiceShapeEditor.Render = {}));
-})(BasiceShapeEditor || (BasiceShapeEditor = {}));
-var BasiceShapeEditor;
-(function (BasiceShapeEditor) {
+    })(Render = Shapes.Render || (Shapes.Render = {}));
+})(Shapes || (Shapes = {}));
+var Shapes;
+(function (Shapes) {
     var Render;
     (function (Render) {
         var SVGLayers;
@@ -546,10 +546,10 @@ var BasiceShapeEditor;
                 Selection.render = render;
             })(Selection = SVGLayers.Selection || (SVGLayers.Selection = {}));
         })(SVGLayers = Render.SVGLayers || (Render.SVGLayers = {}));
-    })(Render = BasiceShapeEditor.Render || (BasiceShapeEditor.Render = {}));
-})(BasiceShapeEditor || (BasiceShapeEditor = {}));
-var BasiceShapeEditor;
-(function (BasiceShapeEditor) {
+    })(Render = Shapes.Render || (Shapes.Render = {}));
+})(Shapes || (Shapes = {}));
+var Shapes;
+(function (Shapes) {
     var Render;
     (function (Render) {
         var HTMLLayers;
@@ -565,7 +565,7 @@ var BasiceShapeEditor;
                 }
                 SpeachRecognizer.render = render;
                 function shapeOnWorkingMode(model) {
-                    return React.createElement("div", { key: BasiceShapeEditor.generateKey(), style: {
+                    return React.createElement("div", { key: Shapes.generateKey(), style: {
                             backgroundColor: "rgba(255, 255, 255, 0.9)",
                             position: "fixed",
                             left: "0",
@@ -616,10 +616,10 @@ var BasiceShapeEditor;
                 }
             })(SpeachRecognizer = HTMLLayers.SpeachRecognizer || (HTMLLayers.SpeachRecognizer = {}));
         })(HTMLLayers = Render.HTMLLayers || (Render.HTMLLayers = {}));
-    })(Render = BasiceShapeEditor.Render || (BasiceShapeEditor.Render = {}));
-})(BasiceShapeEditor || (BasiceShapeEditor = {}));
-var BasiceShapeEditor;
-(function (BasiceShapeEditor) {
+    })(Render = Shapes.Render || (Shapes.Render = {}));
+})(Shapes || (Shapes = {}));
+var Shapes;
+(function (Shapes) {
     var Render;
     (function (Render) {
         function renderApp(model) {
@@ -640,20 +640,20 @@ var BasiceShapeEditor;
                 Render.HTMLLayers.SpeachRecognizer.render(model));
         }
         function createMainSVG(layers) {
-            return React.createElement("svg", { style: { width: "100vw", height: "100vh" }, key: BasiceShapeEditor.generateKey() }, layers);
+            return React.createElement("svg", { style: { width: "100vw", height: "100vh" }, key: Shapes.generateKey() }, layers);
         }
         function renderLayer(layer, elements) {
-            return React.createElement("g", { key: BasiceShapeEditor.generateKey() }, elements);
+            return React.createElement("g", { key: Shapes.generateKey() }, elements);
         }
-    })(Render = BasiceShapeEditor.Render || (BasiceShapeEditor.Render = {}));
-})(BasiceShapeEditor || (BasiceShapeEditor = {}));
-var BasiceShapeEditor;
-(function (BasiceShapeEditor) {
+    })(Render = Shapes.Render || (Shapes.Render = {}));
+})(Shapes || (Shapes = {}));
+var Shapes;
+(function (Shapes) {
     var Storage;
     (function (Storage) {
         const StorageContainer = new Array();
         const StorageSubcriptions = [
-            BasiceShapeEditor.Render.renderApp,
+            Shapes.Render.renderApp,
         ];
         function initStorage() {
             StorageContainer.push(Storage.createInitialModelState());
@@ -687,14 +687,14 @@ var BasiceShapeEditor;
             }
         }
         Storage.undoState = undoState;
-    })(Storage = BasiceShapeEditor.Storage || (BasiceShapeEditor.Storage = {}));
-})(BasiceShapeEditor || (BasiceShapeEditor = {}));
-var BasiceShapeEditor;
-(function (BasiceShapeEditor) {
+    })(Storage = Shapes.Storage || (Shapes.Storage = {}));
+})(Shapes || (Shapes = {}));
+var Shapes;
+(function (Shapes) {
     window.onload = () => main();
     function main() {
-        BasiceShapeEditor.Storage.initStorage();
-        BasiceShapeEditor.MouseDriver.init();
+        Shapes.Storage.initStorage();
+        Shapes.MouseDriver.init();
     }
-})(BasiceShapeEditor || (BasiceShapeEditor = {}));
+})(Shapes || (Shapes = {}));
 //# sourceMappingURL=core.js.map

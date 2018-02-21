@@ -6,7 +6,7 @@
 /// <reference path="model.ts" />
 /// <reference path="../globals/key.ts" />
 
-namespace BasiceShapeEditor.Storage {
+namespace Shapes.Storage {
 
     //
     // ─── INITIAL MODEL ──────────────────────────────────────────────────────────────

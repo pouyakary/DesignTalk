@@ -14,7 +14,7 @@
 /// <reference path="../storage/base-model.ts" />
 
 
-namespace BasiceShapeEditor.Render {
+namespace Shapes.Render {
 
     //
     // ─── MAIN RENDERER ──────────────────────────────────────────────────────────────

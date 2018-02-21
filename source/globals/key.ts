@@ -3,7 +3,7 @@
 // Copyright 2017-present by Pouya Kary. All Rights Reserved.
 //
 
-namespace BasiceShapeEditor {
+namespace Shapes {
 
     //
     // ─── CREATE UNIQUE KEY ──────────────────────────────────────────────────────────

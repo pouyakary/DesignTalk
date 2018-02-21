@@ -7,7 +7,7 @@
 /// <reference path="speech.ts" />
 
 
-namespace BasiceShapeEditor.MouseDriver {
+namespace Shapes.MouseDriver {
 
     //
     // ─── STORAGE ────────────────────────────────────────────────────────────────────

@@ -7,7 +7,7 @@
 /// <reference path="../typings/webkitspeechrecognition" />
 /// <reference path="mouse.ts" />
 
-namespace BasiceShapeEditor.SpeachCommandEngine {
+namespace Shapes.SpeachCommandEngine {
 
     //
     // ─── START RECOGNITION ──────────────────────────────────────────────────────────

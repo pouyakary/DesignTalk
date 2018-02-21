@@ -6,7 +6,7 @@
 /// <reference path="../../storage/model.ts" />
 /// <reference path="../../globals/key.ts" />
 
-namespace BasiceShapeEditor.Render.HTMLLayers.SpeachRecognizer {
+namespace Shapes.Render.HTMLLayers.SpeachRecognizer {
 
     //
     // ─── GLOBAL SETTINGS ────────────────────────────────────────────────────────────
