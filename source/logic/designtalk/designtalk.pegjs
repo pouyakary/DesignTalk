@@ -15,23 +15,25 @@
 // ─── SELECT PHRASE ──────────────────────────────────────────────────────────────
 //
 
-    Selector = _ range:SelectRange _ color: SelectColor _ kind: SelectType _ "one"? "s"? _ {
-        return { range: range, color, kind }
-    }
+    Selector
+        = _ range: SelectorRange _ color: SelectorColor _ kind: SelectorType  _
+          "one"? "s"? _ {
+            return { range: range, color, kind }
+        }
 
-    SelectType
+    SelectorType
         = kind: ( "circle" / "rect" / "rectangle" / "ellipse" ){
             return kind
         }
         / ""
     
-    SelectColor
+    SelectorColor
         = color: ( "red" / "black" / "blue" ) {
             return color
         }
         / ""
 
-    SelectRange
+    SelectorRange
         = "all" / "every" / "each" {
             return "all"
         }
@@ -45,7 +47,7 @@
 //
 
     Integer "integer"
-        = _ [0-9]+ {
+        = [0-9]+ {
             return parseInt( text( ), 10 )
         }
 
