@@ -76,16 +76,22 @@ namespace BasiceShapeEditor.Render.HTMLLayers.SpeachRecognizer {
         function createTextView ( model: Storage.IModel ) {
             const { mouseX, mouseY } = model.speachRecognition
 
+            if ( model.speachRecognition.currentText === "" )
+                return <div />
+
             return  <div style = {{
                         maxWidth:           "100px",
                         position:           "fixed",
                         left:               mouseX - backgroundSize + 75,
                         top:                mouseY - ( backgroundSize / 2 ),
                         fontFamily:         "HaskligBold",
-                        fontSize:           "16",
-                        color:              "#ccc",
+                        fontSize:           "12",
+                        color:              "black",
                         textTransform:      "uppercase",
-                        backgroundColor:    "black",
+                        backgroundColor:    "yellow",
+                        borderWidth:        "2px",
+                        borderStyle:        "solid",
+                        borderColor:        "black",
                         padding:            "5px 10px 7px 10px",
                     }}>
                         { model.speachRecognition.currentText }

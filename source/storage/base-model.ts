@@ -27,7 +27,8 @@ namespace BasiceShapeEditor.Storage {
 
                 speachRecognition: {
                     isRecording:    false,
-                    currentText:    "select all the black shapes and move them to 10 20",
+                    recognizer:     null,
+                    currentText:    "",
                     mouseX:         0,
                     mouseY:         0,
                 }

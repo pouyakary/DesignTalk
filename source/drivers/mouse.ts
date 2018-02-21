@@ -4,6 +4,8 @@
 //
 
 /// <reference path="../storage/storage" />
+/// <reference path="speech.ts" />
+
 
 namespace BasiceShapeEditor.MouseDriver {
 
@@ -164,20 +166,7 @@ namespace BasiceShapeEditor.MouseDriver {
         function onRightClick ( ) {
             document.oncontextmenu = event => {
                 event.preventDefault( )
-                
-                Storage.setState( state => {
-                    return { ...state,
-                        selectedId:         null,
-                        showLineGuides:     false,
-                        mouseMode:          Storage.MouseMode.Resize,
-
-                        speachRecognition: { ...state.speachRecognition,
-                            isRecording:    !state.speachRecognition.isRecording,
-                            mouseX:         X,
-                            mouseY:         Y,
-                        }
-                    }
-                })
+                SpeachCommandEngine.trigger( )
             }
         }
 

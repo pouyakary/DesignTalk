@@ -44,7 +44,8 @@ var BasiceShapeEditor;
                 maxZIndex: 10,
                 speachRecognition: {
                     isRecording: false,
-                    currentText: "select all the black shapes and move them to 10 20",
+                    recognizer: null,
+                    currentText: "",
                     mouseX: 0,
                     mouseY: 0,
                 }
@@ -181,6 +182,53 @@ var BasiceShapeEditor;
 })(BasiceShapeEditor || (BasiceShapeEditor = {}));
 var BasiceShapeEditor;
 (function (BasiceShapeEditor) {
+    var SpeachCommandEngine;
+    (function (SpeachCommandEngine) {
+        function trigger() {
+            const state = BasiceShapeEditor.Storage.getState();
+            if (state.speachRecognition.isRecording)
+                end();
+            else
+                start();
+        }
+        SpeachCommandEngine.trigger = trigger;
+        function start() {
+            const recognizer = createNewRecognizer();
+            recognizer.start();
+            BasiceShapeEditor.Storage.setState(state => {
+                return Object.assign({}, state, { selectedId: null, showLineGuides: false, mouseMode: BasiceShapeEditor.Storage.MouseMode.Resize, speachRecognition: Object.assign({}, state.speachRecognition, { isRecording: true, recognizer: recognizer, currentText: "", mouseX: BasiceShapeEditor.MouseDriver.X, mouseY: BasiceShapeEditor.MouseDriver.Y }) });
+            });
+        }
+        function end() {
+            BasiceShapeEditor.Storage.setState(state => {
+                state.speachRecognition.recognizer.stop();
+                return Object.assign({}, state, { speachRecognition: Object.assign({}, state.speachRecognition, { isRecording: false, recognizer: null, currentText: "" }) });
+            });
+        }
+        function createNewRecognizer() {
+            const recognizer = new webkitSpeechRecognition();
+            recognizer.continuous = true;
+            recognizer.onresult = event => onResult(event);
+            return recognizer;
+        }
+        function onResult(event) {
+            for (let i = event.resultIndex; i < event.results.length; i++) {
+                const transcript = event.results[i][0].transcript;
+                updateScreenText(transcript);
+            }
+        }
+        function finalizeCommand(newPart) {
+        }
+        function updateScreenText(newPart) {
+            BasiceShapeEditor.Storage.setState(state => {
+                console.log(state.speachRecognition);
+                return Object.assign({}, state, { speachRecognition: Object.assign({}, state.speachRecognition, { currentText: state.speachRecognition.currentText + newPart }) });
+            });
+        }
+    })(SpeachCommandEngine = BasiceShapeEditor.SpeachCommandEngine || (BasiceShapeEditor.SpeachCommandEngine = {}));
+})(BasiceShapeEditor || (BasiceShapeEditor = {}));
+var BasiceShapeEditor;
+(function (BasiceShapeEditor) {
     var MouseDriver;
     (function (MouseDriver) {
         MouseDriver.X = 0;
@@ -264,9 +312,7 @@ var BasiceShapeEditor;
         function onRightClick() {
             document.oncontextmenu = event => {
                 event.preventDefault();
-                BasiceShapeEditor.Storage.setState(state => {
-                    return Object.assign({}, state, { selectedId: null, showLineGuides: false, mouseMode: BasiceShapeEditor.Storage.MouseMode.Resize, speachRecognition: Object.assign({}, state.speachRecognition, { isRecording: !state.speachRecognition.isRecording, mouseX: MouseDriver.X, mouseY: MouseDriver.Y }) });
-                });
+                BasiceShapeEditor.SpeachCommandEngine.trigger();
             };
         }
     })(MouseDriver = BasiceShapeEditor.MouseDriver || (BasiceShapeEditor.MouseDriver = {}));
@@ -532,16 +578,21 @@ var BasiceShapeEditor;
                 }
                 function createTextView(model) {
                     const { mouseX, mouseY } = model.speachRecognition;
+                    if (model.speachRecognition.currentText === "")
+                        return React.createElement("div", null);
                     return React.createElement("div", { style: {
                             maxWidth: "100px",
                             position: "fixed",
                             left: mouseX - backgroundSize + 75,
                             top: mouseY - (backgroundSize / 2),
                             fontFamily: "HaskligBold",
-                            fontSize: "16",
-                            color: "#ccc",
+                            fontSize: "12",
+                            color: "black",
                             textTransform: "uppercase",
-                            backgroundColor: "black",
+                            backgroundColor: "yellow",
+                            borderWidth: "2px",
+                            borderStyle: "solid",
+                            borderColor: "black",
                             padding: "5px 10px 7px 10px",
                         } }, model.speachRecognition.currentText);
                 }

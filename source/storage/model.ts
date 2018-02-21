@@ -51,6 +51,7 @@ namespace BasiceShapeEditor.Storage {
         export interface ISpeachRecognition {
             isRecording:    boolean
             currentText:    string
+            recognizer:     webkitSpeechRecognition | null
             mouseX:         number
             mouseY:         number
         }
