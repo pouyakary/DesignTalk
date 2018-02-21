@@ -214,16 +214,26 @@ var BasiceShapeEditor;
         function onResult(event) {
             for (let i = event.resultIndex; i < event.results.length; i++) {
                 const transcript = event.results[i][0].transcript;
-                updateScreenText(transcript);
+                if (transcript.trim().toLocaleLowerCase() === "done")
+                    end();
+                else
+                    updateScreenText(transcript);
             }
-        }
-        function finalizeCommand(newPart) {
         }
         function updateScreenText(newPart) {
             BasiceShapeEditor.Storage.setState(state => {
                 console.log(state.speachRecognition);
-                return Object.assign({}, state, { speachRecognition: Object.assign({}, state.speachRecognition, { currentText: state.speachRecognition.currentText + newPart }) });
+                return Object.assign({}, state, { speachRecognition: Object.assign({}, state.speachRecognition, { currentText: updateText(state.speachRecognition.currentText, newPart) }) });
             });
+        }
+        function updateText(buffer, newPart) {
+            switch (newPart.trim()) {
+                case 'oops':
+                    const words = buffer.split(' ');
+                    return words.splice(words.length - 2).join(' ');
+                default:
+                    return buffer + newPart;
+            }
         }
     })(SpeachCommandEngine = BasiceShapeEditor.SpeachCommandEngine || (BasiceShapeEditor.SpeachCommandEngine = {}));
 })(BasiceShapeEditor || (BasiceShapeEditor = {}));

@@ -86,16 +86,11 @@ namespace BasiceShapeEditor.SpeachCommandEngine {
             for ( let i = event.resultIndex; i < event.results.length; i++ ) {
                 const transcript = event.results[ i ][ 0 ].transcript
 
-                updateScreenText( transcript )
+                if ( transcript.trim( ).toLocaleLowerCase( ) === "done" )
+                    end( )
+                else
+                    updateScreenText( transcript )
             }
-        }
-
-    //
-    // ─── FINALIZE COMMAND ───────────────────────────────────────────────────────────
-    //
-
-        function finalizeCommand ( newPart: string ) {
-
         }
 
     //
@@ -107,10 +102,25 @@ namespace BasiceShapeEditor.SpeachCommandEngine {
                 console.log( state.speachRecognition )
                 return { ...state,
                     speachRecognition: { ...state.speachRecognition,
-                        currentText: state.speachRecognition.currentText + newPart
+                        currentText: updateText( state.speachRecognition.currentText, newPart )
                     }
                 }
             })
+        }
+
+    //
+    // ─── UPDATE TEXT ────────────────────────────────────────────────────────────────
+    //
+
+        function updateText ( buffer: string, newPart: string ) {
+            switch ( newPart.trim( ) ) {
+                case 'oops':
+                    const words = buffer.split(' ')
+                    return words.splice( words.length - 2 ).join(' ')
+
+                default:
+                    return buffer + newPart
+            }
         }
 
     // ────────────────────────────────────────────────────────────────────────────────
