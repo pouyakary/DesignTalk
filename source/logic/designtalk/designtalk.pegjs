@@ -4,26 +4,83 @@
 //
 
     DesignTalk
-        = _ selection: SelectCommand _ {
-            return { selection }
+        = _ commands: CommandSequence _ {
+            return commands
         }
 
 //
-// ─── SELECT COMMAND ─────────────────────────────────────────────────────────────
+// ─── COMMANDS ───────────────────────────────────────────────────────────────────
 //
 
-    SelectCommand "select command"
-        = "select" ( _ "from" )? _ options: SelectorGrammars _ {
+    CommandSequence
+        = left: Command _ ( "and" / "then" ) _ rest: CommandSequence {
+            return [ left, ...rest ]
+        }
+        / command: Command {
+            return [ command ]
+        }
+        / "" { 
+            return [ ]
+        }
+
+    Command
+        = MakeCommands
+        / DeleteCommand
+
+//
+// ─── DELETE COMMAND ─────────────────────────────────────────────────────────────
+//
+
+    DeleteCommand
+        = ( "delete" / "remove" ) _ query: Query {
             return {
-                command:    "select",
-                mode:       "new",
+                command:    "remove",
+                query,
+            }
+        }
+
+//
+// ─── MAKE COMMAND ───────────────────────────────────────────────────────────────
+//
+
+    MakeCommands
+        = "make" _ query: Query _ options: ResizeCommandOptions {
+            return {
+                command:    "resize",
+                direction:  "both",
+                query,
+                ...options,
+            }
+        }
+        / "make" _ direction: ( "width" / "height" ) _ "of" _ query: Query
+          _ options: ResizeCommandOptions {
+              return {
+                  command:      "resize",
+                  direction:    "width",
+                  query,
+                  ...options,
+              }
+          }
+
+    ResizeCommandOptions
+        = size: Size1D _ operator: ( "bigger" / "smaller" ) {
+            return { size, operator }
+        }
+
+//
+// ─── FULL QUERY ─────────────────────────────────────────────────────────────────
+//
+
+    Query "full query"
+        = options: SelectorGrammars {
+            return {
+                mode:   "new",
                 ...options
             }
         }
         / "" {
             return {
-                command:    "select",
-                mode:       "previous",
+                mode:   "previous",
             }
         }
 
@@ -34,7 +91,11 @@
     SelectorGrammars "selection grammar"
         = range: SelectorRange _ shape: SelectorAttributes _ ( "ones" / "s" )? _
           ( "where" / "at" )? _ conditions: SelectorOptionalQueries {
-            return { range, ...shape, conditions }
+            return {
+                range,
+                conditions,
+                ...shape,
+            }
         }
         
     SelectorAttributes "shape attribute"
@@ -154,7 +215,9 @@
         / "last" _ count: Integer {
             return { kind: "last", count }
         }
-        / ""
+        / "" {
+            return "all"
+        }
 
 //
 // ─── NUMERICS ───────────────────────────────────────────────────────────────────
@@ -188,7 +251,7 @@
 //
 
     Unit "unit"
-        = unit:( "pixel" / "point" ) "s"? {
+        = unit:( "pixel" / "point" / "time" ) "s"? {
             return unit
         }
         / "" {
