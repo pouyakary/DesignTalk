@@ -1,13 +1,29 @@
 
 //
+// ─── DESIGNTALK ─────────────────────────────────────────────────────────────────
+//
+
+    DesignTalk
+        = _ selection: SelectCommand _ {
+            return { selection }
+        }
+
+//
 // ─── SELECT COMMAND ─────────────────────────────────────────────────────────────
 //
 
     SelectCommand "select command"
-        = "select" _ options: SelectorGrammars _ {
+        = "select" ( _ "from" )? _ options: SelectorGrammars _ {
             return {
-                command: "select",
-                options
+                command:    "select",
+                mode:       "new",
+                ...options
+            }
+        }
+        / "" {
+            return {
+                command:    "select",
+                mode:       "previous",
             }
         }
 
@@ -18,7 +34,7 @@
     SelectorGrammars "selection grammar"
         = range: SelectorRange _ shape: SelectorAttributes _ ( "ones" / "s" )? _
           ( "where" / "at" )? _ conditions: SelectorOptionalQueries {
-            return { range, shape, conditions }
+            return { range, ...shape, conditions }
         }
         
     SelectorAttributes "shape attribute"
