@@ -550,6 +550,30 @@ var Shapes;
 })(Shapes || (Shapes = {}));
 var Shapes;
 (function (Shapes) {
+    var DesignTalk;
+    (function (DesignTalk) {
+        const normalizationRegExp = /(?:'|\bthe\b)/g;
+        function isParsable(code) {
+            try {
+                DesignTalkParser.parse(code);
+                return true;
+            }
+            catch (_a) {
+                return false;
+            }
+        }
+        DesignTalk.isParsable = isParsable;
+        function parse(code) {
+            const normalizedCode = normalize(code);
+            return DesignTalkParser.parse(normalizedCode);
+        }
+        function normalize(code) {
+            return code.replace(normalizationRegExp, '');
+        }
+    })(DesignTalk = Shapes.DesignTalk || (Shapes.DesignTalk = {}));
+})(Shapes || (Shapes = {}));
+var Shapes;
+(function (Shapes) {
     var Render;
     (function (Render) {
         var HTMLLayers;
@@ -621,8 +645,8 @@ var Shapes;
                                 borderTopStyle: "dashed",
                                 padding: "5px 10px 7px 10px"
                             } }, Shapes.DesignTalk.isParsable(currentText)
-                            ? "Understandable"
-                            : "Unmeaning"));
+                            ? "Looks Good"
+                            : "Can't Understand"));
                 }
             })(SpeachRecognizer = HTMLLayers.SpeachRecognizer || (HTMLLayers.SpeachRecognizer = {}));
         })(HTMLLayers = Render.HTMLLayers || (Render.HTMLLayers = {}));
@@ -655,6 +679,18 @@ var Shapes;
         function renderLayer(layer, elements) {
             return React.createElement("g", { key: Shapes.generateKey() }, elements);
         }
+        function renderOnResize() {
+            Shapes.Storage.setState(state => {
+                const { innerHeight, innerWidth } = window;
+                const newShapes = state.shapes.map(shape => (Object.assign({}, shape, { x: ((shape.x + shape.width < innerWidth)
+                        ? shape.x
+                        : innerWidth - shape.width - 10), y: ((shape.y + shape.height < innerHeight)
+                        ? shape.y
+                        : innerHeight - shape.height - 10) })));
+                return Object.assign({}, state, { shapes: newShapes });
+            });
+        }
+        Render.renderOnResize = renderOnResize;
     })(Render = Shapes.Render || (Shapes.Render = {}));
 })(Shapes || (Shapes = {}));
 var Shapes;
@@ -705,25 +741,7 @@ var Shapes;
     function main() {
         Shapes.Storage.initStorage();
         Shapes.MouseDriver.init();
+        window.onresize = () => Shapes.Render.renderOnResize();
     }
-    window.onresize = () => {
-        Shapes.Storage.setState(state => state);
-    };
-})(Shapes || (Shapes = {}));
-var Shapes;
-(function (Shapes) {
-    var DesignTalk;
-    (function (DesignTalk) {
-        function isParsable(code) {
-            try {
-                DesignTalkParser.parse(code);
-                return true;
-            }
-            catch (_a) {
-                return false;
-            }
-        }
-        DesignTalk.isParsable = isParsable;
-    })(DesignTalk = Shapes.DesignTalk || (Shapes.DesignTalk = {}));
 })(Shapes || (Shapes = {}));
 //# sourceMappingURL=core.js.map

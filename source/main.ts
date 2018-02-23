@@ -13,15 +13,14 @@ namespace Shapes {
     //
 
         window.onload = ( ) => main( )
-
+        
         function main ( ) {
             Storage.initStorage( )
             MouseDriver.init( )
+            
+            window.onresize = ( ) => Render.renderOnResize( )
         }
 
-        window.onresize = ( ) => {
-            Storage.setState( state => state )
-        }
 
     // ────────────────────────────────────────────────────────────────────────────────
 

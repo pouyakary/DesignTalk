@@ -72,6 +72,33 @@ namespace Shapes.Render {
                     </g>
         }
 
+    //
+    // ─── ON RESIZE ──────────────────────────────────────────────────────────────────
+    //
+
+        export function renderOnResize ( ) {
+            Storage.setState( state => {
+                const { innerHeight, innerWidth } = window
+
+                const newShapes =
+                    state.shapes.map( shape => ({ ...shape,
+                        x: (( shape.x + shape.width < innerWidth )
+                            ? shape.x
+                            : innerWidth - shape.width - 10
+                            ),
+
+                        y: (( shape.y + shape.height < innerHeight )
+                            ? shape.y
+                            : innerHeight - shape.height - 10
+                            )
+                    }))
+
+                return { ...state,
+                    shapes: newShapes
+                }
+            })
+        }
+
     // ────────────────────────────────────────────────────────────────────────────────
 
 }
