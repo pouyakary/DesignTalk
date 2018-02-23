@@ -598,10 +598,8 @@ var Shapes;
                     const { mouseX, mouseY, currentText } = model.speachRecognition;
                     if (currentText === "")
                         return React.createElement("div", null);
-                    const displayableText = currentText +
-                        (Shapes.DesignTalk.isParsable(currentText) ? " [yes]" : " [no]");
                     return React.createElement("div", { style: {
-                            maxWidth: "100px",
+                            maxWidth: "160px",
                             position: "fixed",
                             left: mouseX - backgroundSize + 75,
                             top: mouseY - (backgroundSize / 2),
@@ -613,8 +611,18 @@ var Shapes;
                             borderWidth: "2px",
                             borderStyle: "solid",
                             borderColor: "black",
-                            padding: "5px 10px 7px 10px",
-                        } }, displayableText);
+                        } },
+                        React.createElement("div", { style: {
+                                padding: "5px 10px 7px 10px",
+                            } }, currentText),
+                        React.createElement("div", { style: {
+                                borderTopColor: "black",
+                                borderTopWidth: 2,
+                                borderTopStyle: "dashed",
+                                padding: "5px 10px 7px 10px"
+                            } }, Shapes.DesignTalk.isParsable(currentText)
+                            ? "Understandable"
+                            : "Unmeaning"));
                 }
             })(SpeachRecognizer = HTMLLayers.SpeachRecognizer || (HTMLLayers.SpeachRecognizer = {}));
         })(HTMLLayers = Render.HTMLLayers || (Render.HTMLLayers = {}));
@@ -698,6 +706,9 @@ var Shapes;
         Shapes.Storage.initStorage();
         Shapes.MouseDriver.init();
     }
+    window.onresize = () => {
+        Shapes.Storage.setState(state => state);
+    };
 })(Shapes || (Shapes = {}));
 var Shapes;
 (function (Shapes) {

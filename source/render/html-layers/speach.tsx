@@ -79,12 +79,8 @@ namespace Shapes.Render.HTMLLayers.SpeachRecognizer {
             if ( currentText === "" )
                 return <div />
 
-            const displayableText =
-                currentText +
-                    ( DesignTalk.isParsable( currentText )? " [yes]" : " [no]" )
-
             return  <div style = {{
-                        maxWidth:           "100px",
+                        maxWidth:           "160px",
                         position:           "fixed",
                         left:               mouseX - backgroundSize + 75,
                         top:                mouseY - ( backgroundSize / 2 ),
@@ -96,9 +92,27 @@ namespace Shapes.Render.HTMLLayers.SpeachRecognizer {
                         borderWidth:        "2px",
                         borderStyle:        "solid",
                         borderColor:        "black",
-                        padding:            "5px 10px 7px 10px",
                     }}>
-                        { displayableText }
+
+                        { /* Disply for the Text */ }
+                        <div style = {{
+                            padding: "5px 10px 7px 10px",
+                        }}>
+                            { currentText }
+                        </div>
+
+                        { /* Disply for compilation check */ }
+                        <div style = {{
+                            borderTopColor:     "black",
+                            borderTopWidth:     2,
+                            borderTopStyle:     "dashed",
+                            padding:            "5px 10px 7px 10px"
+                        }}>
+                            { DesignTalk.isParsable( currentText )
+                                ? "Understandable"
+                                : "Unmeaning"
+                            }
+                        </div>
                     </div>
         }
 
