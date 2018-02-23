@@ -46,11 +46,11 @@ namespace Shapes.DesignTalk.Core {
     //
 
         export interface Query {
-            mode:       "new" | "previous"
-            range:      SelectorRange
-            color:      SelectorColor
-            kind:       SelectorKind
-            condition:  QueryCondition[ ]
+            mode:           "new" | "previous"
+            range:          SelectorRange
+            color:          SelectorColor
+            kind:           SelectorKind
+            conditions:     QueryCondition[ ]
         }
 
         export type QueryCondition
@@ -87,8 +87,8 @@ namespace Shapes.DesignTalk.Core {
             "all" | "circle" | "ellipse" | "rect" | "rectangle" | "square"
 
         export interface SelectorOperator {
-            negation:       boolean
-            operator:       ">" | "<" | "=" | "<=" | "=>"
+            negation:   boolean
+            operator:   ">" | "<" | "=" | "<=" | "=>"
         }
 
     //

@@ -763,4 +763,16 @@ var Shapes;
         })(Core = DesignTalk.Core || (DesignTalk.Core = {}));
     })(DesignTalk = Shapes.DesignTalk || (Shapes.DesignTalk = {}));
 })(Shapes || (Shapes = {}));
+var Shapes;
+(function (Shapes) {
+    var DesignTalk;
+    (function (DesignTalk) {
+        var Core;
+        (function (Core) {
+            function generateQueryFunction() {
+            }
+            Core.generateQueryFunction = generateQueryFunction;
+        })(Core = DesignTalk.Core || (DesignTalk.Core = {}));
+    })(DesignTalk = Shapes.DesignTalk || (Shapes.DesignTalk = {}));
+})(Shapes || (Shapes = {}));
 //# sourceMappingURL=core.js.map
