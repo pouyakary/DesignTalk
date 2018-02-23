@@ -34,10 +34,10 @@ namespace Shapes.Render.SVGLayers.Background {
                 <g key = { generateKey( ) }>
                     <rect fill = "white"
                        onClick = { onClick }
-                         style = {{ width: "100vw", height: "100vh" }}
-                    />
+                         style = {{ width: "100vw", height: "100vh" }} />
 
-                    <text x = { 30 } y = { 40 }
+                    <text x = { 30 }
+                          y = { 40 }
                        fill = "black"
                  fontFamily = "Roboto" fontWeight = "500" fontSize = "30">
                         Shapes
