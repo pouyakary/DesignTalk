@@ -14,6 +14,17 @@ namespace Shapes.Render.SVGLayers.Background {
     //
 
         export function render ( ) {
+            const mustBeSmallCopyRight = window.innerWidth < 500
+
+            const copyright =
+                ( mustBeSmallCopyRight
+                    ? "2017-present, Pouya Kary"
+                    : "2017-present by Pouya Kary, All rights reserved."
+                    )
+
+            const copyrightRightDistance =
+                ( mustBeSmallCopyRight? 180 : 300 )
+
             return [
                 <g key = { generateKey( ) }>
                     <rect fill = "white"
@@ -27,10 +38,11 @@ namespace Shapes.Render.SVGLayers.Background {
                         Shapes
                     </text>
 
-                    <text x = { window.innerWidth - 345 } y = { 38 }
+                    <text x = { window.innerWidth - copyrightRightDistance }
+                          y = { 38 }
                        fill = "#ccc"
                  fontFamily = "Roboto" fontSize = "12">
-                        Copyright &copy; 2017-present by Pouya Kary, All rights reserved.
+                        &copy; { copyright }
                     </text>
                 </g>
             ]
