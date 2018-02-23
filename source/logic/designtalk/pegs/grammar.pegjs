@@ -89,13 +89,11 @@
 //
 
     SelectorGrammars "selection grammar"
-        = range: SelectorRange _ shape: SelectorAttributes _ ( "ones" / "s" )? _
-          ( "where" / "at" )? _ conditions: SelectorOptionalQueries {
-            return {
-                range,
-                conditions,
-                ...shape,
-            }
+        = range: SelectorRange _ shape: SelectorAttributes _
+          ( "shape" / "shapes" / "ones" / "s" )? _
+          ( "where" / "at" / "whos" )? _ conditions: SelectorOptionalQueries {
+
+            return { range, conditions, ...shape }
         }
         
     SelectorAttributes "shape attribute"
