@@ -56,7 +56,7 @@
           _ options: ResizeCommandOptions {
               return {
                   command:      "resize",
-                  direction:    "width",
+                  direction,
                   query,
                   ...options,
               }
@@ -197,26 +197,37 @@
         }
 
     SelectorType "shape type"
-        = kind: ( "circle" / "rect" / "rectangle" / "ellipse" ) {
-            return kind
+        = "circle" {
+            return "circle"
         }
-        / ""
+        / "ellipse" {
+            return "ellipse"
+        }
+        / "square" {
+            return "square"
+        }
+        / "rect" / "rectangle" {
+            return "rect"
+        }
+        / "" {
+            return "all"
+        }
     
     SelectorColor "color"
         = color: ( "red" / "black" / "blue" ) {
             return color
         }
-        / ""
+        / "all"
 
     SelectorRange "range"
         = "all" / "every" / "each" {
-            return "all"
+            return { kind: "all" }
         }
         / "last" _ count: Integer {
             return { kind: "last", count }
         }
         / "" {
-            return "all"
+            return { kind: "all" }
         }
 
 //
