@@ -215,7 +215,12 @@
         = color: ( "red" / "black" / "blue" ) {
             return color
         }
-        / "all"
+        / "all" {
+            return "all"
+        }
+        / "" {
+            return "all"
+        }
 
     SelectorRange "range"
         = "all" / "every" / "each" {
@@ -277,6 +282,6 @@
 //
 
     _ "whitespace"
-        = [ \t\n\r]* { }
+        = [ \t\n\r]* !"shapes" { }
 
 // ────────────────────────────────────────────────────────────────────────────────
