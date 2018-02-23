@@ -5,6 +5,7 @@
 
 /// <reference path="../../storage/model.ts" />
 /// <reference path="../../globals/key.ts" />
+/// <reference path="../../logic/designtalk/parser" />
 
 namespace Shapes.Render.HTMLLayers.SpeachRecognizer {
 
@@ -109,8 +110,8 @@ namespace Shapes.Render.HTMLLayers.SpeachRecognizer {
                             padding:            "5px 10px 7px 10px"
                         }}>
                             { DesignTalk.isParsable( currentText )
-                                ? "Understandable"
-                                : "Unmeaning"
+                                ? "Looks Good"
+                                : "Can't Understand"
                             }
                         </div>
                     </div>
