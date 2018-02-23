@@ -19,6 +19,10 @@ namespace Shapes {
             MouseDriver.init( )
         }
 
+        window.onresize = ( ) => {
+            Storage.setState( state => state )
+        }
+
     // ────────────────────────────────────────────────────────────────────────────────
 
 }
