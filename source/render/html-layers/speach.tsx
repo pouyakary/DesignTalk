@@ -74,10 +74,14 @@ namespace Shapes.Render.HTMLLayers.SpeachRecognizer {
     //
 
         function createTextView ( model: Storage.IModel ) {
-            const { mouseX, mouseY } = model.speachRecognition
+            const { mouseX, mouseY, currentText } = model.speachRecognition
 
-            if ( model.speachRecognition.currentText === "" )
+            if ( currentText === "" )
                 return <div />
+
+            const displayableText =
+                currentText +
+                    ( DesignTalk.isParsable( currentText )? " [yes]" : " [no]" )
 
             return  <div style = {{
                         maxWidth:           "100px",
@@ -94,7 +98,7 @@ namespace Shapes.Render.HTMLLayers.SpeachRecognizer {
                         borderColor:        "black",
                         padding:            "5px 10px 7px 10px",
                     }}>
-                        { model.speachRecognition.currentText }
+                        { displayableText }
                     </div>
         }
 

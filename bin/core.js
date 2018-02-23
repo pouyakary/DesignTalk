@@ -595,9 +595,11 @@ var Shapes;
                             } }));
                 }
                 function createTextView(model) {
-                    const { mouseX, mouseY } = model.speachRecognition;
-                    if (model.speachRecognition.currentText === "")
+                    const { mouseX, mouseY, currentText } = model.speachRecognition;
+                    if (currentText === "")
                         return React.createElement("div", null);
+                    const displayableText = currentText +
+                        (Shapes.DesignTalk.isParsable(currentText) ? " [yes]" : " [no]");
                     return React.createElement("div", { style: {
                             maxWidth: "100px",
                             position: "fixed",
@@ -612,7 +614,7 @@ var Shapes;
                             borderStyle: "solid",
                             borderColor: "black",
                             padding: "5px 10px 7px 10px",
-                        } }, model.speachRecognition.currentText);
+                        } }, displayableText);
                 }
             })(SpeachRecognizer = HTMLLayers.SpeachRecognizer || (HTMLLayers.SpeachRecognizer = {}));
         })(HTMLLayers = Render.HTMLLayers || (Render.HTMLLayers = {}));
@@ -696,5 +698,21 @@ var Shapes;
         Shapes.Storage.initStorage();
         Shapes.MouseDriver.init();
     }
+})(Shapes || (Shapes = {}));
+var Shapes;
+(function (Shapes) {
+    var DesignTalk;
+    (function (DesignTalk) {
+        function isParsable(code) {
+            try {
+                DesignTalkParser.parse(code);
+                return true;
+            }
+            catch (_a) {
+                return false;
+            }
+        }
+        DesignTalk.isParsable = isParsable;
+    })(DesignTalk = Shapes.DesignTalk || (Shapes.DesignTalk = {}));
 })(Shapes || (Shapes = {}));
 //# sourceMappingURL=core.js.map
