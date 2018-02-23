@@ -151,7 +151,9 @@ var Shapes;
                     const copyright = (mustBeSmallCopyRight
                         ? "2017-present, Pouya Kary"
                         : "2017-present by Pouya Kary, All rights reserved.");
-                    const copyrightRightDistance = (mustBeSmallCopyRight ? 180 : 300);
+                    const copyrightRightDistance = (mustBeSmallCopyRight
+                        ? 180
+                        : 300);
                     return [
                         React.createElement("g", { key: Shapes.generateKey() },
                             React.createElement("rect", { fill: "white", onClick: onClick, style: { width: "100vw", height: "100vh" } }),

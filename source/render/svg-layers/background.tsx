@@ -14,7 +14,8 @@ namespace Shapes.Render.SVGLayers.Background {
     //
 
         export function render ( ) {
-            const mustBeSmallCopyRight = window.innerWidth < 500
+            const mustBeSmallCopyRight =
+                window.innerWidth < 500
 
             const copyright =
                 ( mustBeSmallCopyRight
@@ -23,7 +24,11 @@ namespace Shapes.Render.SVGLayers.Background {
                     )
 
             const copyrightRightDistance =
-                ( mustBeSmallCopyRight? 180 : 300 )
+                ( mustBeSmallCopyRight
+                    ? 180
+                    : 300
+                    )
+
 
             return [
                 <g key = { generateKey( ) }>
