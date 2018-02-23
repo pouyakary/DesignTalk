@@ -559,30 +559,6 @@ var Shapes;
 })(Shapes || (Shapes = {}));
 var Shapes;
 (function (Shapes) {
-    var DesignTalk;
-    (function (DesignTalk) {
-        const normalizationRegExp = /(?:'|\bthe\b)/g;
-        function isParsable(code) {
-            try {
-                DesignTalkParser.parse(code);
-                return true;
-            }
-            catch (_a) {
-                return false;
-            }
-        }
-        DesignTalk.isParsable = isParsable;
-        function parse(code) {
-            const normalizedCode = normalize(code);
-            return DesignTalkParser.parse(normalizedCode);
-        }
-        function normalize(code) {
-            return code.replace(normalizationRegExp, '');
-        }
-    })(DesignTalk = Shapes.DesignTalk || (Shapes.DesignTalk = {}));
-})(Shapes || (Shapes = {}));
-var Shapes;
-(function (Shapes) {
     var Render;
     (function (Render) {
         var HTMLLayers;
@@ -752,5 +728,39 @@ var Shapes;
         Shapes.MouseDriver.init();
         window.onresize = () => Shapes.Render.renderOnResize();
     }
+})(Shapes || (Shapes = {}));
+var Shapes;
+(function (Shapes) {
+    var DesignTalk;
+    (function (DesignTalk) {
+        function isParsable(code) {
+            try {
+                DesignTalk.Core.parse(code);
+                return true;
+            }
+            catch (_a) {
+                return false;
+            }
+        }
+        DesignTalk.isParsable = isParsable;
+    })(DesignTalk = Shapes.DesignTalk || (Shapes.DesignTalk = {}));
+})(Shapes || (Shapes = {}));
+var Shapes;
+(function (Shapes) {
+    var DesignTalk;
+    (function (DesignTalk) {
+        var Core;
+        (function (Core) {
+            const normalizationRegExp = /(?:'|\bthe\b)/g;
+            function parse(code) {
+                const normalizedCode = normalize(code);
+                return DesignTalkParser.parse(normalizedCode);
+            }
+            Core.parse = parse;
+            function normalize(code) {
+                return code.replace(normalizationRegExp, '');
+            }
+        })(Core = DesignTalk.Core || (DesignTalk.Core = {}));
+    })(DesignTalk = Shapes.DesignTalk || (Shapes.DesignTalk = {}));
 })(Shapes || (Shapes = {}));
 //# sourceMappingURL=core.js.map
