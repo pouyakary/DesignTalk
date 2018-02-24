@@ -199,10 +199,7 @@
             return "circle"
         }
         / "ellipse" {
-            return "ellipse"
-        }
-        / "square" {
-            return "square"
+            return "circle"
         }
         / "rect" / "rectangle" {
             return "rect"
@@ -224,13 +221,13 @@
 
     SelectorRange "range"
         = "all" / "every" / "each" {
-            return { kind: "all" }
+            return "all"
         }
         / "last" _ count: Integer {
-            return { kind: "last", count }
+            return "previous"
         }
         / "" {
-            return { kind: "all" }
+            return "all"
         }
 
 //

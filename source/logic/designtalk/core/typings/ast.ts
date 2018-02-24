@@ -47,7 +47,7 @@ namespace Shapes.DesignTalk.Core {
 
         export interface Query {
             mode:           "new" | "previous"
-            range:          SelectorRange
+            range:          "all" | "last"
             color:          SelectorColor
             kind:           SelectorKind
             conditions:     QueryCondition[ ]
@@ -75,20 +75,15 @@ namespace Shapes.DesignTalk.Core {
     // ─── SELECTORS ──────────────────────────────────────────────────────────────────
     //
 
-        export interface SelectorRange {
-            kind:       "all" | "last"
-            count?:     number
-        }
-
         export type SelectorColor =
             "all" | "red" | "blue" | "black"
 
         export type SelectorKind =
-            "all" | "circle" | "ellipse" | "rect" | "rectangle" | "square"
+            "all" | "circle" | "rect" 
 
         export interface SelectorOperator {
             negation:   boolean
-            operator:   ">" | "<" | "=" | "<=" | "=>"
+            operator:   ">" | "<" | "=" | "<=" | ">="
         }
 
     //
