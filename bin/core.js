@@ -741,12 +741,29 @@ var Shapes;
 })(Shapes || (Shapes = {}));
 var Shapes;
 (function (Shapes) {
-    window.onload = () => main();
-    function main() {
+    var ScreenDriver;
+    (function (ScreenDriver) {
+        ScreenDriver.PointSize = 0;
+        function init() {
+            const div = document.getElementById('dpi');
+            div.style.width = '1pt';
+            var result = window
+                .getComputedStyle(div, null)
+                .getPropertyValue('width');
+            const pointSize = parseFloat(result);
+            ScreenDriver.PointSize = pointSize;
+        }
+        ScreenDriver.init = init;
+    })(ScreenDriver = Shapes.ScreenDriver || (Shapes.ScreenDriver = {}));
+})(Shapes || (Shapes = {}));
+var Shapes;
+(function (Shapes) {
+    window.onload = () => {
         Shapes.Storage.initStorage();
         Shapes.MouseDriver.init();
+        Shapes.ScreenDriver.init();
         window.onresize = () => Shapes.Render.renderOnResize();
-    }
+    };
 })(Shapes || (Shapes = {}));
 var Shapes;
 (function (Shapes) {
@@ -903,6 +920,19 @@ var Shapes;
                     manipulationFunction
                 };
             }
+        })(Core = DesignTalk.Core || (DesignTalk.Core = {}));
+    })(DesignTalk = Shapes.DesignTalk || (Shapes.DesignTalk = {}));
+})(Shapes || (Shapes = {}));
+var Shapes;
+(function (Shapes) {
+    var DesignTalk;
+    (function (DesignTalk) {
+        var Core;
+        (function (Core) {
+            function pointToPixel(points) {
+                return points * Shapes.ScreenDriver.PointSize;
+            }
+            Core.pointToPixel = pointToPixel;
         })(Core = DesignTalk.Core || (DesignTalk.Core = {}));
     })(DesignTalk = Shapes.DesignTalk || (Shapes.DesignTalk = {}));
 })(Shapes || (Shapes = {}));

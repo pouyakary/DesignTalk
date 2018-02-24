@@ -12,13 +12,13 @@ namespace Shapes.DesignTalk.Core.QueryCompiler {
     //
     // ─── TYPES ──────────────────────────────────────────────────────────────────────
     //
-    
+
         type QueryChecker =
             ( shape: Storage.Shape ) => boolean
-    
+
         type QueryCheckerOrNull =
             QueryChecker | null
-        
+
         type ComparisionFunction =
             ( a: number, b: number ) => boolean
 
@@ -107,18 +107,74 @@ namespace Shapes.DesignTalk.Core.QueryCompiler {
         }
 
     //
-    // ─── GENERATE CHECHER FOR SIZE QUERY ────────────────────────────────────────────
+    // ─── GENERATE CONDITION CHECKER ─────────────────────────────────────────────────
     //
 
-        type SizeQueryComparisionFunction =
-            ( a: number, b: number ) => boolean
+        function generateConditionChecker ( condition: QueryCondition ): QueryChecker {
+            switch ( condition.query ) {
+                case 'size':
+                default:
+                    return generateCheckerForSizeQuery( condition as SizeQuery )
+            }
+        }
 
-        function generateCheckerForSizeQuery ( sizeQuery: SizeQuery ): QueryCheckerOrNull {
-            let comparisionFunction =
+    //
+    // ─── SIZE QUERY ─────────────────────────────────────────────────────────────────
+    //
+
+        function generateCheckerForSizeQuery ( sizeQuery: SizeQuery ): QueryChecker {
+            if ( sizeQuery.dimension === "both" )
+                return generateCheckerForSize2DQuery( sizeQuery )
+            else
+                return generateCheckerForSize1DQuery( sizeQuery )
+        }
+
+    //
+    // ─── GENERATE CHECHER FOR SIZE 1D QUERY ─────────────────────────────────────────
+    //
+
+        function generateCheckerForSize1DQuery ( sizeQuery: SizeQuery ): QueryChecker {
+            const comparisionFunction =
                 composeComparisionFunction( sizeQuery.operator )
+            const { size, unit } =
+                sizeQuery.size as Size1D
+            const comparable =
+                convertSizeToPixel( size, unit  )
 
-            return ( shape: Storage.Shape ) =>
-                true
+            const checker =
+                ( shape: Storage.Shape ) => {
+                    const baseSize =
+                        (( sizeQuery.dimension === "width" )
+                            ? shape.width
+                            : shape.height
+                            )
+
+                    return comparisionFunction( baseSize, comparable )
+                }
+
+            return checker
+        }
+
+    //
+    // ─── GENERATE CHECKER FOR SIZE 2D QUERY ─────────────────────────────────────────
+    //
+
+        function generateCheckerForSize2DQuery ( sizeQuery: SizeQuery ): QueryChecker {
+            const comparisionFunction =
+                composeComparisionFunction( sizeQuery.operator )
+            const { width, height, unit } =
+                sizeQuery.size as Size2D
+            const widthSize =
+                convertSizeToPixel( width, unit )
+            const heightSize =
+                convertSizeToPixel( height, unit )
+
+            const checker =
+                ( shape: Storage.Shape ) =>
+                    comparisionFunction( shape.width, widthSize ) &&
+                    comparisionFunction( shape.height, heightSize )
+
+            return checker
         }
 
     //
