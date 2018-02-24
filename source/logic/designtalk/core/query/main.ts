@@ -18,6 +18,9 @@ namespace Shapes.DesignTalk.Core.QueryCompiler {
     
         type QueryCheckerOrNull =
             QueryChecker | null
+        
+        type ComparisionFunction =
+            ( a: number, b: number ) => boolean
 
     //
     // ─── GENERATE QUERY FUNCTION ────────────────────────────────────────────────────
@@ -101,6 +104,65 @@ namespace Shapes.DesignTalk.Core.QueryCompiler {
 
             return ( shape: Storage.Shape ) =>
                 shape.type === query.kind
+        }
+
+    //
+    // ─── GENERATE CHECHER FOR SIZE QUERY ────────────────────────────────────────────
+    //
+
+        type SizeQueryComparisionFunction =
+            ( a: number, b: number ) => boolean
+
+        function generateCheckerForSizeQuery ( sizeQuery: SizeQuery ): QueryCheckerOrNull {
+            let comparisionFunction =
+                composeComparisionFunction( sizeQuery.operator )
+
+            return ( shape: Storage.Shape ) =>
+                true
+        }
+
+    //
+    // ─── COMPOSE CAMPARISION FUNCTION ───────────────────────────────────────────────
+    //
+
+        function composeComparisionFunction ( operator: SelectorOperator ): ComparisionFunction {
+            let comparisionFunction =
+                ( a: number, b: number ) => true
+
+            switch ( operator.operator ) {
+                case '=':
+                    comparisionFunction =
+                        ( a: number, b: number ) => a === b
+                    break
+
+                case '>':
+                    comparisionFunction =
+                        ( a: number, b: number ) => a > b
+                    break
+
+                case '<':
+                    comparisionFunction =
+                        ( a: number, b: number ) => a < b
+                    break
+
+                case '<=':
+                    comparisionFunction =
+                        ( a: number, b: number ) => a <= b
+                    break
+
+                case '>=':
+                    comparisionFunction =
+                        ( a: number, b: number ) => a >= b
+                    break
+            }
+
+            const functionWithNegationApplied =
+                ( operator.negation
+                    ? ( a:number, b: number ) => !comparisionFunction( a, b )
+                    : comparisionFunction
+                    )
+
+            return functionWithNegationApplied
         }
 
     // ────────────────────────────────────────────────────────────────────────────────

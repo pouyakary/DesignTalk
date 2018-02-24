@@ -812,6 +812,39 @@ var Shapes;
                         return null;
                     return (shape) => shape.type === query.kind;
                 }
+                function generateCheckerForSizeQuery(sizeQuery) {
+                    let comparisionFunction = composeComparisionFunction(sizeQuery.operator);
+                    return (shape) => true;
+                }
+                function composeComparisionFunction(operator) {
+                    let comparisionFunction = (a, b) => true;
+                    switch (operator.operator) {
+                        case '=':
+                            comparisionFunction =
+                                (a, b) => a === b;
+                            break;
+                        case '>':
+                            comparisionFunction =
+                                (a, b) => a > b;
+                            break;
+                        case '<':
+                            comparisionFunction =
+                                (a, b) => a < b;
+                            break;
+                        case '<=':
+                            comparisionFunction =
+                                (a, b) => a <= b;
+                            break;
+                        case '>=':
+                            comparisionFunction =
+                                (a, b) => a >= b;
+                            break;
+                    }
+                    const functionWithNegationApplied = (operator.negation
+                        ? (a, b) => !comparisionFunction(a, b)
+                        : comparisionFunction);
+                    return functionWithNegationApplied;
+                }
             })(QueryCompiler = Core.QueryCompiler || (Core.QueryCompiler = {}));
         })(Core = DesignTalk.Core || (DesignTalk.Core = {}));
     })(DesignTalk = Shapes.DesignTalk || (Shapes.DesignTalk = {}));
