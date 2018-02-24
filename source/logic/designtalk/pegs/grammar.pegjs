@@ -19,7 +19,7 @@
         / command: Command {
             return [ command ]
         }
-        / "" { 
+        / "" {
             return [ ]
         }
 
@@ -90,12 +90,12 @@
 
     SelectorGrammars "selection grammar"
         = range: SelectorRange _ shape: SelectorAttributes _
-          ( "shape" / "shapes" / "ones" / "s" )? _
-          ( "where" / "at" / "whos" )? _ conditions: SelectorOptionalQueries {
+          ( "shapes" / "shape" / "ones" / "s" )? _
+          ( "with" / "where" / "at" / "whos" / "if" )? _ conditions: SelectorOptionalQueries {
 
             return { range, conditions, ...shape }
         }
-        
+
     SelectorAttributes "shape attribute"
         = color: SelectorColor _ kind: SelectorType {
             return { color, kind }
@@ -127,19 +127,20 @@
         }
 
     SizeQuery "size query"
-        = dimension: ( "width" / "height" ) _ operator:SelectorSizeOperator
-          _ size: Size1D {
+        = ( "it" _ "is" / "its" / "they" _ "are" / "theyre" ) _
+          operator: SelectorSizeOperator _ size: Size2D {
             return {
                 query: "size",
-                dimension,
+                dimension: "both",
                 operator,
                 size
             }
         }
-        / operator: SelectorSizeOperator _ "than" _ size: Size {
+        / dimension: ( "width" / "height" ) _ operator:SelectorSizeOperator
+          _ size: Size1D {
             return {
                 query: "size",
-                dimension: "both",
+                dimension,
                 operator,
                 size
             }
@@ -207,7 +208,7 @@
         / "" {
             return "all"
         }
-    
+
     SelectorColor "color"
         = color: ( "red" / "black" / "blue" ) {
             return color
@@ -266,7 +267,7 @@
             return unit
         }
         / "" {
-            return "point"
+            return "pixel"
         }
 
     Integer "number"
@@ -279,6 +280,6 @@
 //
 
     _ "whitespace"
-        = [ \t\n\r]* !"shapes" { }
+        = [ \t\n\r]* { }
 
 // ────────────────────────────────────────────────────────────────────────────────
