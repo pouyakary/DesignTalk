@@ -807,6 +807,8 @@ var Shapes;
                         generateChackerForColor(query),
                         generateCheckerForShapeKind(query),
                     ];
+                    for (const condition of query.conditions)
+                        checkers.push(generateConditionChecker(condition));
                     return generateQueryFunction(checkers);
                 }
                 function generateQueryFunction(checkers) {
@@ -829,9 +831,39 @@ var Shapes;
                         return null;
                     return (shape) => shape.type === query.kind;
                 }
+                function generateConditionChecker(condition) {
+                    switch (condition.query) {
+                        case 'size':
+                        default:
+                            return generateCheckerForSizeQuery(condition);
+                    }
+                }
                 function generateCheckerForSizeQuery(sizeQuery) {
-                    let comparisionFunction = composeComparisionFunction(sizeQuery.operator);
-                    return (shape) => true;
+                    if (sizeQuery.dimension === "both")
+                        return generateCheckerForSize2DQuery(sizeQuery);
+                    else
+                        return generateCheckerForSize1DQuery(sizeQuery);
+                }
+                function generateCheckerForSize1DQuery(sizeQuery) {
+                    const comparisionFunction = composeComparisionFunction(sizeQuery.operator);
+                    const { size, unit } = sizeQuery.size;
+                    const comparable = Core.convertSizeToPixel(size, unit);
+                    const checker = (shape) => {
+                        const baseSize = ((sizeQuery.dimension === "width")
+                            ? shape.width
+                            : shape.height);
+                        return comparisionFunction(baseSize, comparable);
+                    };
+                    return checker;
+                }
+                function generateCheckerForSize2DQuery(sizeQuery) {
+                    const comparisionFunction = composeComparisionFunction(sizeQuery.operator);
+                    const { width, height, unit } = sizeQuery.size;
+                    const widthSize = Core.convertSizeToPixel(width, unit);
+                    const heightSize = Core.convertSizeToPixel(height, unit);
+                    const checker = (shape) => comparisionFunction(shape.width, widthSize) &&
+                        comparisionFunction(shape.height, heightSize);
+                    return checker;
                 }
                 function composeComparisionFunction(operator) {
                     let comparisionFunction = (a, b) => true;
@@ -929,6 +961,16 @@ var Shapes;
     (function (DesignTalk) {
         var Core;
         (function (Core) {
+            function convertSizeToPixel(size, unit) {
+                switch (unit) {
+                    case 'point':
+                        return pointToPixel(size);
+                    case 'pixel':
+                    default:
+                        return size;
+                }
+            }
+            Core.convertSizeToPixel = convertSizeToPixel;
             function pointToPixel(points) {
                 return points * Shapes.ScreenDriver.PointSize;
             }

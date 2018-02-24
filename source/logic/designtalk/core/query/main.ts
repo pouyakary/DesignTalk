@@ -58,6 +58,9 @@ namespace Shapes.DesignTalk.Core.QueryCompiler {
                 generateCheckerForShapeKind( query ),
             ]
 
+            for ( const condition of query.conditions )
+                checkers.push( generateConditionChecker( condition ) )
+
             return generateQueryFunction( checkers )
         }
 
@@ -139,7 +142,7 @@ namespace Shapes.DesignTalk.Core.QueryCompiler {
             const { size, unit } =
                 sizeQuery.size as Size1D
             const comparable =
-                convertSizeToPixel( size, unit  )
+                convertSizeToPixel( size, unit )
 
             const checker =
                 ( shape: Storage.Shape ) => {
