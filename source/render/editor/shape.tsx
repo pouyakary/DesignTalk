@@ -15,7 +15,7 @@ namespace Shapes.Render.Editor {
     //
 
         export interface IShapeContainerProps {
-            shape: Storage.IShape
+            shape: Storage.Shape
         }
 
     //
@@ -50,7 +50,7 @@ namespace Shapes.Render.Editor {
             // ─── RENDER SHAPE ────────────────────────────────────────────────
             //
 
-                private renderShape ( shape: Storage.IShape ): JSX.Element {
+                private renderShape ( shape: Storage.Shape ): JSX.Element {
                     const color =
                         this.props.shape.color
                     const opacity =
@@ -69,7 +69,7 @@ namespace Shapes.Render.Editor {
             // ─── GET SHAPE OPACITY ───────────────────────────────────────────
             //
 
-                private getShapeOpacity ( shape: Storage.IShape ): number {
+                private getShapeOpacity ( shape: Storage.Shape ): number {
                     if ( this.lastState.selectedId !== null &&
                          this.lastState.selectedId !== shape.id ) {
                             return 0.5
@@ -133,7 +133,7 @@ namespace Shapes.Render.Editor {
             // ─── CREATE CIRCLE ───────────────────────────────────────────────
             //
 
-                private createCircle ( shape: Storage.IShape, color: string, opacity: number ) {
+                private createCircle ( shape: Storage.Shape, color: string, opacity: number ) {
                     const rX = shape.width / 2
                     const rY = shape.height / 2
 
@@ -155,7 +155,7 @@ namespace Shapes.Render.Editor {
             // ─── CREATE RECT ─────────────────────────────────────────────────
             //
 
-                private createRect ( shape: Storage.IShape, color: string, opacity: number ) {
+                private createRect ( shape: Storage.Shape, color: string, opacity: number ) {
                     return <rect
                         x               = { shape.x }
                         y               = { shape.y }

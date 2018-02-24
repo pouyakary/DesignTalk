@@ -13,7 +13,7 @@ namespace Shapes.Render.SVGLayers.Selection {
     // ─── RENDER SHAPES LAYER ────────────────────────────────────────────────────────
     //
 
-        export function render ( model: Storage.IModel ) {
+        export function render ( model: Storage.Model ) {
             return Render.SelectionTool.render( model )
         }
 

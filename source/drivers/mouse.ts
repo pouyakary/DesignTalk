@@ -67,7 +67,7 @@ namespace Shapes.MouseDriver {
 
         let moveReseter: NodeJS.Timer
 
-        function updateSelectedShapeSizeOnMouseMove ( event: MouseEvent, state: Storage.IModel ) {
+        function updateSelectedShapeSizeOnMouseMove ( event: MouseEvent, state: Storage.Model ) {
 
             clearTimeout( moveReseter )
             moveReseter = setTimeout(( ) => {
@@ -113,7 +113,7 @@ namespace Shapes.MouseDriver {
     // ─── UPDATE SHAPE POSITION ON CHANGE ────────────────────────────────────────────
     //
 
-        function updateSelectedShapePositionOnMouseMove ( event: MouseEvent, state: Storage.IModel ) {
+        function updateSelectedShapePositionOnMouseMove ( event: MouseEvent, state: Storage.Model ) {
 
             const selectedShape =
                 state.shapes.find( x => x.id == state.selectedId )!

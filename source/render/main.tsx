@@ -20,7 +20,7 @@ namespace Shapes.Render {
     // ─── MAIN RENDERER ──────────────────────────────────────────────────────────────
     //
 
-        export function renderApp ( model: Storage.IModel ) {
+        export function renderApp ( model: Storage.Model ) {
             const container =
                 document.getElementById('container')
 
@@ -34,7 +34,7 @@ namespace Shapes.Render {
     // ─── CREATE SCENE ───────────────────────────────────────────────────────────────
     //
 
-        function createScence ( model: Storage.IModel ) {
+        function createScence ( model: Storage.Model ) {
             const layerElements = [
                 Render.SVGLayers.Background.render( ),
                 Render.SVGLayers.Shapes.render( model ),

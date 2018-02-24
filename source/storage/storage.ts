@@ -15,13 +15,13 @@ namespace Shapes.Storage {
     // ─── MAIN STORAGE ───────────────────────────────────────────────────────────────
     //
 
-        const StorageContainer = new Array<IModel>( )
+        const StorageContainer = new Array<Model>( )
 
     //
     // ─── SUBSCRIPTIONS ──────────────────────────────────────────────────────────────
     //
 
-        type TStorageSubscriber = ( model: IModel ) => void
+        type TStorageSubscriber = ( model: Model ) => void
 
         const StorageSubcriptions: TStorageSubscriber[ ] = [
             Render.renderApp,
@@ -59,7 +59,7 @@ namespace Shapes.Storage {
     // ─── RUN SUBSCRIBERS ON CHANGE ──────────────────────────────────────────────────
     //
 
-        function runSubscribersOnChange ( state: IModel ) {
+        function runSubscribersOnChange ( state: Model ) {
             for ( const subscriber of StorageSubcriptions )
                 subscriber( state )
         }
@@ -69,7 +69,7 @@ namespace Shapes.Storage {
     //
 
         export type TStateSetter =
-            ( lastState: IModel ) => IModel
+            ( lastState: Model ) => Model
 
         export function setState ( setter: TStateSetter ) {
             const lastState =

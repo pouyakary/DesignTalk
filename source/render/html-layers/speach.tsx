@@ -5,7 +5,7 @@
 
 /// <reference path="../../storage/model.ts" />
 /// <reference path="../../globals/key.ts" />
-/// <reference path="../../logic/designtalk/parser" />
+/// <reference path="../../logic/designtalk/core/parser" />
 
 namespace Shapes.Render.HTMLLayers.SpeachRecognizer {
 
@@ -20,7 +20,7 @@ namespace Shapes.Render.HTMLLayers.SpeachRecognizer {
     // ─── RENDER SHAPES LAYER ────────────────────────────────────────────────────────
     //
 
-        export function render ( model: Storage.IModel ) {
+        export function render ( model: Storage.Model ) {
             return (( model.speachRecognition.isRecording )
                 ? shapeOnWorkingMode( model )
                 : [ ]
@@ -31,7 +31,7 @@ namespace Shapes.Render.HTMLLayers.SpeachRecognizer {
     // ─── ON WORKING SPEACH RECOGNITION ──────────────────────────────────────────────
     //
 
-        function shapeOnWorkingMode ( model: Storage.IModel ) {
+        function shapeOnWorkingMode ( model: Storage.Model ) {
             return  <div key = { generateKey( ) } style = {{
                         backgroundColor:    "rgba(255, 255, 255, 0.9)",
                         position:           "fixed",
@@ -49,7 +49,7 @@ namespace Shapes.Render.HTMLLayers.SpeachRecognizer {
     // ─── RECORDING DIV ──────────────────────────────────────────────────────────────
     //
         
-        function recordingIcon ( model: Storage.IModel ) {
+        function recordingIcon ( model: Storage.Model ) {
             const { mouseX, mouseY } = model.speachRecognition
 
             return  <div style = {{
@@ -74,7 +74,7 @@ namespace Shapes.Render.HTMLLayers.SpeachRecognizer {
     // ─── TEXT VIEW ──────────────────────────────────────────────────────────────────
     //
 
-        function createTextView ( model: Storage.IModel ) {
+        function createTextView ( model: Storage.Model ) {
             const { mouseX, mouseY, currentText } = model.speachRecognition
 
             if ( currentText === "" )

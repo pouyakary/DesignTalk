@@ -4,6 +4,7 @@
 //
 
 /// <reference path="../typings/functionset" />
+/// <reference path="../main" />
 
 
 namespace Shapes.DesignTalk.Core.QueryCompiler {
@@ -13,7 +14,7 @@ namespace Shapes.DesignTalk.Core.QueryCompiler {
     //
     
         type QueryChecker =
-            ( shape: Storage.IShape ) => boolean
+            ( shape: Storage.Shape ) => boolean
     
         type QueryCheckerOrNull =
             QueryChecker | null
@@ -22,7 +23,33 @@ namespace Shapes.DesignTalk.Core.QueryCompiler {
     // ─── GENERATE QUERY FUNCTION ────────────────────────────────────────────────────
     //
 
-        export function generate ( query: Query ): QueryFunction {
+        export function generate ( query: Query, state: Storage.Model ): QueryFunction {
+            if ( query.mode === "new" )
+                return generateNewQueryFunction( query )
+            else
+                return generatePreviousSelectionsFunction( state )
+        }
+
+    //
+    // ─── GENERATE PREVIOUS SELECTIONS QUERY ─────────────────────────────────────────
+    //
+
+        function generatePreviousSelectionsFunction ( state: Storage.Model ): QueryFunction {
+            const shapeTable: ShapeTable = { }
+
+            for ( const shape of state.shapes )
+                shapeTable[ shape.id ] = shape
+
+            return ( shapes: Shape[ ] ) =>
+                state.previousSelectionIDs.map( id =>
+                    shapeTable[ id ] )
+        }
+
+    //
+    // ─── GENERATE QUERY FUNCTION ────────────────────────────────────────────────────
+    //
+
+        function generateNewQueryFunction ( query: Query ): QueryFunction {
             const checkers: QueryCheckerOrNull[ ] = [
                 generateChackerForColor( query ),
                 generateCheckerForShapeKind( query ),
@@ -36,20 +63,20 @@ namespace Shapes.DesignTalk.Core.QueryCompiler {
     //
 
         function generateQueryFunction ( checkers: QueryCheckerOrNull[ ] ): QueryFunction {
-            const effectiveCheckers: QueryChecker[ ] =
-                checkers.filter( checker => checker !== null ) as QueryChecker[ ]
 
-            const filterFunction = ( shape: Storage.IShape ) => {
+            const effectiveCheckers: QueryChecker[ ] =
+                checkers.filter( checker =>
+                    checker !== null ) as QueryChecker[ ]
+
+            const filterFunction = ( shape: Storage.Shape ) => {
                 for ( const checker of effectiveCheckers )
                     if ( !checker( shape ) )
                         return false
-
                 return true
             }
 
-            return ( shapes: Storage.IShape[ ] ) => {
-                return shapes.filter( filterFunction )
-            }
+            return ( shapes: Storage.Shape[ ] ) =>
+                shapes.filter( filterFunction )
         }
 
     //
@@ -60,7 +87,7 @@ namespace Shapes.DesignTalk.Core.QueryCompiler {
             if ( query.color === "all" )
                 return null
 
-            return ( shape: Storage.IShape ) =>
+            return ( shape: Storage.Shape ) =>
                 shape.color === query.color
         }
 
@@ -72,7 +99,7 @@ namespace Shapes.DesignTalk.Core.QueryCompiler {
             if  ( query.kind === "all" )
                 return null
 
-            return ( shape: Storage.IShape ) =>
+            return ( shape: Storage.Shape ) =>
                 shape.type === query.kind
         }
 

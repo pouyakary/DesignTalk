@@ -13,13 +13,17 @@ namespace Shapes.DesignTalk.Core {
     // ─── TYPES ──────────────────────────────────────────────────────────────────────
     //
 
-        type Shape = Storage.IShape
+        export type Shape = Storage.Shape
+
+        export type ShapeTable = {
+            [ id: string ]: Shape
+        }
 
     //
     // ─── RUN ────────────────────────────────────────────────────────────────────────
     //
 
-        function run ( code: string ) {
+        export function run ( code: string ) {
             try {
                 const commands =
                     parse( code )
@@ -37,15 +41,10 @@ namespace Shapes.DesignTalk.Core {
 
         function executeCommands ( commands: Command[ ] ) {
             Storage.setState( state => {
-                let shapes =
-                    state.shapes
-
                 for ( const command of commands )
-                    shapes = runCommand( command, shapes )
+                    state = runCommand( command, state )
 
-                return { ...state,
-                    shapes
-                }
+                return state
             })
         }
 
@@ -53,53 +52,58 @@ namespace Shapes.DesignTalk.Core {
     // ─── RUN COMMAND ────────────────────────────────────────────────────────────────
     //
 
-        function runCommand ( command: Command, shapes: Shape[ ] ): Shape[ ] {
+        function runCommand ( command: Command, state: Storage.Model ): Storage.Model {
             const { queryFunction, manipulationFunction } =
-                compileCommand( command )
-
+                compileCommand( command, state )
             const selectedShapes =
-                queryFunction( shapes )
+                queryFunction( state.shapes )
+
+            console.log( selectedShapes )
 
             const manipulatedShapes =
                 selectedShapes.map( shape =>
                     manipulationFunction( shape ) )
+            const newState =
+                mergeShapes( state, manipulatedShapes )
 
-            const newShapes =
-                mergeShapes( shapes, manipulatedShapes )
-
-            return newShapes
+            return newState
         }
 
     //
     // ─── MERGE SHAPES ───────────────────────────────────────────────────────────────
     //
 
-        type ManipulatedShapeTable = {
-            [ id: string ]: Shape
-        }
-
-        function mergeShapes ( allShapes: Shape[ ], manipulatedShapes: Shape[ ] ) {
-            const manipulatedShapeTable: ManipulatedShapeTable =
+        function mergeShapes ( state: Storage.Model, manipulatedShapes: Shape[ ] ): Storage.Model {
+            const manipulatedShapeTable: ShapeTable =
                 { }
+            const previousSelectionIDs =
+                new Array<string>( )
 
             for ( const shape of manipulatedShapes )
                 manipulatedShapeTable[ shape.id ] = shape
 
-            return allShapes.map( shape => {
-                if ( manipulatedShapeTable[ shape.id ] !== undefined )
-                    return manipulatedShapeTable[ shape.id ]
-                else
+            const shapes =
+                state.shapes.map( shape => {
+                    if ( manipulatedShapeTable[ shape.id ] !== undefined ) {
+                        previousSelectionIDs.push( shape.id )
+                        return manipulatedShapeTable[ shape.id ]
+                    }
                     return shape
-            })
+                })
+
+            return { ...state,
+                shapes,
+                previousSelectionIDs
+            }
         }
 
     //
     // ─── COMPILE COMMAND ────────────────────────────────────────────────────────────
     //
 
-        function compileCommand ( command: Command ): CompiledFunctionSet {
+        function compileCommand ( command: Command, state: Storage.Model ): FunctionSet {
             const queryFunction =
-                Core.QueryCompiler.generate( command.query )
+                Core.QueryCompiler.generate( command.query, state )
             const manipulationFunction =
                 ( shape: Shape ) => shape
 

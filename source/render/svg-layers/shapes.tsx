@@ -13,7 +13,7 @@ namespace Shapes.Render.SVGLayers.Shapes {
     // ─── RENDER SHAPES LAYER ────────────────────────────────────────────────────────
     //
 
-        export function render ( model: Storage.IModel ) {
+        export function render ( model: Storage.Model ) {
             const sortedShapes =
                 model.shapes.sort(( a, b ) =>
                     a.zIndex - b.zIndex )

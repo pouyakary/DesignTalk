@@ -9,13 +9,14 @@ namespace Shapes.Storage {
     // ─── MODEL ──────────────────────────────────────────────────────────────────────
     //
 
-        export interface IModel {
+        export interface Model {
             maxZIndex:              number
             mouseMode:              MouseMode
             selectedId:             string | null
-            shapes:                 IShape[ ]
+            previousSelectionIDs:   string[ ]
+            shapes:                 Shape[ ]
             showLineGuides:         boolean
-            speachRecognition:      ISpeachRecognition
+            speachRecognition:      SpeachRecognition
         }
 
     //
@@ -30,13 +31,13 @@ namespace Shapes.Storage {
     // ─── SHAPES ─────────────────────────────────────────────────────────────────────
     //
 
-        export type IShapeType =
+        export type ShapeType =
             "rect" | "circle"
 
-        export interface IShape {
+        export interface Shape {
             zIndex:     number
             id:         string
-            type:       IShapeType
+            type:       ShapeType
             color:      string
             width:      number
             height:     number
@@ -48,7 +49,7 @@ namespace Shapes.Storage {
     // ─── SPEACH RECOGNITION SYSTEM ──────────────────────────────────────────────────
     //
 
-        export interface ISpeachRecognition {
+        export interface SpeachRecognition {
             isRecording:    boolean
             currentText:    string
             recognizer:     webkitSpeechRecognition | null

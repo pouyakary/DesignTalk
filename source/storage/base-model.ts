@@ -12,18 +12,19 @@ namespace Shapes.Storage {
     // ─── INITIAL MODEL ──────────────────────────────────────────────────────────────
     //
 
-        export function createInitialModelState ( ): IModel {
-            const someShapes = new Array<IShape>( )
+        export function createInitialModelState ( ): Model {
+            const someShapes = new Array<Shape>( )
 
             for ( let counter = 0; counter < 10; counter++ )
                 someShapes.push( createShape( counter ) )
 
             return {
-                shapes:             someShapes,
-                showLineGuides:     false,
-                selectedId:         null,
-                mouseMode:          MouseMode.Move,
-                maxZIndex:          10,
+                shapes:                 someShapes,
+                showLineGuides:         false,
+                selectedId:             null,
+                previousSelectionIDs:   [ ],
+                mouseMode:              MouseMode.Move,
+                maxZIndex:              10,
 
                 speachRecognition: {
                     isRecording:    false,
@@ -61,11 +62,11 @@ namespace Shapes.Storage {
     // ─── CREATE SHAPE ───────────────────────────────────────────────────────────────
     //
 
-        export function createShape ( zIndex: number ): IShape {
+        export function createShape ( zIndex: number ): Shape {
             const color =
                 chooseRandom([ 'red', 'black', 'blue' ])
             const type =
-                chooseRandom([ 'rect', 'circle' ]) as IShapeType
+                chooseRandom([ 'rect', 'circle' ]) as ShapeType
             const { x, y } =
                 getRandomCoordinates( )
 

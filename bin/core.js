@@ -40,6 +40,7 @@ var Shapes;
                 shapes: someShapes,
                 showLineGuides: false,
                 selectedId: null,
+                previousSelectionIDs: [],
                 mouseMode: Storage.MouseMode.Move,
                 maxZIndex: 10,
                 speachRecognition: {
@@ -559,6 +560,24 @@ var Shapes;
 })(Shapes || (Shapes = {}));
 var Shapes;
 (function (Shapes) {
+    var DesignTalk;
+    (function (DesignTalk) {
+        var Core;
+        (function (Core) {
+            const normalizationRegExp = /(?:'|\bthe\b)/g;
+            function parse(code) {
+                const normalizedCode = normalize(code);
+                return DesignTalkParser.parse(normalizedCode);
+            }
+            Core.parse = parse;
+            function normalize(code) {
+                return code.replace(normalizationRegExp, '');
+            }
+        })(Core = DesignTalk.Core || (DesignTalk.Core = {}));
+    })(DesignTalk = Shapes.DesignTalk || (Shapes.DesignTalk = {}));
+})(Shapes || (Shapes = {}));
+var Shapes;
+(function (Shapes) {
     var Render;
     (function (Render) {
         var HTMLLayers;
@@ -751,15 +770,49 @@ var Shapes;
     (function (DesignTalk) {
         var Core;
         (function (Core) {
-            const normalizationRegExp = /(?:'|\bthe\b)/g;
-            function parse(code) {
-                const normalizedCode = normalize(code);
-                return DesignTalkParser.parse(normalizedCode);
-            }
-            Core.parse = parse;
-            function normalize(code) {
-                return code.replace(normalizationRegExp, '');
-            }
+            var QueryCompiler;
+            (function (QueryCompiler) {
+                function generate(query, state) {
+                    if (query.mode === "new")
+                        return generateNewQueryFunction(query);
+                    else
+                        return generatePreviousSelectionsFunction(state);
+                }
+                QueryCompiler.generate = generate;
+                function generatePreviousSelectionsFunction(state) {
+                    const shapeTable = {};
+                    for (const shape of state.shapes)
+                        shapeTable[shape.id] = shape;
+                    return (shapes) => state.previousSelectionIDs.map(id => shapeTable[id]);
+                }
+                function generateNewQueryFunction(query) {
+                    const checkers = [
+                        generateChackerForColor(query),
+                        generateCheckerForShapeKind(query),
+                    ];
+                    return generateQueryFunction(checkers);
+                }
+                function generateQueryFunction(checkers) {
+                    const effectiveCheckers = checkers.filter(checker => checker !== null);
+                    const filterFunction = (shape) => {
+                        for (const checker of effectiveCheckers)
+                            if (!checker(shape))
+                                return false;
+                        return true;
+                    };
+                    return (shapes) => shapes.filter(filterFunction);
+                }
+                function generateChackerForColor(query) {
+                    if (query.color === "all")
+                        return null;
+                    return (shape) => shape.color === query.color;
+                }
+                function generateCheckerForShapeKind(query) {
+                    if (query.kind === "all")
+                        return null;
+                    return (shape) => shape.type === query.kind;
+                }
+            })(QueryCompiler = Core.QueryCompiler || (Core.QueryCompiler = {}));
         })(Core = DesignTalk.Core || (DesignTalk.Core = {}));
     })(DesignTalk = Shapes.DesignTalk || (Shapes.DesignTalk = {}));
 })(Shapes || (Shapes = {}));
@@ -769,9 +822,54 @@ var Shapes;
     (function (DesignTalk) {
         var Core;
         (function (Core) {
-            function generateQueryFunction() {
+            function run(code) {
+                try {
+                    const commands = Core.parse(code);
+                    executeCommands(commands);
+                }
+                catch (error) {
+                    console.error(error);
+                }
             }
-            Core.generateQueryFunction = generateQueryFunction;
+            Core.run = run;
+            function executeCommands(commands) {
+                Shapes.Storage.setState(state => {
+                    for (const command of commands)
+                        state = runCommand(command, state);
+                    return state;
+                });
+            }
+            function runCommand(command, state) {
+                const { queryFunction, manipulationFunction } = compileCommand(command, state);
+                const selectedShapes = queryFunction(state.shapes);
+                console.log(selectedShapes);
+                const manipulatedShapes = selectedShapes.map(shape => manipulationFunction(shape));
+                const newState = mergeShapes(state, manipulatedShapes);
+                return newState;
+            }
+            function mergeShapes(state, manipulatedShapes) {
+                const manipulatedShapeTable = {};
+                const previousSelectionIDs = new Array();
+                for (const shape of manipulatedShapes)
+                    manipulatedShapeTable[shape.id] = shape;
+                const shapes = state.shapes.map(shape => {
+                    if (manipulatedShapeTable[shape.id] !== undefined) {
+                        previousSelectionIDs.push(shape.id);
+                        return manipulatedShapeTable[shape.id];
+                    }
+                    return shape;
+                });
+                return Object.assign({}, state, { shapes,
+                    previousSelectionIDs });
+            }
+            function compileCommand(command, state) {
+                const queryFunction = Core.QueryCompiler.generate(command.query, state);
+                const manipulationFunction = (shape) => shape;
+                return {
+                    queryFunction,
+                    manipulationFunction
+                };
+            }
         })(Core = DesignTalk.Core || (DesignTalk.Core = {}));
     })(DesignTalk = Shapes.DesignTalk || (Shapes.DesignTalk = {}));
 })(Shapes || (Shapes = {}));

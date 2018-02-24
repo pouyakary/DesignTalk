@@ -22,7 +22,7 @@ namespace Shapes.Render.SelectionTool {
     // ─── SHOW SELECTION ─────────────────────────────────────────────────────────────
     //
 
-        export function render ( model: Storage.IModel ) {
+        export function render ( model: Storage.Model ) {
             if ( model.selectedId )
                 return createSelectionTool( model )
             else
@@ -41,7 +41,7 @@ namespace Shapes.Render.SelectionTool {
     // ─── CREATE SELECTION TOOL ──────────────────────────────────────────────────────
     //
 
-        function createSelectionTool ( state: Storage.IModel ) {
+        function createSelectionTool ( state: Storage.Model ) {
             const shape =
                 state.shapes.find( shape =>
                     shape.id === state.selectedId )!
@@ -70,7 +70,7 @@ namespace Shapes.Render.SelectionTool {
     // ─── CREATE RECTANGLE ───────────────────────────────────────────────────────────
     //
 
-        function createSelectionRectangle ( shape: Storage.IShape ) {
+        function createSelectionRectangle ( shape: Storage.Shape ) {
             const x =
                 shape.x - margin
             const y =
@@ -102,7 +102,7 @@ namespace Shapes.Render.SelectionTool {
     // ─── TIP TEXT BOX ───────────────────────────────────────────────────────────────
     //
 
-        function createToolTipShape ( shape: Storage.IShape, state: Storage.IModel ) {
+        function createToolTipShape ( shape: Storage.Shape, state: Storage.Model ) {
             const x =
                 shape.x - margin
             const y =
@@ -142,7 +142,7 @@ namespace Shapes.Render.SelectionTool {
     // ─── DESCRIPTION TEXT ───────────────────────────────────────────────────────────
     //
 
-        function getDescriptionText ( shape: Storage.IShape, state: Storage.IModel ) {
+        function getDescriptionText ( shape: Storage.Shape, state: Storage.Model ) {
             if ( state.showLineGuides && state.mouseMode === Storage.MouseMode.Resize )
                 return 'SIZE ' + shape.width + ':' + shape.height
 
@@ -156,7 +156,7 @@ namespace Shapes.Render.SelectionTool {
     // ─── CREATE GUIDE LINES ─────────────────────────────────────────────────────────
     //
 
-        function createGuideLines ( shape: Storage.IShape, model: Storage.IModel ) {
+        function createGuideLines ( shape: Storage.Shape, model: Storage.Model ) {
             if ( !model.showLineGuides )
                 return [ ]
 
@@ -252,7 +252,7 @@ namespace Shapes.Render.SelectionTool {
     // ─── CREATE RESIZE BUTTON ───────────────────────────────────────────────────────
     //
 
-        function createResizeHandle ( shape: Storage.IShape, state: Storage.IModel ) {
+        function createResizeHandle ( shape: Storage.Shape, state: Storage.Model ) {
             const x = shape.x + shape.width + margin
             const y = shape.y + shape.height + margin
 
@@ -282,7 +282,7 @@ namespace Shapes.Render.SelectionTool {
     // ─── REMOVE BOTTON ──────────────────────────────────────────────────────────────
     //
 
-        function createDeleteButton ( shape: Storage.IShape, state: Storage.IModel ) {
+        function createDeleteButton ( shape: Storage.Shape, state: Storage.Model ) {
             if ( state.showLineGuides )
                 return <g key = { generateKey( ) } />
 
@@ -345,7 +345,7 @@ namespace Shapes.Render.SelectionTool {
     // ─── COLOR BUTTONS ──────────────────────────────────────────────────────────────
     //
 
-        function createColorButtons ( shape: Storage.IShape, state: Storage.IModel ) {
+        function createColorButtons ( shape: Storage.Shape, state: Storage.Model ) {
             if ( state.showLineGuides )
                 return <g key = { generateKey( ) } />
 
@@ -364,7 +364,7 @@ namespace Shapes.Render.SelectionTool {
 
         function createSingleColorButton ( color: string,
                                            index: number,
-                                           shape: Storage.IShape ) {
+                                           shape: Storage.Shape ) {
             const x =
                 shape.x - margin - 5 - index * ( textBackgroundHeight + 5 )
 
@@ -398,7 +398,7 @@ namespace Shapes.Render.SelectionTool {
     // ─── CHANGE SHAPE BUTTON ────────────────────────────────────────────────────────
     //
 
-        function changeShapeModelButtons ( shape: Storage.IShape, state: Storage.IModel ) {
+        function changeShapeModelButtons ( shape: Storage.Shape, state: Storage.Model ) {
             if ( state.showLineGuides )
                 return [ <g key = { generateKey( ) } /> ]
 
@@ -410,7 +410,7 @@ namespace Shapes.Render.SelectionTool {
                             if ( shape.id === x.id )
                                 return { ...x,
                                     type: ( x.id == shape.id && x.type === 'rect' )?
-                                        'circle' : 'rect' as Storage.IShapeType
+                                        'circle' : 'rect' as Storage.ShapeType
                                 }
                             else
                                 return x
