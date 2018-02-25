@@ -222,13 +222,34 @@
 
     SelectorRange "range"
         = "all" / "every" / "each" {
-            return "all"
+            return {
+                mode: "all"
+            }
         }
-        / "last" _ count: Integer {
-            return "previous"
+        / range: SelectorRangeFactorNumber _ ( "biggest" / "largest" / "greatest" )  {
+            return {
+                mode: "biggest",
+                range,
+            }
+        }
+        / range: SelectorRangeFactorNumber _ ( "smallest" / "tinyiest" ) {
+            return {
+                mode: "smallest",
+                range,
+            }
         }
         / "" {
-            return "all"
+            return {
+                mode: "all"
+            }
+        }
+
+    SelectorRangeFactorNumber
+        = num: Integer {
+            return num
+        }
+        / "" {
+            return 1
         }
 
 //
