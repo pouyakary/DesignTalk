@@ -61,8 +61,7 @@ namespace Shapes.DesignTalk.Core {
             console.log( selectedShapes )
 
             const manipulatedShapes =
-                selectedShapes.map( shape =>
-                    manipulationFunction( shape ) )
+                manipulationFunction( selectedShapes )
             const newState =
                 mergeShapes( state, manipulatedShapes )
 
@@ -105,14 +104,14 @@ namespace Shapes.DesignTalk.Core {
             const queryFunction =
                 Core.QueryCompiler.generate( command.query, state )
             const manipulationFunction =
-                ( shape: Shape ) => shape
+                ( shapes: Shape[ ] ) => shapes
 
             return {
+                manipulationFunction,
                 queryFunction,
-                manipulationFunction
             }
         }
- 
+
     // ────────────────────────────────────────────────────────────────────────────────
 
 }

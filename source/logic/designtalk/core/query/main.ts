@@ -22,6 +22,9 @@ namespace Shapes.DesignTalk.Core.QueryCompiler {
         type ComparisionFunction =
             ( a: number, b: number ) => boolean
 
+        type SortingOperatorFunction =
+            (a: number, b: number ) => number
+
     //
     // ─── GENERATE QUERY FUNCTION ────────────────────────────────────────────────────
     //
@@ -61,28 +64,30 @@ namespace Shapes.DesignTalk.Core.QueryCompiler {
             for ( const condition of query.conditions )
                 checkers.push( generateConditionChecker( condition ) )
 
-            return generateQueryFunction( checkers )
+            return generateQueryFunction( query, checkers )
         }
 
     //
     // ─── GENERATE QUERY FUNCTION BODY ───────────────────────────────────────────────
     //
 
-        function generateQueryFunction ( checkers: QueryCheckerOrNull[ ] ): QueryFunction {
+        function generateQueryFunction ( query: Query, checkers: QueryCheckerOrNull[ ] ): QueryFunction {
 
             const effectiveCheckers: QueryChecker[ ] =
                 checkers.filter( checker =>
                     checker !== null ) as QueryChecker[ ]
 
-            const filterFunction = ( shape: Storage.Shape ) => {
+            const checker = ( shape: Storage.Shape ) => {
                 for ( const checker of effectiveCheckers )
                     if ( !checker( shape ) )
                         return false
                 return true
             }
 
-            return ( shapes: Storage.Shape[ ] ) =>
-                shapes.filter( filterFunction )
+            const rangedFilterFunction =
+                generateRangeFilterFunction( query, checker )
+
+            return rangedFilterFunction
         }
 
     //
@@ -222,6 +227,51 @@ namespace Shapes.DesignTalk.Core.QueryCompiler {
                     )
 
             return functionWithNegationApplied
+        }
+
+    //
+    // ─── GENERATE RANGE SELECTORN FUNCTION ──────────────────────────────────────────
+    //
+
+        function generateRangeFilterFunction ( query: Query, checker: QueryChecker ) {
+            switch ( query.range.mode ) {
+                case "biggest":
+                    return createSmalletsBiggestRangeSelector(
+                        query, checker, (a: number, b: number) => a - b
+                    )
+
+                case "smallest":
+                    return createSmalletsBiggestRangeSelector(
+                        query, checker, (a: number, b: number) => a + b
+                    )
+
+                case "all":
+                default:
+                    return ( shapes: Shape[ ] ) =>
+                        shapes.filter( checker )
+            }
+        }
+
+    //
+    // ─── CREATE RANGED FILTER ON SMALLESTS BIGGEST ──────────────────────────────────
+    //
+
+        function createSmalletsBiggestRangeSelector ( query: Query,
+                                                    checker: QueryChecker,
+                                                   operator: SortingOperatorFunction ) {
+
+            return ( shapes: Shape[ ] ) => {
+                const filteredShapes =
+                    shapes.filter( checker )
+
+                const rangeFilteredShapes =
+                    filteredShapes
+                        .sort(( a, b ) =>
+                            operator(( b.width * b.height ), ( a.width * b.height )))
+                        .splice( 0, query.range.range )
+
+                return rangeFilteredShapes
+            }
         }
 
     // ────────────────────────────────────────────────────────────────────────────────

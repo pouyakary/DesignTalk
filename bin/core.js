@@ -809,17 +809,18 @@ var Shapes;
                     ];
                     for (const condition of query.conditions)
                         checkers.push(generateConditionChecker(condition));
-                    return generateQueryFunction(checkers);
+                    return generateQueryFunction(query, checkers);
                 }
-                function generateQueryFunction(checkers) {
+                function generateQueryFunction(query, checkers) {
                     const effectiveCheckers = checkers.filter(checker => checker !== null);
-                    const filterFunction = (shape) => {
+                    const checker = (shape) => {
                         for (const checker of effectiveCheckers)
                             if (!checker(shape))
                                 return false;
                         return true;
                     };
-                    return (shapes) => shapes.filter(filterFunction);
+                    const rangedFilterFunction = generateRangeFilterFunction(query, checker);
+                    return rangedFilterFunction;
                 }
                 function generateChackerForColor(query) {
                     if (query.color === "all")
@@ -894,6 +895,26 @@ var Shapes;
                         : comparisionFunction);
                     return functionWithNegationApplied;
                 }
+                function generateRangeFilterFunction(query, checker) {
+                    switch (query.range.mode) {
+                        case "biggest":
+                            return createSmalletsBiggestRangeSelector(query, checker, (a, b) => a - b);
+                        case "smallest":
+                            return createSmalletsBiggestRangeSelector(query, checker, (a, b) => a + b);
+                        case "all":
+                        default:
+                            return (shapes) => shapes.filter(checker);
+                    }
+                }
+                function createSmalletsBiggestRangeSelector(query, checker, operator) {
+                    return (shapes) => {
+                        const filteredShapes = shapes.filter(checker);
+                        const rangeFilteredShapes = filteredShapes
+                            .sort((a, b) => operator((b.width * b.height), (a.width * b.height)))
+                            .splice(0, query.range.range);
+                        return rangeFilteredShapes;
+                    };
+                }
             })(QueryCompiler = Core.QueryCompiler || (Core.QueryCompiler = {}));
         })(Core = DesignTalk.Core || (DesignTalk.Core = {}));
     })(DesignTalk = Shapes.DesignTalk || (Shapes.DesignTalk = {}));
@@ -925,7 +946,7 @@ var Shapes;
                 const { queryFunction, manipulationFunction } = compileCommand(command, state);
                 const selectedShapes = queryFunction(state.shapes);
                 console.log(selectedShapes);
-                const manipulatedShapes = selectedShapes.map(shape => manipulationFunction(shape));
+                const manipulatedShapes = manipulationFunction(selectedShapes);
                 const newState = mergeShapes(state, manipulatedShapes);
                 return newState;
             }
@@ -946,10 +967,10 @@ var Shapes;
             }
             function compileCommand(command, state) {
                 const queryFunction = Core.QueryCompiler.generate(command.query, state);
-                const manipulationFunction = (shape) => shape;
+                const manipulationFunction = (shapes) => shapes;
                 return {
+                    manipulationFunction,
                     queryFunction,
-                    manipulationFunction
                 };
             }
         })(Core = DesignTalk.Core || (DesignTalk.Core = {}));
