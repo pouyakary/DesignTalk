@@ -55,7 +55,12 @@ namespace Shapes.SpeachCommandEngine {
             Storage.setState( state => {
                 state.speachRecognition.recognizer!.stop( )
 
-                return { ...state,
+                const newState =
+                    DesignTalk.runWithGivenState(
+                        state.speachRecognition.currentText, state
+                    )
+
+                return { ...newState,
                     speachRecognition: { ...state.speachRecognition,
                         isRecording:    false,
                         recognizer:     null,
@@ -74,7 +79,7 @@ namespace Shapes.SpeachCommandEngine {
 
             recognizer.continuous = true
             recognizer.onresult = event => onResult( event )
-        
+
             return recognizer
         }
 

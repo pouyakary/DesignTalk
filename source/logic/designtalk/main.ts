@@ -18,6 +18,23 @@ namespace Shapes.DesignTalk {
             }
         }
 
+    //
+    // ─── RUN ────────────────────────────────────────────────────────────────────────
+    //
+
+        export function runWithGivenState ( code: string, state: Storage.Model ) {
+            return DesignTalk.Core.run( code, state )
+        }
+
+    //
+    // ─── RUN AND APPL ───────────────────────────────────────────────────────────────
+    //
+
+        export function runAndApply ( code: string ) {
+            Storage.setState( state =>
+                DesignTalk.Core.run( code, state ))
+        }
+
     // ────────────────────────────────────────────────────────────────────────────────
 
 }

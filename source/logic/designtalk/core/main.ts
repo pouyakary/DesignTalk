@@ -24,15 +24,16 @@ namespace Shapes.DesignTalk.Core {
     // ─── RUN ────────────────────────────────────────────────────────────────────────
     //
 
-        export function run ( code: string ) {
+        export function run ( code: string, state: Storage.Model ) {
             try {
                 const commands =
                     parse( code )
 
-                executeCommands( commands )
+                return executeCommands( commands, state )
 
             } catch ( error ) {
                 console.error( error )
+                return state
             }
         }
 
@@ -40,13 +41,10 @@ namespace Shapes.DesignTalk.Core {
     // ─── RUN ────────────────────────────────────────────────────────────────────────
     //
 
-        function executeCommands ( commands: Command[ ] ) {
-            Storage.setState( state => {
-                for ( const command of commands )
-                    state = runCommand( command, state )
-
-                return state
-            })
+        function executeCommands ( commands: Command[ ], state: Storage.Model ) {
+            for ( const command of commands )
+                state = runCommand( command, state )
+            return state
         }
 
     //

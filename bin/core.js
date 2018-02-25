@@ -213,7 +213,8 @@ var Shapes;
         function end() {
             Shapes.Storage.setState(state => {
                 state.speachRecognition.recognizer.stop();
-                return Object.assign({}, state, { speachRecognition: Object.assign({}, state.speachRecognition, { isRecording: false, recognizer: null, currentText: "" }) });
+                const newState = Shapes.DesignTalk.runWithGivenState(state.speachRecognition.currentText, state);
+                return Object.assign({}, newState, { speachRecognition: Object.assign({}, state.speachRecognition, { isRecording: false, recognizer: null, currentText: "" }) });
             });
         }
         function createNewRecognizer() {
@@ -805,6 +806,14 @@ var Shapes;
             }
         }
         DesignTalk.isParsable = isParsable;
+        function runWithGivenState(code, state) {
+            return DesignTalk.Core.run(code, state);
+        }
+        DesignTalk.runWithGivenState = runWithGivenState;
+        function runAndApply(code) {
+            Shapes.Storage.setState(state => DesignTalk.Core.run(code, state));
+        }
+        DesignTalk.runAndApply = runAndApply;
     })(DesignTalk = Shapes.DesignTalk || (Shapes.DesignTalk = {}));
 })(Shapes || (Shapes = {}));
 var Shapes;
@@ -972,22 +981,21 @@ var Shapes;
     (function (DesignTalk) {
         var Core;
         (function (Core) {
-            function run(code) {
+            function run(code, state) {
                 try {
                     const commands = Core.parse(code);
-                    executeCommands(commands);
+                    return executeCommands(commands, state);
                 }
                 catch (error) {
                     console.error(error);
+                    return state;
                 }
             }
             Core.run = run;
-            function executeCommands(commands) {
-                Shapes.Storage.setState(state => {
-                    for (const command of commands)
-                        state = runCommand(command, state);
-                    return state;
-                });
+            function executeCommands(commands, state) {
+                for (const command of commands)
+                    state = runCommand(command, state);
+                return state;
             }
             function runCommand(command, state) {
                 const { queryFunction, manipulationFunction } = compileCommand(command, state);
