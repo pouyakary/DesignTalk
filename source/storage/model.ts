@@ -37,6 +37,7 @@ namespace Shapes.Storage {
         export interface Shape {
             zIndex:     number
             id:         string
+            remove:     boolean,
             type:       ShapeType
             color:      string
             width:      number

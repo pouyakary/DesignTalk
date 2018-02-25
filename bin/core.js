@@ -70,6 +70,7 @@ var Shapes;
             return {
                 color: color,
                 id: Shapes.generateKey(),
+                remove: false,
                 type: type,
                 width: 100,
                 height: 100,

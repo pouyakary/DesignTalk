@@ -73,6 +73,7 @@ namespace Shapes.Storage {
             return {
                 color:      color,
                 id:         generateKey( ),
+                remove:     false,
                 type:       type,
                 width:      100,
                 height:     100,
