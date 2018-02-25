@@ -21,11 +21,19 @@ namespace Shapes.Storage {
     // ─── SUBSCRIPTIONS ──────────────────────────────────────────────────────────────
     //
 
-        type TStorageSubscriber = ( model: Model ) => void
+        type StorageSubscriber =
+            ( model: Model ) => void
 
-        const StorageSubcriptions: TStorageSubscriber[ ] = [
+        const StorageSubcriptions: StorageSubscriber[ ] = [
             Render.renderApp,
         ]
+
+    //
+    // ─── ON CHANGE STORAGE MODIFIERS ────────────────────────────────────────────────
+    //
+
+        type OnStateChangeManipulationFunction =
+            ( state: Model ) => Model
 
     //
     // ─── SET INITAL STATE ───────────────────────────────────────────────────────────
