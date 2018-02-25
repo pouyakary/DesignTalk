@@ -32,8 +32,11 @@ namespace Shapes.Storage {
     // ─── ON CHANGE STORAGE MODIFIERS ────────────────────────────────────────────────
     //
 
-        type OnStateChangeManipulationFunction =
+        export type OnStateChangeManipulationFunction =
             ( state: Model ) => Model
+
+        const OnStateChangeManipulationFunctions =
+            new Set<OnStateChangeManipulationFunction>( )
 
     //
     // ─── SET INITAL STATE ───────────────────────────────────────────────────────────
@@ -82,8 +85,11 @@ namespace Shapes.Storage {
         export function setState ( setter: TStateSetter ) {
             const lastState =
                 getState( )
-            const newState =
+            let newState =
                 setter( lastState )
+
+            for ( const manipulator of OnStateChangeManipulationFunctions )
+                newState = manipulator( newState )
 
             StorageContainer.push( newState )
 
@@ -103,6 +109,14 @@ namespace Shapes.Storage {
 
                 runSubscribersOnChange( newTopOfTheStack )
             }
+        }
+
+    //
+    // ─── ADD ON STATE CHANGE MANIPULATION FUNCTION ──────────────────────────────────
+    //
+
+        export function addManipulationFunction ( manipulator: OnStateChangeManipulationFunction ) {
+            OnStateChangeManipulationFunctions.add( manipulator )
         }
 
     // ────────────────────────────────────────────────────────────────────────────────

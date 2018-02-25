@@ -706,6 +706,7 @@ var Shapes;
         const StorageSubcriptions = [
             Shapes.Render.renderApp,
         ];
+        const OnStateChangeManipulationFunctions = new Set();
         function initStorage() {
             StorageContainer.push(Storage.createInitialModelState());
             setTimeout(() => runSubscribersOnChange(getState()), 100);
@@ -725,7 +726,9 @@ var Shapes;
         }
         function setState(setter) {
             const lastState = getState();
-            const newState = setter(lastState);
+            let newState = setter(lastState);
+            for (const manipulator of OnStateChangeManipulationFunctions)
+                newState = manipulator(newState);
             StorageContainer.push(newState);
             runSubscribersOnChange(newState);
         }
@@ -738,6 +741,10 @@ var Shapes;
             }
         }
         Storage.undoState = undoState;
+        function addManipulationFunction(manipulator) {
+            OnStateChangeManipulationFunctions.add(manipulator);
+        }
+        Storage.addManipulationFunction = addManipulationFunction;
     })(Storage = Shapes.Storage || (Shapes.Storage = {}));
 })(Shapes || (Shapes = {}));
 var Shapes;
@@ -759,8 +766,26 @@ var Shapes;
 })(Shapes || (Shapes = {}));
 var Shapes;
 (function (Shapes) {
+    var StateManipulotrs;
+    (function (StateManipulotrs) {
+        StateManipulotrs.ShapeDeleteManipulator = (state) => (Object.assign({}, state, { shapes: state.shapes.filter(x => !x.remove) }));
+    })(StateManipulotrs = Shapes.StateManipulotrs || (Shapes.StateManipulotrs = {}));
+})(Shapes || (Shapes = {}));
+var Shapes;
+(function (Shapes) {
+    var StateManipulotrs;
+    (function (StateManipulotrs) {
+        function init() {
+            Shapes.Storage.addManipulationFunction(StateManipulotrs.ShapeDeleteManipulator);
+        }
+        StateManipulotrs.init = init;
+    })(StateManipulotrs = Shapes.StateManipulotrs || (Shapes.StateManipulotrs = {}));
+})(Shapes || (Shapes = {}));
+var Shapes;
+(function (Shapes) {
     window.onload = () => {
         Shapes.Storage.initStorage();
+        Shapes.StateManipulotrs.init();
         Shapes.MouseDriver.init();
         Shapes.ScreenDriver.init();
         window.onresize = () => Shapes.Render.renderOnResize();
