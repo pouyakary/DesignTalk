@@ -34,8 +34,10 @@
     DeleteCommand
         = ( "delete" / "remove" ) _ query: Query {
             return {
-                command:    "remove",
                 query,
+                instruction: {
+                    command: "remove",
+                }
             }
         }
 
@@ -46,19 +48,25 @@
     MakeCommands
         = "make" _ query: Query _ options: ResizeCommandOptions {
             return {
-                command:    "resize",
-                direction:  "both",
                 query,
-                ...options,
+
+                instruction: {
+                    command:    "resize",
+                    direction:  "both",
+                    ...options,
+                }
             }
         }
         / "make" _ direction: ( "width" / "height" ) _ "of" _ query: Query
           _ options: ResizeCommandOptions {
               return {
-                  command:      "resize",
-                  direction,
                   query,
-                  ...options,
+
+                  instruction: {
+                      command:    "resize",
+                      direction,
+                      ...options,
+                  }
               }
           }
 

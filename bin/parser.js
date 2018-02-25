@@ -164,18 +164,23 @@ DesignTalkParser = /*
         peg$c12 = peg$literalExpectation("remove", false),
         peg$c13 = function(query) {
                     return {
-                        command:    "remove",
                         query,
+                        instruction: {
+                            command: "remove",
+                        }
                     }
                 },
         peg$c14 = "make",
         peg$c15 = peg$literalExpectation("make", false),
         peg$c16 = function(query, options) {
                     return {
-                        command:    "resize",
-                        direction:  "both",
                         query,
-                        ...options,
+
+                        instruction: {
+                            command:    "resize",
+                            direction:  "both",
+                            ...options,
+                        }
                     }
                 },
         peg$c17 = "width",
@@ -186,10 +191,13 @@ DesignTalkParser = /*
         peg$c22 = peg$literalExpectation("of", false),
         peg$c23 = function(direction, query, options) {
                       return {
-                          command:      "resize",
-                          direction,
                           query,
-                          ...options,
+
+                          instruction: {
+                              command:    "resize",
+                              direction,
+                              ...options,
+                          }
                       }
                   },
         peg$c24 = "bigger",

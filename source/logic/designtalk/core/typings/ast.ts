@@ -16,29 +16,36 @@ namespace Shapes.DesignTalk.Core {
     // ─── COMMANDS ───────────────────────────────────────────────────────────────────
     //
 
-        export type Command
-            = RemoveCommand
-            | ResizeCommand
+        export interface Command {
+            query:          Query
+            instruction:    InstructionBase
+        }
 
     //
     // ─── REMOVE COMMAND ─────────────────────────────────────────────────────────────
     //
 
-        export interface RemoveCommand {
+        export interface RemoveInstruction extends InstructionBase {
             command:    "remove"
-            query:      Query
         }
 
     //
     // ─── RESIZE ─────────────────────────────────────────────────────────────────────
     //
 
-        export interface ResizeCommand {
-            command:    "resizes"
+        export interface ResizeInstruction extends InstructionBase {
+            command:    "resize"
             direction:  "both" | "width" | "height"
-            query:      Query
             operator:   "smaller" | "bigger"
             size:       Size1D
+        }
+
+    //
+    // ─── INSTRUCTION BASE ───────────────────────────────────────────────────────────
+    //
+
+        export interface InstructionBase {
+            command:    "resize" | "remove"
         }
 
     //

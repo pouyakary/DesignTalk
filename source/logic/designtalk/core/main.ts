@@ -5,6 +5,7 @@
 
 /// <reference path="../../../storage/storage" />
 /// <reference path="./query/main.ts" />
+/// <reference path="./commands/main.ts" />
 /// <reference path="parser" />
 
 namespace Shapes.DesignTalk.Core {
@@ -104,7 +105,7 @@ namespace Shapes.DesignTalk.Core {
             const queryFunction =
                 Core.QueryCompiler.generate( command.query, state )
             const manipulationFunction =
-                ( shapes: Shape[ ] ) => shapes
+                Core.CommandCompiler.generate( command.instruction )
 
             return {
                 manipulationFunction,

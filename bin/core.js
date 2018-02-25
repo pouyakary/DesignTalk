@@ -951,6 +951,27 @@ var Shapes;
     (function (DesignTalk) {
         var Core;
         (function (Core) {
+            var CommandCompiler;
+            (function (CommandCompiler) {
+                function generate(instruction) {
+                    switch (instruction.command) {
+                        case "remove":
+                            return CommandCompiler.generateRemoveIntruction(instruction);
+                        default:
+                            return (shapes) => shapes;
+                    }
+                }
+                CommandCompiler.generate = generate;
+            })(CommandCompiler = Core.CommandCompiler || (Core.CommandCompiler = {}));
+        })(Core = DesignTalk.Core || (DesignTalk.Core = {}));
+    })(DesignTalk = Shapes.DesignTalk || (Shapes.DesignTalk = {}));
+})(Shapes || (Shapes = {}));
+var Shapes;
+(function (Shapes) {
+    var DesignTalk;
+    (function (DesignTalk) {
+        var Core;
+        (function (Core) {
             function run(code) {
                 try {
                     const commands = Core.parse(code);
@@ -993,7 +1014,7 @@ var Shapes;
             }
             function compileCommand(command, state) {
                 const queryFunction = Core.QueryCompiler.generate(command.query, state);
-                const manipulationFunction = (shapes) => shapes;
+                const manipulationFunction = Core.CommandCompiler.generate(command.instruction);
                 return {
                     manipulationFunction,
                     queryFunction,
@@ -1022,6 +1043,22 @@ var Shapes;
                 return points * Shapes.ScreenDriver.PointSize;
             }
             Core.pointToPixel = pointToPixel;
+        })(Core = DesignTalk.Core || (DesignTalk.Core = {}));
+    })(DesignTalk = Shapes.DesignTalk || (Shapes.DesignTalk = {}));
+})(Shapes || (Shapes = {}));
+var Shapes;
+(function (Shapes) {
+    var DesignTalk;
+    (function (DesignTalk) {
+        var Core;
+        (function (Core) {
+            var CommandCompiler;
+            (function (CommandCompiler) {
+                function generateRemoveIntruction(instruction) {
+                    return (shapes) => shapes.map(shape => (Object.assign({}, shape, { remove: true })));
+                }
+                CommandCompiler.generateRemoveIntruction = generateRemoveIntruction;
+            })(CommandCompiler = Core.CommandCompiler || (Core.CommandCompiler = {}));
         })(Core = DesignTalk.Core || (DesignTalk.Core = {}));
     })(DesignTalk = Shapes.DesignTalk || (Shapes.DesignTalk = {}));
 })(Shapes || (Shapes = {}));
