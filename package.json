@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc; npm run compile-parser",
-    "compile-parser": "pegjs -o bin/parser.js --format globals -e DesignTalkParser -- source/logic/designtalk/designtalk.pegjs"
+    "compile-parser": "pegjs -o bin/parser.js --format globals -e DesignTalkParser -- source/logic/designtalk/designtalk.pegjs",
+    "start": "tsc -w && jekyll server",
   },
   "author": "",
   "license": "ISC",
