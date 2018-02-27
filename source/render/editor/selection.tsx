@@ -373,7 +373,7 @@ namespace Shapes.Render.SelectionTool {
                     const newShapes =
                         state.shapes.map( x => ({
                             ...x,
-                            color: ( x.id === shape.id ? color : x.color) as Storage.ShapeColor,
+                            color: ( x.id === shape.id ? color : x.color ) as Storage.ShapeColor,
                         }))
 
                     return { ...state, shapes: newShapes }
