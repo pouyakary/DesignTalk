@@ -34,7 +34,7 @@ namespace Shapes.Render.SelectionTool {
     //
 
         function computeHaskligBold12TextLength ( text: string ) {
-            return text.length * 7.5 + 10
+            return text.length * 7.5 + 11
         }
 
     //
@@ -47,13 +47,14 @@ namespace Shapes.Render.SelectionTool {
                     shape.id === state.selectedId )!
 
             // order is important
-            const guideLines    = createGuideLines( shape, state )
-            const tooltip       = createToolTipShape( shape, state )
-            const rectangle     = createSelectionRectangle( shape )
-            const resizeHandle  = createResizeHandle( shape, state )
-            const deleteButton  = createDeleteButton( shape, state )
-            const colorButtons  = createColorButtons( shape, state )
-            const shapeButtons  = changeShapeModelButtons( shape, state )
+            const guideLines        = createGuideLines( shape, state )
+            const tooltip           = createToolTipShape( shape, state )
+            const rectangle         = createSelectionRectangle( shape )
+            const resizeHandle      = createResizeHandle( shape, state )
+            const deleteButton      = createDeleteButton( shape, state )
+            const duplicateButton   = createDuplicateButton( shape, state )
+            const colorButtons      = createColorButtons( shape, state )
+            const shapeButtons      = changeShapeModelButtons( shape, state )
 
             return [
                 ...guideLines,
@@ -61,6 +62,7 @@ namespace Shapes.Render.SelectionTool {
                 rectangle,
                 resizeHandle,
                 deleteButton,
+                duplicateButton,
                 colorButtons,
                 ...shapeButtons,
             ]
@@ -296,6 +298,18 @@ namespace Shapes.Render.SelectionTool {
             }
 
             return createButton( shape, state, 'DEL', 0, 0, onDeleteButtonClicked )
+        }
+
+    //
+    // ─── DUPLICATE BUTTON ───────────────────────────────────────────────────────────
+    //
+
+        function createDuplicateButton ( shape: Storage.Shape, state: Storage.Model ) {
+            function onDuplicateButtonClicked ( ) {
+                Logic.Model.duplicateShape( )
+            }
+
+            return createButton( shape, state, 'DUP', 0, -105, onDuplicateButtonClicked )
         }
 
     //

@@ -402,7 +402,7 @@ var Shapes;
             }
             SelectionTool.render = render;
             function computeHaskligBold12TextLength(text) {
-                return text.length * 7.5 + 10;
+                return text.length * 7.5 + 11;
             }
             function createSelectionTool(state) {
                 const shape = state.shapes.find(shape => shape.id === state.selectedId);
@@ -411,6 +411,7 @@ var Shapes;
                 const rectangle = createSelectionRectangle(shape);
                 const resizeHandle = createResizeHandle(shape, state);
                 const deleteButton = createDeleteButton(shape, state);
+                const duplicateButton = createDuplicateButton(shape, state);
                 const colorButtons = createColorButtons(shape, state);
                 const shapeButtons = changeShapeModelButtons(shape, state);
                 return [
@@ -419,6 +420,7 @@ var Shapes;
                     rectangle,
                     resizeHandle,
                     deleteButton,
+                    duplicateButton,
                     colorButtons,
                     ...shapeButtons,
                 ];
@@ -517,6 +519,12 @@ var Shapes;
                     Shapes.Storage.setState(state => (Object.assign({}, state, { shapes: newShapes, selectedId: null, mouseMode: Shapes.Storage.MouseMode.Move, showLineGuides: false })));
                 }
                 return createButton(shape, state, 'DEL', 0, 0, onDeleteButtonClicked);
+            }
+            function createDuplicateButton(shape, state) {
+                function onDuplicateButtonClicked() {
+                    Shapes.Logic.Model.duplicateShape();
+                }
+                return createButton(shape, state, 'DUP', 0, -105, onDuplicateButtonClicked);
             }
             function createButton(shape, state, buttonText, xDiff, yDiff, action) {
                 if (state.showLineGuides)
