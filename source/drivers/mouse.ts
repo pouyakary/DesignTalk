@@ -155,8 +155,13 @@ namespace Shapes.MouseDriver {
     //
 
         function mouseClickEvents ( ) {
-            document.body.onmousedown = ( ) => Clicked = true
-            document.body.onmouseup = ( ) => Clicked = false
+            document.body.onmousedown = event => {
+                Clicked = true
+            }
+            document.body.onmouseup = event => {
+                updateMousePosition( event )
+                Clicked = false
+            }
         }
 
     //
@@ -166,6 +171,7 @@ namespace Shapes.MouseDriver {
         function onRightClick ( ) {
             document.oncontextmenu = event => {
                 event.preventDefault( )
+                updateMousePosition( event )
                 SpeachCommandEngine.trigger( )
             }
         }
