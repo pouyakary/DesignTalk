@@ -67,6 +67,9 @@ namespace Shapes.Render.HTMLLayers.RightClick {
                             borderRadius:       iconSize / 2,
                             backgroundColor:    "red",
                         }} />
+
+
+                        { createButton("new shape", model, 120, 50, ( ) => { } ) }
                     </div>
         }
 
@@ -93,6 +96,7 @@ namespace Shapes.Render.HTMLLayers.RightClick {
                         borderWidth:        "2px",
                         borderStyle:        "solid",
                         borderColor:        "black",
+                        userSelect:         "none",
                     }}>
 
                         { /* Disply for the Text */ }
@@ -114,6 +118,36 @@ namespace Shapes.Render.HTMLLayers.RightClick {
                                 : "Can't Understand"
                             }
                         </div>
+                    </div>
+        }
+
+    //
+    // ─── BUTTON ─────────────────────────────────────────────────────────────────────
+    //
+
+        function createButton ( name: string, state: Storage.Model,
+                                XX: number, YY: number, onClickFunction: ( ) => void ) {
+
+            const { mouseX, mouseY } =
+                state.speachRecognition
+
+            const functionForClick = ( ) => {
+                onClickFunction( )
+            }
+
+            return  <div onClick = { functionForClick } style = {{
+                        backgroundColor:    "#eee",
+                        fontFamily:         "HaskligBold",
+                        fontSize:           12,
+                        border:             "2px solid black",
+                        padding:            "3px 5px 5px 5px",
+                        position:           "fixed",
+                        left:               mouseX - XX,
+                        top:                mouseY - YY,
+                        textTransform:      "uppercase",
+                        WebkitUserSelect:   "none",
+                    }}>
+                        { name }
                     </div>
         }
 

@@ -622,7 +622,8 @@ var Shapes;
                                 height: iconSize,
                                 borderRadius: iconSize / 2,
                                 backgroundColor: "red",
-                            } }));
+                            } }),
+                        createButton("new shape", model, 120, 50, () => { }));
                 }
                 function createTextView(model) {
                     const { mouseX, mouseY, currentText } = model.speachRecognition;
@@ -641,6 +642,7 @@ var Shapes;
                             borderWidth: "2px",
                             borderStyle: "solid",
                             borderColor: "black",
+                            userSelect: "none",
                         } },
                         React.createElement("div", { style: {
                                 padding: "5px 10px 7px 10px",
@@ -653,6 +655,24 @@ var Shapes;
                             } }, Shapes.DesignTalk.isParsable(currentText)
                             ? "Looks Good"
                             : "Can't Understand"));
+                }
+                function createButton(name, state, XX, YY, onClickFunction) {
+                    const { mouseX, mouseY } = state.speachRecognition;
+                    const functionForClick = () => {
+                        onClickFunction();
+                    };
+                    return React.createElement("div", { onClick: functionForClick, style: {
+                            backgroundColor: "#eee",
+                            fontFamily: "HaskligBold",
+                            fontSize: 12,
+                            border: "2px solid black",
+                            padding: "3px 5px 5px 5px",
+                            position: "fixed",
+                            left: mouseX - XX,
+                            top: mouseY - YY,
+                            textTransform: "uppercase",
+                            WebkitUserSelect: "none",
+                        } }, name);
                 }
             })(RightClick = HTMLLayers.RightClick || (HTMLLayers.RightClick = {}));
         })(HTMLLayers = Render.HTMLLayers || (Render.HTMLLayers = {}));
