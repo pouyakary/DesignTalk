@@ -18,15 +18,42 @@ namespace Shapes.Logic.Model {
                 const newMaxZIndex =
                     state.maxZIndex + 1
                 const newShape =
-                    Storage.createShape( newMaxZIndex )
+                    Storage.createRandomShape( newMaxZIndex )
 
                 state.shapes.push( newShape )
 
                 return { ...state,
-                    selectedId: newShape.id,
-                    mouseMode: Storage.MouseMode.Move,
-                    maxZIndex: newMaxZIndex,
-                    showLineGuides: false,
+                    selectedId:         newShape.id,
+                    mouseMode:          Storage.MouseMode.Move,
+                    maxZIndex:          newMaxZIndex,
+                    showLineGuides:     false,
+                }
+            })
+        }
+
+    //
+    // ─── DUPLICATE SHAPE ────────────────────────────────────────────────────────────
+    //
+
+        export function duplicateShape ( ) {
+            Storage.setState( state => {
+                if ( state.selectedId === null )
+                    return state
+
+                const newMaxZIndex =
+                    state.maxZIndex + 1
+                const currentShape =
+                    state.shapes.find( shape => shape.id === state.selectedId )!
+                const newShape =
+                    Storage.duplicateShape( newMaxZIndex, currentShape )
+
+                state.shapes.push( newShape )
+
+                return { ...state,
+                    selectedId:         newShape.id,
+                    mouseMode:          Storage.MouseMode.Move,
+                    maxZIndex:          newMaxZIndex,
+                    showLineGuides:     false,
                 }
             })
         }

@@ -35,7 +35,7 @@ var Shapes;
         function createInitialModelState() {
             const someShapes = new Array();
             for (let counter = 0; counter < 10; counter++)
-                someShapes.push(createShape(counter));
+                someShapes.push(createRandomShape(counter));
             return {
                 shapes: someShapes,
                 showLineGuides: false,
@@ -63,7 +63,7 @@ var Shapes;
                 y: randomSize(window.innerHeight),
             };
         }
-        function createShape(zIndex) {
+        function createRandomShape(zIndex) {
             const color = chooseRandom(['red', 'black', 'blue']);
             const type = chooseRandom(['rect', 'circle']);
             const { x, y } = getRandomCoordinates();
@@ -79,7 +79,22 @@ var Shapes;
                 zIndex: zIndex,
             };
         }
-        Storage.createShape = createShape;
+        Storage.createRandomShape = createRandomShape;
+        function duplicateShape(zIndex, baseShape) {
+            const { x, y } = getRandomCoordinates();
+            return {
+                color: baseShape.color,
+                id: Shapes.generateKey(),
+                remove: false,
+                type: baseShape.type,
+                width: baseShape.width,
+                height: baseShape.height,
+                x: x,
+                y: y,
+                zIndex: zIndex,
+            };
+        }
+        Storage.duplicateShape = duplicateShape;
     })(Storage = Shapes.Storage || (Shapes.Storage = {}));
 })(Shapes || (Shapes = {}));
 var Shapes;
@@ -610,12 +625,24 @@ var Shapes;
             function createNewShape() {
                 Shapes.Storage.setState(state => {
                     const newMaxZIndex = state.maxZIndex + 1;
-                    const newShape = Shapes.Storage.createShape(newMaxZIndex);
+                    const newShape = Shapes.Storage.createRandomShape(newMaxZIndex);
                     state.shapes.push(newShape);
                     return Object.assign({}, state, { selectedId: newShape.id, mouseMode: Shapes.Storage.MouseMode.Move, maxZIndex: newMaxZIndex, showLineGuides: false });
                 });
             }
             Model.createNewShape = createNewShape;
+            function duplicateShape() {
+                Shapes.Storage.setState(state => {
+                    if (state.selectedId === null)
+                        return state;
+                    const newMaxZIndex = state.maxZIndex + 1;
+                    const currentShape = state.shapes.find(shape => shape.id === state.selectedId);
+                    const newShape = Shapes.Storage.duplicateShape(newMaxZIndex, currentShape);
+                    state.shapes.push(newShape);
+                    return Object.assign({}, state, { selectedId: newShape.id, mouseMode: Shapes.Storage.MouseMode.Move, maxZIndex: newMaxZIndex, showLineGuides: false });
+                });
+            }
+            Model.duplicateShape = duplicateShape;
         })(Model = Logic.Model || (Logic.Model = {}));
     })(Logic = Shapes.Logic || (Shapes.Logic = {}));
 })(Shapes || (Shapes = {}));

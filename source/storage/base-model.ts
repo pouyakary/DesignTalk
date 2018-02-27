@@ -16,7 +16,7 @@ namespace Shapes.Storage {
             const someShapes = new Array<Shape>( )
 
             for ( let counter = 0; counter < 10; counter++ )
-                someShapes.push( createShape( counter ) )
+                someShapes.push( createRandomShape( counter ) )
 
             return {
                 shapes:                 someShapes,
@@ -62,9 +62,9 @@ namespace Shapes.Storage {
     // ─── CREATE SHAPE ───────────────────────────────────────────────────────────────
     //
 
-        export function createShape ( zIndex: number ): Shape {
+        export function createRandomShape ( zIndex: number ): Shape {
             const color =
-                chooseRandom([ 'red', 'black', 'blue' ])
+                chooseRandom([ 'red', 'black', 'blue' ]) as ShapeColor
             const type =
                 chooseRandom([ 'rect', 'circle' ]) as ShapeType
             const { x, y } =
@@ -82,6 +82,26 @@ namespace Shapes.Storage {
                 zIndex:     zIndex,
             }
         }
+
+
+        export function duplicateShape ( zIndex: number, baseShape: Shape ): Shape {
+
+            const { x, y } =
+                getRandomCoordinates( )
+
+            return {
+                color:      baseShape.color,
+                id:         generateKey( ),
+                remove:     false,
+                type:       baseShape.type,
+                width:      baseShape.width,
+                height:     baseShape.height,
+                x:          x,
+                y:          y,
+                zIndex:     zIndex,
+            }
+        }
+
 
     // ────────────────────────────────────────────────────────────────────────────────
 

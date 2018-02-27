@@ -34,12 +34,15 @@ namespace Shapes.Storage {
         export type ShapeType =
             "rect" | "circle"
 
+        export type ShapeColor =
+            "red" | "blue" | "black"
+
         export interface Shape {
             zIndex:     number
             id:         string
             remove:     boolean,
             type:       ShapeType
-            color:      string
+            color:      ShapeColor
             width:      number
             height:     number
             x:          number
