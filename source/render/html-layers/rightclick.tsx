@@ -7,7 +7,7 @@
 /// <reference path="../../globals/key.ts" />
 /// <reference path="../../logic/designtalk/core/parser" />
 
-namespace Shapes.Render.HTMLLayers.SpeachRecognizer {
+namespace Shapes.Render.HTMLLayers.RightClick {
 
     //
     // ─── GLOBAL SETTINGS ────────────────────────────────────────────────────────────
@@ -38,17 +38,17 @@ namespace Shapes.Render.HTMLLayers.SpeachRecognizer {
                         left:               "0",
                         top:                "0",
                         width:              "100vw",
-                        height:             "100vh",     
+                        height:             "100vh",
                     }}>
                         { recordingIcon( model ) }
                         { createTextView( model ) }
                     </div>
         }
-        
+
     //
     // ─── RECORDING DIV ──────────────────────────────────────────────────────────────
     //
-        
+
         function recordingIcon ( model: Storage.Model ) {
             const { mouseX, mouseY } = model.speachRecognition
 

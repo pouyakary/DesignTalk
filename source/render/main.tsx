@@ -7,7 +7,7 @@
 /// <reference path="svg-layers/shapes.tsx" />
 /// <reference path="svg-layers/selection.ts" />
 
-/// <reference path="html-layers/speach.tsx" />
+/// <reference path="html-layers/rightclick.tsx" />
 
 /// <reference path="../storage/model.ts" />
 /// <reference path="../globals/key.ts" />
@@ -47,7 +47,7 @@ namespace Shapes.Render {
 
             return  <div>
                         { createMainSVG( layers ) }
-                        { Render.HTMLLayers.SpeachRecognizer.render( model ) }
+                        { Render.HTMLLayers.RightClick.render( model ) }
                     </div>
         }
 
