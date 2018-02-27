@@ -512,19 +512,21 @@ var Shapes;
                 return React.createElement("circle", { fill: "black", cx: x, cy: y, onMouseEnter: event => setToResize(), onMouseLeave: event => setToMove(), key: Shapes.generateKey(), r: radius });
             }
             function createDeleteButton(shape, state) {
-                if (state.showLineGuides)
-                    return React.createElement("g", { key: Shapes.generateKey() });
-                const buttonText = 'DEL';
-                const textLength = computeHaskligBold12TextLength(buttonText);
-                const x = shape.x - margin - textLength - 10;
-                const y = shape.y - margin;
                 function onDeleteButtonClicked() {
                     const newShapes = state.shapes.filter(element => element.id !== state.selectedId);
                     Shapes.Storage.setState(state => (Object.assign({}, state, { shapes: newShapes, selectedId: null, mouseMode: Shapes.Storage.MouseMode.Move, showLineGuides: false })));
                 }
+                return createButton(shape, state, 'DEL', 0, 0, onDeleteButtonClicked);
+            }
+            function createButton(shape, state, buttonText, xDiff, yDiff, action) {
+                if (state.showLineGuides)
+                    return React.createElement("g", { key: Shapes.generateKey() });
+                const textLength = computeHaskligBold12TextLength(buttonText);
+                const x = shape.x - margin - textLength - 10 - xDiff;
+                const y = shape.y - margin - yDiff;
                 const backgroundRect = React.createElement("rect", { fill: "#eee", x: x, y: y - textBackgroundHeight - 10, width: textLength, height: textBackgroundHeight, strokeWidth: 2, stroke: "black" });
                 const deleteText = React.createElement("text", { fill: "Black", x: x + 6, y: y - textBackgroundHeight + 6, fontFamily: "HaskligBold", fontSize: "12" }, buttonText);
-                const buttonableLayer = React.createElement("rect", { x: x, y: y - textBackgroundHeight - 10, width: textLength, height: textBackgroundHeight, onClick: event => onDeleteButtonClicked(), fill: "transparent" });
+                const buttonableLayer = React.createElement("rect", { x: x, y: y - textBackgroundHeight - 10, width: textLength, height: textBackgroundHeight, onClick: event => action(), fill: "transparent" });
                 return React.createElement("g", { key: Shapes.generateKey() },
                     backgroundRect,
                     deleteText,

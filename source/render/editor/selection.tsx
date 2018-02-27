@@ -283,18 +283,6 @@ namespace Shapes.Render.SelectionTool {
     //
 
         function createDeleteButton ( shape: Storage.Shape, state: Storage.Model ) {
-            if ( state.showLineGuides )
-                return <g key = { generateKey( ) } />
-
-            const buttonText =
-                'DEL'
-            const textLength =
-                computeHaskligBold12TextLength( buttonText )
-            const x =
-                shape.x - margin - textLength - 10
-            const y =
-                shape.y - margin
-
             function onDeleteButtonClicked ( ) {
                 const newShapes = state.shapes.filter( element =>
                     element.id !== state.selectedId )
@@ -306,6 +294,34 @@ namespace Shapes.Render.SelectionTool {
                     showLineGuides: false
                 }))
             }
+
+            return createButton( shape, state, 'DEL', 0, 0, onDeleteButtonClicked )
+        }
+
+    //
+    // ─── CREATE BUTTON ──────────────────────────────────────────────────────────────
+    //
+
+        type OnClickFunction =
+            ( ) => void
+
+        function createButton ( shape: Storage.Shape,
+                                state: Storage.Model,
+                           buttonText: string,
+                                xDiff: number,
+                                yDiff: number,
+                               action: OnClickFunction ) {
+
+            if ( state.showLineGuides )
+                return <g key = { generateKey( ) } />
+
+            const textLength =
+                computeHaskligBold12TextLength( buttonText )
+            const x =
+                shape.x - margin - textLength - 10 - xDiff
+            const y =
+                shape.y - margin - yDiff
+
 
             const backgroundRect =
                 <rect fill = "#eee"
@@ -331,7 +347,7 @@ namespace Shapes.Render.SelectionTool {
                        y = { y - textBackgroundHeight - 10 }
                    width = { textLength }
                   height = { textBackgroundHeight }
-                 onClick = { event => onDeleteButtonClicked( ) }
+                 onClick = { event => action( ) }
                     fill = "transparent" />
 
             return  <g key = { generateKey( ) }>
