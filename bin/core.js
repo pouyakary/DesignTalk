@@ -81,7 +81,6 @@ var Shapes;
         }
         Storage.createRandomShape = createRandomShape;
         function duplicateShape(zIndex, baseShape) {
-            const { x, y } = getRandomCoordinates();
             return {
                 color: baseShape.color,
                 id: Shapes.generateKey(),
@@ -89,8 +88,8 @@ var Shapes;
                 type: baseShape.type,
                 width: baseShape.width,
                 height: baseShape.height,
-                x: x,
-                y: y,
+                x: baseShape.x + 15,
+                y: baseShape.y + 15,
                 zIndex: zIndex,
             };
         }

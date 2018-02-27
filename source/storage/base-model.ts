@@ -85,10 +85,6 @@ namespace Shapes.Storage {
 
 
         export function duplicateShape ( zIndex: number, baseShape: Shape ): Shape {
-
-            const { x, y } =
-                getRandomCoordinates( )
-
             return {
                 color:      baseShape.color,
                 id:         generateKey( ),
@@ -96,8 +92,8 @@ namespace Shapes.Storage {
                 type:       baseShape.type,
                 width:      baseShape.width,
                 height:     baseShape.height,
-                x:          x,
-                y:          y,
+                x:          baseShape.x + 15,
+                y:          baseShape.y + 15,
                 zIndex:     zIndex,
             }
         }
