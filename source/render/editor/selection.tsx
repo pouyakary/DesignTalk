@@ -309,7 +309,8 @@ namespace Shapes.Render.SelectionTool {
                 Logic.Model.duplicateShape( )
             }
 
-            return createButton( shape, state, 'DUP', 0, -105, onDuplicateButtonClicked )
+            return createButton( shape, state, 'DUP', 0,
+                -2 * ( textBackgroundHeight + margin ), onDuplicateButtonClicked )
         }
 
     //
@@ -455,7 +456,7 @@ namespace Shapes.Render.SelectionTool {
             const x =
                 shape.x - 2 * margin - textBackgroundHeight
             const y =
-                shape.y + 1 * ( textBackgroundHeight )
+                shape.y + 2 * ( textBackgroundHeight ) + margin
 
             const mainBackground =
                 <rect x = { x }
@@ -474,8 +475,8 @@ namespace Shapes.Render.SelectionTool {
                 shapeSize / 2
             const shapeIcon =
                 ( shape.type === 'circle'
-                    ? <rect x = { x + 5 } y = { y + 5 } width = { shapeSize } height = { shapeSize } fill="black" />
-                    : <circle cx = { x + 5 + halfShape } cy = { y + 5 + halfShape } r = { shapeSize / 2 }  fill="black" />
+                    ? <rect x = { x + 5 } y = { y + 5 } width = { shapeSize } height = { shapeSize } fill={ shape.color } />
+                    : <circle cx = { x + 5 + halfShape } cy = { y + 5 + halfShape } r = { shapeSize / 2 }  fill={ shape.color } />
                     )
 
 

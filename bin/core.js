@@ -523,7 +523,7 @@ var Shapes;
                 function onDuplicateButtonClicked() {
                     Shapes.Logic.Model.duplicateShape();
                 }
-                return createButton(shape, state, 'DUP', 0, -105, onDuplicateButtonClicked);
+                return createButton(shape, state, 'DUP', 0, -2 * (textBackgroundHeight + margin), onDuplicateButtonClicked);
             }
             function createButton(shape, state, buttonText, xDiff, yDiff, action) {
                 if (state.showLineGuides)
@@ -574,13 +574,13 @@ var Shapes;
                     });
                 }
                 const x = shape.x - 2 * margin - textBackgroundHeight;
-                const y = shape.y + 1 * (textBackgroundHeight);
+                const y = shape.y + 2 * (textBackgroundHeight) + margin;
                 const mainBackground = React.createElement("rect", { x: x, y: y, width: textBackgroundHeight, height: textBackgroundHeight, stroke: "black", key: Shapes.generateKey(), strokeWidth: "2", fill: "#eee" });
                 const shapeSize = textBackgroundHeight - 10;
                 const halfShape = shapeSize / 2;
                 const shapeIcon = (shape.type === 'circle'
-                    ? React.createElement("rect", { x: x + 5, y: y + 5, width: shapeSize, height: shapeSize, fill: "black" })
-                    : React.createElement("circle", { cx: x + 5 + halfShape, cy: y + 5 + halfShape, r: shapeSize / 2, fill: "black" }));
+                    ? React.createElement("rect", { x: x + 5, y: y + 5, width: shapeSize, height: shapeSize, fill: shape.color })
+                    : React.createElement("circle", { cx: x + 5 + halfShape, cy: y + 5 + halfShape, r: shapeSize / 2, fill: shape.color }));
                 const transparentButtonableRect = React.createElement("rect", { x: x, y: y, height: textBackgroundHeight, width: textBackgroundHeight, onClick: event => onChangeShapeType(), fill: "transparent" });
                 return [
                     mainBackground,
