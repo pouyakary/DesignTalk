@@ -26,10 +26,10 @@ namespace Shapes.Storage {
                 mouseMode:              MouseMode.Move,
                 maxZIndex:              10,
 
-                speachRecognition: {
-                    isRecording:    false,
+                contexMenu: {
+                    active:    false,
                     recognizer:     null,
-                    currentText:    "",
+                    recognizedText:    "",
                     mouseX:         0,
                     mouseY:         0,
                 }

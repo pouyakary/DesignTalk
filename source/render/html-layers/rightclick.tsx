@@ -21,7 +21,7 @@ namespace Shapes.Render.HTMLLayers.RightClick {
     //
 
         export function render ( model: Storage.Model ) {
-            return (( model.speachRecognition.isRecording )
+            return (( model.contexMenu.active )
                 ? shapeOnWorkingMode( model )
                 : [ ]
                 )
@@ -50,7 +50,7 @@ namespace Shapes.Render.HTMLLayers.RightClick {
     //
 
         function recordingIcon ( model: Storage.Model ) {
-            const { mouseX, mouseY } = model.speachRecognition
+            const { mouseX, mouseY } = model.contexMenu
 
             return  <div style = {{
                         backgroundColor:    "black",
@@ -78,9 +78,9 @@ namespace Shapes.Render.HTMLLayers.RightClick {
     //
 
         function createTextView ( model: Storage.Model ) {
-            const { mouseX, mouseY, currentText } = model.speachRecognition
+            const { mouseX, mouseY, recognizedText } = model.contexMenu
 
-            if ( currentText === "" )
+            if ( recognizedText === "" )
                 return <div />
 
             return  <div style = {{
@@ -103,7 +103,7 @@ namespace Shapes.Render.HTMLLayers.RightClick {
                         <div style = {{
                             padding: "5px 10px 7px 10px",
                         }}>
-                            { currentText }
+                            { recognizedText }
                         </div>
 
                         { /* Disply for compilation check */ }
@@ -113,7 +113,7 @@ namespace Shapes.Render.HTMLLayers.RightClick {
                             borderTopStyle:     "dashed",
                             padding:            "5px 10px 7px 10px"
                         }}>
-                            { DesignTalk.isParsable( currentText )
+                            { DesignTalk.isParsable( recognizedText )
                                 ? "Looks Good"
                                 : "Can't Understand"
                             }
@@ -129,7 +129,7 @@ namespace Shapes.Render.HTMLLayers.RightClick {
                                 XX: number, YY: number, onClickFunction: ( ) => void ) {
 
             const { mouseX, mouseY } =
-                state.speachRecognition
+                state.contexMenu
 
             const functionForClick = ( ) => {
                 onClickFunction( )

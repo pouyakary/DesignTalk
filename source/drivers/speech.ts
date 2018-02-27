@@ -16,7 +16,7 @@ namespace Shapes.SpeachCommandEngine {
         export function trigger ( ) {
             const state = Storage.getState( )
 
-            if ( state.speachRecognition.isRecording )
+            if ( state.contexMenu.active )
                 end( )
             else
                 start( )
@@ -36,10 +36,10 @@ namespace Shapes.SpeachCommandEngine {
                     showLineGuides:     false,
                     mouseMode:          Storage.MouseMode.Resize,
 
-                    speachRecognition: { ...state.speachRecognition,
-                        isRecording:    true,
+                    contexMenu: { ...state.contexMenu,
+                        active:    true,
                         recognizer:     recognizer,
-                        currentText:    "",
+                        recognizedText:    "",
                         mouseX:         MouseDriver.X,
                         mouseY:         MouseDriver.Y,
                     }
@@ -53,18 +53,18 @@ namespace Shapes.SpeachCommandEngine {
 
         function end ( ) {
             Storage.setState( state => {
-                state.speachRecognition.recognizer!.stop( )
+                state.contexMenu.recognizer!.stop( )
 
                 const newState =
                     DesignTalk.runWithGivenState(
-                        state.speachRecognition.currentText, state
+                        state.contexMenu.recognizedText, state
                     )
 
                 return { ...newState,
-                    speachRecognition: { ...state.speachRecognition,
-                        isRecording:    false,
+                    contexMenu: { ...state.contexMenu,
+                        active:    false,
                         recognizer:     null,
-                        currentText:    "",
+                        recognizedText:    "",
                     }
                 }
             })
@@ -104,10 +104,10 @@ namespace Shapes.SpeachCommandEngine {
 
         function updateScreenText ( newPart: string ) {
             Storage.setState( state => {
-                console.log( state.speachRecognition )
+                console.log( state.contexMenu )
                 return { ...state,
-                    speachRecognition: { ...state.speachRecognition,
-                        currentText: updateText( state.speachRecognition.currentText, newPart )
+                    contexMenu: { ...state.contexMenu,
+                        recognizedText: updateText( state.contexMenu.recognizedText, newPart )
                     }
                 }
             })

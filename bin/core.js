@@ -43,10 +43,10 @@ var Shapes;
                 previousSelectionIDs: [],
                 mouseMode: Storage.MouseMode.Move,
                 maxZIndex: 10,
-                speachRecognition: {
-                    isRecording: false,
+                contexMenu: {
+                    active: false,
                     recognizer: null,
-                    currentText: "",
+                    recognizedText: "",
                     mouseX: 0,
                     mouseY: 0,
                 }
@@ -197,7 +197,7 @@ var Shapes;
     (function (SpeachCommandEngine) {
         function trigger() {
             const state = Shapes.Storage.getState();
-            if (state.speachRecognition.isRecording)
+            if (state.contexMenu.active)
                 end();
             else
                 start();
@@ -207,14 +207,14 @@ var Shapes;
             const recognizer = createNewRecognizer();
             recognizer.start();
             Shapes.Storage.setState(state => {
-                return Object.assign({}, state, { selectedId: null, showLineGuides: false, mouseMode: Shapes.Storage.MouseMode.Resize, speachRecognition: Object.assign({}, state.speachRecognition, { isRecording: true, recognizer: recognizer, currentText: "", mouseX: Shapes.MouseDriver.X, mouseY: Shapes.MouseDriver.Y }) });
+                return Object.assign({}, state, { selectedId: null, showLineGuides: false, mouseMode: Shapes.Storage.MouseMode.Resize, contexMenu: Object.assign({}, state.contexMenu, { active: true, recognizer: recognizer, recognizedText: "", mouseX: Shapes.MouseDriver.X, mouseY: Shapes.MouseDriver.Y }) });
             });
         }
         function end() {
             Shapes.Storage.setState(state => {
-                state.speachRecognition.recognizer.stop();
-                const newState = Shapes.DesignTalk.runWithGivenState(state.speachRecognition.currentText, state);
-                return Object.assign({}, newState, { speachRecognition: Object.assign({}, state.speachRecognition, { isRecording: false, recognizer: null, currentText: "" }) });
+                state.contexMenu.recognizer.stop();
+                const newState = Shapes.DesignTalk.runWithGivenState(state.contexMenu.recognizedText, state);
+                return Object.assign({}, newState, { contexMenu: Object.assign({}, state.contexMenu, { active: false, recognizer: null, recognizedText: "" }) });
             });
         }
         function createNewRecognizer() {
@@ -234,8 +234,8 @@ var Shapes;
         }
         function updateScreenText(newPart) {
             Shapes.Storage.setState(state => {
-                console.log(state.speachRecognition);
-                return Object.assign({}, state, { speachRecognition: Object.assign({}, state.speachRecognition, { currentText: updateText(state.speachRecognition.currentText, newPart) }) });
+                console.log(state.contexMenu);
+                return Object.assign({}, state, { contexMenu: Object.assign({}, state.contexMenu, { recognizedText: updateText(state.contexMenu.recognizedText, newPart) }) });
             });
         }
         function updateText(buffer, newPart) {
@@ -589,7 +589,7 @@ var Shapes;
                 const iconSize = 30;
                 const backgroundSize = iconSize + 14;
                 function render(model) {
-                    return ((model.speachRecognition.isRecording)
+                    return ((model.contexMenu.active)
                         ? shapeOnWorkingMode(model)
                         : []);
                 }
@@ -607,7 +607,7 @@ var Shapes;
                         createTextView(model));
                 }
                 function recordingIcon(model) {
-                    const { mouseX, mouseY } = model.speachRecognition;
+                    const { mouseX, mouseY } = model.contexMenu;
                     return React.createElement("div", { style: {
                             backgroundColor: "black",
                             position: "fixed",
@@ -626,8 +626,8 @@ var Shapes;
                         createButton("new shape", model, 120, 50, () => { }));
                 }
                 function createTextView(model) {
-                    const { mouseX, mouseY, currentText } = model.speachRecognition;
-                    if (currentText === "")
+                    const { mouseX, mouseY, recognizedText } = model.contexMenu;
+                    if (recognizedText === "")
                         return React.createElement("div", null);
                     return React.createElement("div", { style: {
                             maxWidth: "160px",
@@ -646,18 +646,18 @@ var Shapes;
                         } },
                         React.createElement("div", { style: {
                                 padding: "5px 10px 7px 10px",
-                            } }, currentText),
+                            } }, recognizedText),
                         React.createElement("div", { style: {
                                 borderTopColor: "black",
                                 borderTopWidth: 2,
                                 borderTopStyle: "dashed",
                                 padding: "5px 10px 7px 10px"
-                            } }, Shapes.DesignTalk.isParsable(currentText)
+                            } }, Shapes.DesignTalk.isParsable(recognizedText)
                             ? "Looks Good"
                             : "Can't Understand"));
                 }
                 function createButton(name, state, XX, YY, onClickFunction) {
-                    const { mouseX, mouseY } = state.speachRecognition;
+                    const { mouseX, mouseY } = state.contexMenu;
                     const functionForClick = () => {
                         onClickFunction();
                     };
