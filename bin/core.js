@@ -542,7 +542,7 @@ var Shapes;
                 const x = shape.x - margin - 5 - index * (textBackgroundHeight + 5);
                 function onSetColor() {
                     Shapes.Storage.setState(state => {
-                        const newShapes = state.shapes.map(x => (Object.assign({}, x, { color: x.id === shape.id ? color : x.color })));
+                        const newShapes = state.shapes.map(x => (Object.assign({}, x, { color: (x.id === shape.id ? color : x.color) })));
                         return Object.assign({}, state, { shapes: newShapes });
                     });
                 }
