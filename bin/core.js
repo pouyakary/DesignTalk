@@ -193,6 +193,23 @@ var Shapes;
 })(Shapes || (Shapes = {}));
 var Shapes;
 (function (Shapes) {
+    var Logic;
+    (function (Logic) {
+        var ContexMenu;
+        (function (ContexMenu) {
+            function close() {
+                Shapes.Storage.setState(state => {
+                    if (state.contexMenu.recognizer !== null)
+                        state.contexMenu.recognizer.stop();
+                    return Object.assign({}, state, { contexMenu: Object.assign({}, state.contexMenu, { active: false, recognizedText: "", recognizer: null }) });
+                });
+            }
+            ContexMenu.close = close;
+        })(ContexMenu = Logic.ContexMenu || (Logic.ContexMenu = {}));
+    })(Logic = Shapes.Logic || (Shapes.Logic = {}));
+})(Shapes || (Shapes = {}));
+var Shapes;
+(function (Shapes) {
     var SpeachCommandEngine;
     (function (SpeachCommandEngine) {
         function trigger() {
@@ -212,10 +229,10 @@ var Shapes;
         }
         function end() {
             Shapes.Storage.setState(state => {
-                state.contexMenu.recognizer.stop();
                 const newState = Shapes.DesignTalk.runWithGivenState(state.contexMenu.recognizedText, state);
-                return Object.assign({}, newState, { contexMenu: Object.assign({}, state.contexMenu, { active: false, recognizer: null, recognizedText: "" }) });
+                return newState;
             });
+            Shapes.Logic.ContexMenu.close();
         }
         function createNewRecognizer() {
             const recognizer = new webkitSpeechRecognition();
@@ -336,12 +353,18 @@ var Shapes;
             MouseDriver.Y = event.clientY;
         }
         function mouseClickEvents() {
-            document.body.onmousedown = () => MouseDriver.Clicked = true;
-            document.body.onmouseup = () => MouseDriver.Clicked = false;
+            document.body.onmousedown = event => {
+                MouseDriver.Clicked = true;
+            };
+            document.body.onmouseup = event => {
+                updateMousePosition(event);
+                MouseDriver.Clicked = false;
+            };
         }
         function onRightClick() {
             document.oncontextmenu = event => {
                 event.preventDefault();
+                updateMousePosition(event);
                 Shapes.SpeachCommandEngine.trigger();
             };
         }
@@ -580,6 +603,24 @@ var Shapes;
 })(Shapes || (Shapes = {}));
 var Shapes;
 (function (Shapes) {
+    var Logic;
+    (function (Logic) {
+        var Model;
+        (function (Model) {
+            function createNewShape() {
+                Shapes.Storage.setState(state => {
+                    const newMaxZIndex = state.maxZIndex + 1;
+                    const newShape = Shapes.Storage.createShape(newMaxZIndex);
+                    state.shapes.push(newShape);
+                    return Object.assign({}, state, { selectedId: newShape.id, mouseMode: Shapes.Storage.MouseMode.Move, maxZIndex: newMaxZIndex, showLineGuides: false });
+                });
+            }
+            Model.createNewShape = createNewShape;
+        })(Model = Logic.Model || (Logic.Model = {}));
+    })(Logic = Shapes.Logic || (Shapes.Logic = {}));
+})(Shapes || (Shapes = {}));
+var Shapes;
+(function (Shapes) {
     var Render;
     (function (Render) {
         var HTMLLayers;
@@ -623,7 +664,8 @@ var Shapes;
                                 borderRadius: iconSize / 2,
                                 backgroundColor: "red",
                             } }),
-                        createButton("new shape", model, 120, 50, () => { }));
+                        createNewShapeButton(model),
+                        createHelpButton(model));
                 }
                 function createTextView(model) {
                     const { mouseX, mouseY, recognizedText } = model.contexMenu;
@@ -660,6 +702,7 @@ var Shapes;
                     const { mouseX, mouseY } = state.contexMenu;
                     const functionForClick = () => {
                         onClickFunction();
+                        Shapes.Logic.ContexMenu.close();
                     };
                     return React.createElement("div", { onClick: functionForClick, style: {
                             backgroundColor: "#eee",
@@ -673,6 +716,16 @@ var Shapes;
                             textTransform: "uppercase",
                             WebkitUserSelect: "none",
                         } }, name);
+                }
+                function createNewShapeButton(model) {
+                    return createButton("new shape", model, 80, 65, () => {
+                        Shapes.Logic.Model.createNewShape();
+                    });
+                }
+                function createHelpButton(model) {
+                    return createButton("wiki & help", model, 130, 25, () => {
+                        window.open("https://www.notion.so/Shapes-dad307e81f1e46869ad6c355b1705921", "_blank");
+                    });
                 }
             })(RightClick = HTMLLayers.RightClick || (HTMLLayers.RightClick = {}));
         })(HTMLLayers = Render.HTMLLayers || (Render.HTMLLayers = {}));

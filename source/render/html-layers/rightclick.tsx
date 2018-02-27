@@ -6,6 +6,8 @@
 /// <reference path="../../storage/model.ts" />
 /// <reference path="../../globals/key.ts" />
 /// <reference path="../../logic/designtalk/core/parser" />
+/// <reference path="../../logic/state-actions/contex-menu" />
+/// <reference path="../../logic/state-actions/model" />
 
 namespace Shapes.Render.HTMLLayers.RightClick {
 
@@ -68,8 +70,8 @@ namespace Shapes.Render.HTMLLayers.RightClick {
                             backgroundColor:    "red",
                         }} />
 
-
-                        { createButton("new shape", model, 120, 50, ( ) => { } ) }
+                        { createNewShapeButton( model ) }
+                        { createHelpButton( model ) }
                     </div>
         }
 
@@ -133,6 +135,7 @@ namespace Shapes.Render.HTMLLayers.RightClick {
 
             const functionForClick = ( ) => {
                 onClickFunction( )
+                Logic.ContexMenu.close( )
             }
 
             return  <div onClick = { functionForClick } style = {{
@@ -149,6 +152,28 @@ namespace Shapes.Render.HTMLLayers.RightClick {
                     }}>
                         { name }
                     </div>
+        }
+
+    //
+    // ─── NEW SHAPE BUTTON ───────────────────────────────────────────────────────────
+    //
+
+        function createNewShapeButton ( model: Storage.Model ) {
+            return createButton( "new shape", model, 80, 65, ( ) => {
+                Logic.Model.createNewShape( )
+            })
+        }
+
+    //
+    // ─── BOOK BUTTON ────────────────────────────────────────────────────────────────
+    //
+
+        function createHelpButton ( model: Storage.Model ) {
+            return createButton( "wiki & help", model, 130, 25, ( ) => {
+                window.open(
+                    "https://www.notion.so/Shapes-dad307e81f1e46869ad6c355b1705921",
+                    "_blank")
+            })
         }
 
     // ────────────────────────────────────────────────────────────────────────────────

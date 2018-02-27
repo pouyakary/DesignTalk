@@ -5,6 +5,8 @@
 
 /// <reference path="../storage/storage" />
 /// <reference path="../typings/webkitspeechrecognition" />
+/// <reference path="../logic/state-actions/contex-menu" />
+
 /// <reference path="mouse.ts" />
 
 namespace Shapes.SpeachCommandEngine {
@@ -53,21 +55,15 @@ namespace Shapes.SpeachCommandEngine {
 
         function end ( ) {
             Storage.setState( state => {
-                state.contexMenu.recognizer!.stop( )
-
                 const newState =
                     DesignTalk.runWithGivenState(
                         state.contexMenu.recognizedText, state
                     )
 
-                return { ...newState,
-                    contexMenu: { ...state.contexMenu,
-                        active:    false,
-                        recognizer:     null,
-                        recognizedText:    "",
-                    }
-                }
+                return newState
             })
+
+            Shapes.Logic.ContexMenu.close( )
         }
 
     //
