@@ -21,11 +21,11 @@ namespace Shapes.ScreenDriver {
                 document.getElementById('dpi')!
 
             div.style.width = '1pt'
-    
+
             var result = window
-                .getComputedStyle( div, null )
+                .getComputedStyle( div )
                 .getPropertyValue( 'width' )
-            
+
             const pointSize =
                 parseFloat( result )
 

@@ -8,6 +8,7 @@
 /// <reference path="actions.ts" />
 /// <reference path="base-model.ts" />
 /// <reference path="../render/main.tsx" />
+/// <reference path="../drivers/localstorage" />
 
 namespace Shapes.Storage {
 
@@ -25,6 +26,7 @@ namespace Shapes.Storage {
             ( model: Model ) => void
 
         const StorageSubscriptions: StorageSubscriber[ ] = [
+            LocalStorageDriver.storageUpdaterFunction,
             Render.renderApp,
         ]
 
@@ -47,7 +49,10 @@ namespace Shapes.Storage {
                 createInitialModelState( )
             )
 
-            setTimeout(( ) => runSubscribersOnChange( getState( ) ), 100)
+            setTimeout(
+                ( ) => runSubscribersOnChange( getState( ) )
+                , 100
+                )
         }
 
     //

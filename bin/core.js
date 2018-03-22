@@ -34,8 +34,14 @@ var Shapes;
     (function (Storage) {
         function createInitialModelState() {
             const someShapes = new Array();
-            for (let counter = 0; counter < 10; counter++)
-                someShapes.push(createRandomShape(counter));
+            const localStorageShapes = Shapes.LocalStorageDriver.load();
+            if (localStorageShapes !== null) {
+                someShapes.push(...localStorageShapes);
+            }
+            else {
+                for (let counter = 0; counter < 10; counter++)
+                    someShapes.push(createRandomShape(counter));
+            }
             return {
                 shapes: someShapes,
                 showLineGuides: false,
@@ -43,7 +49,7 @@ var Shapes;
                 previousSelectionIDs: [],
                 mouseMode: Storage.MouseMode.Move,
                 maxZIndex: 10,
-                contexMenu: {
+                contextMenu: {
                     active: false,
                     recognizer: null,
                     recognizedText: "",
@@ -209,44 +215,44 @@ var Shapes;
 (function (Shapes) {
     var Logic;
     (function (Logic) {
-        var ContexMenu;
-        (function (ContexMenu) {
+        var ContextMenu;
+        (function (ContextMenu) {
             function close() {
                 Shapes.Storage.setState(state => {
-                    if (state.contexMenu.recognizer !== null)
-                        state.contexMenu.recognizer.stop();
-                    return Object.assign({}, state, { contexMenu: Object.assign({}, state.contexMenu, { active: false, recognizedText: "", recognizer: null }) });
+                    if (state.contextMenu.recognizer !== null)
+                        state.contextMenu.recognizer.stop();
+                    return Object.assign({}, state, { contextMenu: Object.assign({}, state.contextMenu, { active: false, recognizedText: "", recognizer: null }) });
                 });
             }
-            ContexMenu.close = close;
-        })(ContexMenu = Logic.ContexMenu || (Logic.ContexMenu = {}));
+            ContextMenu.close = close;
+        })(ContextMenu = Logic.ContextMenu || (Logic.ContextMenu = {}));
     })(Logic = Shapes.Logic || (Shapes.Logic = {}));
 })(Shapes || (Shapes = {}));
 var Shapes;
 (function (Shapes) {
-    var SpeachCommandEngine;
-    (function (SpeachCommandEngine) {
+    var SpeechCommandEngine;
+    (function (SpeechCommandEngine) {
         function trigger() {
             const state = Shapes.Storage.getState();
-            if (state.contexMenu.active)
+            if (state.contextMenu.active)
                 end();
             else
                 start();
         }
-        SpeachCommandEngine.trigger = trigger;
+        SpeechCommandEngine.trigger = trigger;
         function start() {
             const recognizer = createNewRecognizer();
             recognizer.start();
             Shapes.Storage.setState(state => {
-                return Object.assign({}, state, { selectedId: null, showLineGuides: false, mouseMode: Shapes.Storage.MouseMode.Resize, contexMenu: Object.assign({}, state.contexMenu, { active: true, recognizer: recognizer, recognizedText: "", mouseX: Shapes.MouseDriver.X, mouseY: Shapes.MouseDriver.Y }) });
+                return Object.assign({}, state, { selectedId: null, showLineGuides: false, mouseMode: Shapes.Storage.MouseMode.Resize, contextMenu: Object.assign({}, state.contextMenu, { active: true, recognizer: recognizer, recognizedText: "", mouseX: Shapes.MouseDriver.X, mouseY: Shapes.MouseDriver.Y }) });
             });
         }
         function end() {
             Shapes.Storage.setState(state => {
-                const newState = Shapes.DesignTalk.runWithGivenState(state.contexMenu.recognizedText, state);
+                const newState = Shapes.DesignTalk.runWithGivenState(state.contextMenu.recognizedText, state);
                 return newState;
             });
-            Shapes.Logic.ContexMenu.close();
+            Shapes.Logic.ContextMenu.close();
         }
         function createNewRecognizer() {
             const recognizer = new webkitSpeechRecognition();
@@ -265,8 +271,8 @@ var Shapes;
         }
         function updateScreenText(newPart) {
             Shapes.Storage.setState(state => {
-                console.log(state.contexMenu);
-                return Object.assign({}, state, { contexMenu: Object.assign({}, state.contexMenu, { recognizedText: updateText(state.contexMenu.recognizedText, newPart) }) });
+                console.log(state.contextMenu);
+                return Object.assign({}, state, { contextMenu: Object.assign({}, state.contextMenu, { recognizedText: updateText(state.contextMenu.recognizedText, newPart) }) });
             });
         }
         function updateText(buffer, newPart) {
@@ -286,7 +292,7 @@ var Shapes;
                     return buffer + newPart;
             }
         }
-    })(SpeachCommandEngine = Shapes.SpeachCommandEngine || (Shapes.SpeachCommandEngine = {}));
+    })(SpeechCommandEngine = Shapes.SpeechCommandEngine || (Shapes.SpeechCommandEngine = {}));
 })(Shapes || (Shapes = {}));
 var Shapes;
 (function (Shapes) {
@@ -379,7 +385,7 @@ var Shapes;
             document.oncontextmenu = event => {
                 event.preventDefault();
                 updateMousePosition(event);
-                Shapes.SpeachCommandEngine.trigger();
+                Shapes.SpeechCommandEngine.trigger();
             };
         }
     })(MouseDriver = Shapes.MouseDriver || (Shapes.MouseDriver = {}));
@@ -666,7 +672,7 @@ var Shapes;
                 const iconSize = 30;
                 const backgroundSize = iconSize + 14;
                 function render(model) {
-                    return ((model.contexMenu.active)
+                    return ((model.contextMenu.active)
                         ? shapeOnWorkingMode(model)
                         : []);
                 }
@@ -684,7 +690,7 @@ var Shapes;
                         createTextView(model));
                 }
                 function recordingIcon(model) {
-                    const { mouseX, mouseY } = model.contexMenu;
+                    const { mouseX, mouseY } = model.contextMenu;
                     return React.createElement("div", { style: {
                             backgroundColor: "black",
                             position: "fixed",
@@ -694,7 +700,7 @@ var Shapes;
                             width: iconSize,
                             height: iconSize,
                         } },
-                        React.createElement("div", { className: "recoderIcon", style: {
+                        React.createElement("div", { className: "recorderIcon", style: {
                                 width: iconSize,
                                 height: iconSize,
                                 borderRadius: iconSize / 2,
@@ -704,7 +710,7 @@ var Shapes;
                         createHelpButton(model));
                 }
                 function createTextView(model) {
-                    const { mouseX, mouseY, recognizedText } = model.contexMenu;
+                    const { mouseX, mouseY, recognizedText } = model.contextMenu;
                     if (recognizedText === "")
                         return React.createElement("div", null);
                     return React.createElement("div", { style: {
@@ -735,10 +741,10 @@ var Shapes;
                             : "Can't Understand"));
                 }
                 function createButton(name, state, XX, YY, onClickFunction) {
-                    const { mouseX, mouseY } = state.contexMenu;
+                    const { mouseX, mouseY } = state.contextMenu;
                     const functionForClick = () => {
                         onClickFunction();
-                        Shapes.Logic.ContexMenu.close();
+                        Shapes.Logic.ContextMenu.close();
                     };
                     return React.createElement("div", { onClick: functionForClick, style: {
                             backgroundColor: "#eee",
@@ -773,11 +779,11 @@ var Shapes;
     (function (Render) {
         function renderApp(model) {
             const container = document.getElementById('container');
-            const scene = createScence(model);
+            const scene = createScene(model);
             ReactDOM.render(scene, container);
         }
         Render.renderApp = renderApp;
-        function createScence(model) {
+        function createScene(model) {
             const layerElements = [
                 Render.SVGLayers.Background.render(),
                 Render.SVGLayers.Shapes.render(model),
@@ -810,10 +816,42 @@ var Shapes;
 })(Shapes || (Shapes = {}));
 var Shapes;
 (function (Shapes) {
+    var LocalStorageDriver;
+    (function (LocalStorageDriver) {
+        const LOCAL_STORAGE_ID = "us.kary.toys.shapes.model";
+        let driverStorageTimeoutSetter;
+        function storageUpdaterFunction(state) {
+            const encodedStateString = JSON.stringify(state.shapes);
+            localStorage.setItem(LOCAL_STORAGE_ID, encodedStateString);
+        }
+        LocalStorageDriver.storageUpdaterFunction = storageUpdaterFunction;
+        function update(state) {
+            clearTimeout(driverStorageTimeoutSetter);
+            driverStorageTimeoutSetter =
+                setTimeout(storageUpdaterFunction, 1000);
+        }
+        function load() {
+            try {
+                const encodedStateString = localStorage.getItem(LOCAL_STORAGE_ID);
+                if (encodedStateString === null)
+                    return null;
+                const stateObject = JSON.parse(encodedStateString);
+                return stateObject;
+            }
+            catch (e) {
+                return null;
+            }
+        }
+        LocalStorageDriver.load = load;
+    })(LocalStorageDriver = Shapes.LocalStorageDriver || (Shapes.LocalStorageDriver = {}));
+})(Shapes || (Shapes = {}));
+var Shapes;
+(function (Shapes) {
     var Storage;
     (function (Storage) {
         const StorageContainer = new Array();
-        const StorageSubcriptions = [
+        const StorageSubscriptions = [
+            Shapes.LocalStorageDriver.storageUpdaterFunction,
             Shapes.Render.renderApp,
         ];
         const OnStateChangeManipulationFunctions = new Set();
@@ -831,7 +869,7 @@ var Shapes;
         }
         Storage.getState = getState;
         function runSubscribersOnChange(state) {
-            for (const subscriber of StorageSubcriptions)
+            for (const subscriber of StorageSubscriptions)
                 subscriber(state);
         }
         function setState(setter) {
@@ -866,7 +904,7 @@ var Shapes;
             const div = document.getElementById('dpi');
             div.style.width = '1pt';
             var result = window
-                .getComputedStyle(div, null)
+                .getComputedStyle(div)
                 .getPropertyValue('width');
             const pointSize = parseFloat(result);
             ScreenDriver.PointSize = pointSize;
@@ -876,26 +914,26 @@ var Shapes;
 })(Shapes || (Shapes = {}));
 var Shapes;
 (function (Shapes) {
-    var StateManipulotrs;
-    (function (StateManipulotrs) {
-        StateManipulotrs.ShapeDeleteManipulator = (state) => (Object.assign({}, state, { shapes: state.shapes.filter(x => !x.remove) }));
-    })(StateManipulotrs = Shapes.StateManipulotrs || (Shapes.StateManipulotrs = {}));
+    var StateManipulators;
+    (function (StateManipulators) {
+        StateManipulators.ShapeDeleteManipulator = (state) => (Object.assign({}, state, { shapes: state.shapes.filter(x => !x.remove) }));
+    })(StateManipulators = Shapes.StateManipulators || (Shapes.StateManipulators = {}));
 })(Shapes || (Shapes = {}));
 var Shapes;
 (function (Shapes) {
-    var StateManipulotrs;
-    (function (StateManipulotrs) {
+    var StateManipulators;
+    (function (StateManipulators) {
         function init() {
-            Shapes.Storage.addManipulationFunction(StateManipulotrs.ShapeDeleteManipulator);
+            Shapes.Storage.addManipulationFunction(StateManipulators.ShapeDeleteManipulator);
         }
-        StateManipulotrs.init = init;
-    })(StateManipulotrs = Shapes.StateManipulotrs || (Shapes.StateManipulotrs = {}));
+        StateManipulators.init = init;
+    })(StateManipulators = Shapes.StateManipulators || (Shapes.StateManipulators = {}));
 })(Shapes || (Shapes = {}));
 var Shapes;
 (function (Shapes) {
     window.onload = () => {
         Shapes.Storage.initStorage();
-        Shapes.StateManipulotrs.init();
+        Shapes.StateManipulators.init();
         Shapes.MouseDriver.init();
         Shapes.ScreenDriver.init();
         window.onresize = () => Shapes.Render.renderOnResize();
@@ -948,7 +986,7 @@ var Shapes;
                 }
                 function generateNewQueryFunction(query) {
                     const checkers = [
-                        generateChackerForColor(query),
+                        generateCheckerForColor(query),
                         generateCheckerForShapeKind(query),
                     ];
                     for (const condition of query.conditions)
@@ -966,7 +1004,7 @@ var Shapes;
                     const rangedFilterFunction = generateRangeFilterFunction(query, checker);
                     return rangedFilterFunction;
                 }
-                function generateChackerForColor(query) {
+                function generateCheckerForColor(query) {
                     if (query.color === "all")
                         return null;
                     return (shape) => shape.color === query.color;
@@ -990,67 +1028,67 @@ var Shapes;
                         return generateCheckerForSize1DQuery(sizeQuery);
                 }
                 function generateCheckerForSize1DQuery(sizeQuery) {
-                    const comparisionFunction = composeComparisionFunction(sizeQuery.operator);
+                    const comparisonFunction = composeComparisonFunction(sizeQuery.operator);
                     const { size, unit } = sizeQuery.size;
                     const comparable = Core.convertSizeToPixel(size, unit);
                     const checker = (shape) => {
                         const baseSize = ((sizeQuery.dimension === "width")
                             ? shape.width
                             : shape.height);
-                        return comparisionFunction(baseSize, comparable);
+                        return comparisonFunction(baseSize, comparable);
                     };
                     return checker;
                 }
                 function generateCheckerForSize2DQuery(sizeQuery) {
-                    const comparisionFunction = composeComparisionFunction(sizeQuery.operator);
+                    const comparisonFunction = composeComparisonFunction(sizeQuery.operator);
                     const { width, height, unit } = sizeQuery.size;
                     const widthSize = Core.convertSizeToPixel(width, unit);
                     const heightSize = Core.convertSizeToPixel(height, unit);
-                    const checker = (shape) => comparisionFunction(shape.width, widthSize) &&
-                        comparisionFunction(shape.height, heightSize);
+                    const checker = (shape) => comparisonFunction(shape.width, widthSize) &&
+                        comparisonFunction(shape.height, heightSize);
                     return checker;
                 }
-                function composeComparisionFunction(operator) {
-                    let comparisionFunction = (a, b) => true;
+                function composeComparisonFunction(operator) {
+                    let comparisonFunction = (a, b) => true;
                     switch (operator.operator) {
                         case '=':
-                            comparisionFunction =
+                            comparisonFunction =
                                 (a, b) => a === b;
                             break;
                         case '>':
-                            comparisionFunction =
+                            comparisonFunction =
                                 (a, b) => a > b;
                             break;
                         case '<':
-                            comparisionFunction =
+                            comparisonFunction =
                                 (a, b) => a < b;
                             break;
                         case '<=':
-                            comparisionFunction =
+                            comparisonFunction =
                                 (a, b) => a <= b;
                             break;
                         case '>=':
-                            comparisionFunction =
+                            comparisonFunction =
                                 (a, b) => a >= b;
                             break;
                     }
                     const functionWithNegationApplied = (operator.negation
-                        ? (a, b) => !comparisionFunction(a, b)
-                        : comparisionFunction);
+                        ? (a, b) => !comparisonFunction(a, b)
+                        : comparisonFunction);
                     return functionWithNegationApplied;
                 }
                 function generateRangeFilterFunction(query, checker) {
                     switch (query.range.mode) {
                         case "biggest":
-                            return createSmalletsBiggestRangeSelector(query, checker, (a, b) => a - b);
+                            return createSmallestBiggestRangeSelector(query, checker, (a, b) => a - b);
                         case "smallest":
-                            return createSmalletsBiggestRangeSelector(query, checker, (a, b) => a + b);
+                            return createSmallestBiggestRangeSelector(query, checker, (a, b) => a + b);
                         case "all":
                         default:
                             return (shapes) => shapes.filter(checker);
                     }
                 }
-                function createSmalletsBiggestRangeSelector(query, checker, operator) {
+                function createSmallestBiggestRangeSelector(query, checker, operator) {
                     return (shapes) => {
                         const filteredShapes = shapes.filter(checker);
                         const rangeFilteredShapes = filteredShapes
@@ -1074,7 +1112,7 @@ var Shapes;
                 function generate(instruction) {
                     switch (instruction.command) {
                         case "remove":
-                            return CommandCompiler.generateRemoveIntruction(instruction);
+                            return CommandCompiler.generateRemoveInstruction(instruction);
                         default:
                             return (shapes) => shapes;
                     }
@@ -1171,10 +1209,10 @@ var Shapes;
         (function (Core) {
             var CommandCompiler;
             (function (CommandCompiler) {
-                function generateRemoveIntruction(instruction) {
+                function generateRemoveInstruction(instruction) {
                     return (shapes) => shapes.map(shape => (Object.assign({}, shape, { remove: true })));
                 }
-                CommandCompiler.generateRemoveIntruction = generateRemoveIntruction;
+                CommandCompiler.generateRemoveInstruction = generateRemoveInstruction;
             })(CommandCompiler = Core.CommandCompiler || (Core.CommandCompiler = {}));
         })(Core = DesignTalk.Core || (DesignTalk.Core = {}));
     })(DesignTalk = Shapes.DesignTalk || (Shapes.DesignTalk = {}));

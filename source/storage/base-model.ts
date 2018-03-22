@@ -13,10 +13,17 @@ namespace Shapes.Storage {
     //
 
         export function createInitialModelState ( ): Model {
-            const someShapes = new Array<Shape>( )
+            const someShapes =
+                new Array<Shape>( )
+            const localStorageShapes =
+                Shapes.LocalStorageDriver.load( )
 
-            for ( let counter = 0; counter < 10; counter++ )
-                someShapes.push( createRandomShape( counter ) )
+            if ( localStorageShapes !== null ) {
+                someShapes.push( ...localStorageShapes )
+            } else {
+                for ( let counter = 0; counter < 10; counter++ )
+                    someShapes.push( createRandomShape( counter ) )
+            }
 
             return {
                 shapes:                 someShapes,
