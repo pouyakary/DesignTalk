@@ -25,7 +25,7 @@ namespace Shapes.Render {
                 document.getElementById('container')
 
             const scene =
-                createScence( model )
+                createScene( model )
 
             ReactDOM.render( scene, container )
         }
@@ -34,7 +34,7 @@ namespace Shapes.Render {
     // ─── CREATE SCENE ───────────────────────────────────────────────────────────────
     //
 
-        function createScence ( model: Storage.Model ) {
+        function createScene ( model: Storage.Model ) {
             const layerElements = [
                 Render.SVGLayers.Background.render( ),
                 Render.SVGLayers.Shapes.render( model ),

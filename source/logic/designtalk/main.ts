@@ -27,7 +27,7 @@ namespace Shapes.DesignTalk {
         }
 
     //
-    // ─── RUN AND APPL ───────────────────────────────────────────────────────────────
+    // ─── RUN AND APPLY ──────────────────────────────────────────────────────────────
     //
 
         export function runAndApply ( code: string ) {

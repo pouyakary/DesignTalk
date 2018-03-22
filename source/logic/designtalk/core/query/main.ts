@@ -19,7 +19,7 @@ namespace Shapes.DesignTalk.Core.QueryCompiler {
         type QueryCheckerOrNull =
             QueryChecker | null
 
-        type ComparisionFunction =
+        type ComparisonFunction =
             ( a: number, b: number ) => boolean
 
         type SortingOperatorFunction =
@@ -57,7 +57,7 @@ namespace Shapes.DesignTalk.Core.QueryCompiler {
 
         function generateNewQueryFunction ( query: Query ): QueryFunction {
             const checkers: QueryCheckerOrNull[ ] = [
-                generateChackerForColor( query ),
+                generateCheckerForColor( query ),
                 generateCheckerForShapeKind( query ),
             ]
 
@@ -94,7 +94,7 @@ namespace Shapes.DesignTalk.Core.QueryCompiler {
     // ─── CHECKER FOR COLOR ──────────────────────────────────────────────────────────
     //
 
-        function generateChackerForColor ( query: Query ): QueryCheckerOrNull {
+        function generateCheckerForColor ( query: Query ): QueryCheckerOrNull {
             if ( query.color === "all" )
                 return null
 
@@ -138,12 +138,12 @@ namespace Shapes.DesignTalk.Core.QueryCompiler {
         }
 
     //
-    // ─── GENERATE CHECHER FOR SIZE 1D QUERY ─────────────────────────────────────────
+    // ─── GENERATE CHECKER FOR SIZE 1D QUERY ─────────────────────────────────────────
     //
 
         function generateCheckerForSize1DQuery ( sizeQuery: SizeQuery ): QueryChecker {
-            const comparisionFunction =
-                composeComparisionFunction( sizeQuery.operator )
+            const comparisonFunction =
+                composeComparisonFunction( sizeQuery.operator )
             const { size, unit } =
                 sizeQuery.size as Size1D
             const comparable =
@@ -157,7 +157,7 @@ namespace Shapes.DesignTalk.Core.QueryCompiler {
                             : shape.height
                             )
 
-                    return comparisionFunction( baseSize, comparable )
+                    return comparisonFunction( baseSize, comparable )
                 }
 
             return checker
@@ -168,8 +168,8 @@ namespace Shapes.DesignTalk.Core.QueryCompiler {
     //
 
         function generateCheckerForSize2DQuery ( sizeQuery: SizeQuery ): QueryChecker {
-            const comparisionFunction =
-                composeComparisionFunction( sizeQuery.operator )
+            const comparisonFunction =
+                composeComparisonFunction( sizeQuery.operator )
             const { width, height, unit } =
                 sizeQuery.size as Size2D
             const widthSize =
@@ -179,69 +179,69 @@ namespace Shapes.DesignTalk.Core.QueryCompiler {
 
             const checker =
                 ( shape: Storage.Shape ) =>
-                    comparisionFunction( shape.width, widthSize ) &&
-                    comparisionFunction( shape.height, heightSize )
+                    comparisonFunction( shape.width, widthSize ) &&
+                    comparisonFunction( shape.height, heightSize )
 
             return checker
         }
 
     //
-    // ─── COMPOSE CAMPARISION FUNCTION ───────────────────────────────────────────────
+    // ─── COMPOSE COMPARISON FUNCTION ────────────────────────────────────────────────
     //
 
-        function composeComparisionFunction ( operator: SelectorOperator ): ComparisionFunction {
-            let comparisionFunction =
+        function composeComparisonFunction ( operator: SelectorOperator ): ComparisonFunction {
+            let comparisonFunction =
                 ( a: number, b: number ) => true
 
             switch ( operator.operator ) {
                 case '=':
-                    comparisionFunction =
+                    comparisonFunction =
                         ( a: number, b: number ) => a === b
                     break
 
                 case '>':
-                    comparisionFunction =
+                    comparisonFunction =
                         ( a: number, b: number ) => a > b
                     break
 
                 case '<':
-                    comparisionFunction =
+                    comparisonFunction =
                         ( a: number, b: number ) => a < b
                     break
 
                 case '<=':
-                    comparisionFunction =
+                    comparisonFunction =
                         ( a: number, b: number ) => a <= b
                     break
 
                 case '>=':
-                    comparisionFunction =
+                    comparisonFunction =
                         ( a: number, b: number ) => a >= b
                     break
             }
 
             const functionWithNegationApplied =
                 ( operator.negation
-                    ? ( a:number, b: number ) => !comparisionFunction( a, b )
-                    : comparisionFunction
+                    ? ( a:number, b: number ) => !comparisonFunction( a, b )
+                    : comparisonFunction
                     )
 
             return functionWithNegationApplied
         }
 
     //
-    // ─── GENERATE RANGE SELECTORN FUNCTION ──────────────────────────────────────────
+    // ─── GENERATE RANGE SELECTION FUNCTION ──────────────────────────────────────────
     //
 
         function generateRangeFilterFunction ( query: Query, checker: QueryChecker ) {
             switch ( query.range.mode ) {
                 case "biggest":
-                    return createSmalletsBiggestRangeSelector(
+                    return createSmallestBiggestRangeSelector(
                         query, checker, (a: number, b: number) => a - b
                     )
 
                 case "smallest":
-                    return createSmalletsBiggestRangeSelector(
+                    return createSmallestBiggestRangeSelector(
                         query, checker, (a: number, b: number) => a + b
                     )
 
@@ -253,10 +253,10 @@ namespace Shapes.DesignTalk.Core.QueryCompiler {
         }
 
     //
-    // ─── CREATE RANGED FILTER ON SMALLESTS BIGGEST ──────────────────────────────────
+    // ─── CREATE RANGED FILTER ON SMALLEST BIGGEST ───────────────────────────────────
     //
 
-        function createSmalletsBiggestRangeSelector ( query: Query,
+        function createSmallestBiggestRangeSelector ( query: Query,
                                                     checker: QueryChecker,
                                                    operator: SortingOperatorFunction ) {
 

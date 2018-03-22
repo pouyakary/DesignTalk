@@ -13,7 +13,7 @@ namespace Shapes.DesignTalk.Core.CommandCompiler {
     // ─── GENERATE MANIPULATION FUNCTION ─────────────────────────────────────────────
     //
 
-        export function generateRemoveIntruction ( instruction: RemoveInstruction ) {
+        export function generateRemoveInstruction ( instruction: RemoveInstruction ) {
             return ( shapes: Storage.Shape[ ] ) =>
                 shapes.map( shape =>
                     ({ ...shape, remove: true }))

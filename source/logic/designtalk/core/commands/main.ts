@@ -12,10 +12,10 @@ namespace Shapes.DesignTalk.Core.CommandCompiler {
     // ─── GENERATE MANIPULATION FUNCTION ─────────────────────────────────────────────
     //
 
-        export function generate ( instruction: InstructionBase ): ManipulationFuction {
+        export function generate ( instruction: InstructionBase ): ManipulationFunction {
             switch ( instruction.command ) {
                 case "remove":
-                    return generateRemoveIntruction( instruction as RemoveInstruction )
+                    return generateRemoveInstruction( instruction as RemoveInstruction )
 
                 default:
                     return ( shapes: Storage.Shape[ ] ) => shapes

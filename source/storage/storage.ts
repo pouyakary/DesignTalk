@@ -24,7 +24,7 @@ namespace Shapes.Storage {
         type StorageSubscriber =
             ( model: Model ) => void
 
-        const StorageSubcriptions: StorageSubscriber[ ] = [
+        const StorageSubscriptions: StorageSubscriber[ ] = [
             Render.renderApp,
         ]
 
@@ -39,7 +39,7 @@ namespace Shapes.Storage {
             new Set<OnStateChangeManipulationFunction>( )
 
     //
-    // ─── SET INITAL STATE ───────────────────────────────────────────────────────────
+    // ─── SET INITIAL STATE ──────────────────────────────────────────────────────────
     //
 
         export function initStorage ( ) {
@@ -71,7 +71,7 @@ namespace Shapes.Storage {
     //
 
         function runSubscribersOnChange ( state: Model ) {
-            for ( const subscriber of StorageSubcriptions )
+            for ( const subscriber of StorageSubscriptions )
                 subscriber( state )
         }
 

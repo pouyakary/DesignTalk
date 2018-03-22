@@ -10,7 +10,7 @@ namespace Shapes.DesignTalk.Core {
     //
 
         export interface FunctionSet {
-            manipulationFunction:   ManipulationFuction,
+            manipulationFunction:   ManipulationFunction,
             queryFunction:          QueryFunction,
         }
 
@@ -25,7 +25,7 @@ namespace Shapes.DesignTalk.Core {
     // ─── MANIPULATION FUNCTION ──────────────────────────────────────────────────────
     //
 
-        export type ManipulationFuction =
+        export type ManipulationFunction =
             ( state: Storage.Shape[ ] ) => Storage.Shape[ ]
 
     // ────────────────────────────────────────────────────────────────────────────────
