@@ -20,7 +20,8 @@ namespace Shapes.Render.SVGLayers.Shapes {
 
             const elementedShapes =
                 sortedShapes.map( shape =>
-                    <Editor.Shape shape = { shape } key = { generateKey( ) } />
+                    <Editor.Shape shape = { shape }
+                                    key = { generateKey( ) } />
                 )
 
             return elementedShapes

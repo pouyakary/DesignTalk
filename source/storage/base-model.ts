@@ -27,9 +27,9 @@ namespace Shapes.Storage {
                 maxZIndex:              10,
 
                 contexMenu: {
-                    active:    false,
+                    active:         false,
                     recognizer:     null,
-                    recognizedText:    "",
+                    recognizedText: "",
                     mouseX:         0,
                     mouseY:         0,
                 }

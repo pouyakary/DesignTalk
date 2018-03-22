@@ -17,8 +17,7 @@ namespace Shapes.Logic.ContexMenu {
                 if ( state.contexMenu.recognizer !== null )
                     state.contexMenu.recognizer.stop( )
 
-                return {
-                    ...state,
+                return { ...state,
                     contexMenu: { ...state.contexMenu,
                         active:             false,
                         recognizedText:     "",

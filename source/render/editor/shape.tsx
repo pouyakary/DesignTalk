@@ -103,11 +103,10 @@ namespace Shapes.Render.Editor {
             //
 
                 private onClick ( ) {
-                    Storage.setState( state => ({
-                        ...state,
-                        selectedId: this.props.shape.id,
-                        showLineGuides: false,
-                        mouseMode: Storage.MouseMode.Move
+                    Storage.setState( state => ({ ...state,
+                        selectedId:         this.props.shape.id,
+                        showLineGuides:     false,
+                        mouseMode:          Storage.MouseMode.Move
                     }))
 
                     // Storage.setState( state => {

@@ -58,8 +58,7 @@ namespace Shapes.Render.SVGLayers.Background {
     //
 
         function onClick ( ) {
-            Storage.setState( state => ({
-                ...state,
+            Storage.setState( state => ({ ...state,
                 selectedId: null
             }))
         }
