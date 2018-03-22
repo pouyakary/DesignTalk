@@ -20,7 +20,7 @@ namespace Shapes.MouseDriver {
         let shouldMove = false
 
     //
-    // ─── MOUSE POSITION UPDATOR ─────────────────────────────────────────────────────
+    // ─── MOUSE POSITION UPDATER ─────────────────────────────────────────────────────
     //
 
         export function init ( ) {
@@ -172,7 +172,7 @@ namespace Shapes.MouseDriver {
             document.oncontextmenu = event => {
                 event.preventDefault( )
                 updateMousePosition( event )
-                SpeachCommandEngine.trigger( )
+                SpeechCommandEngine.trigger( )
             }
         }
 

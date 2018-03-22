@@ -26,7 +26,7 @@ namespace Shapes.Storage {
                 mouseMode:              MouseMode.Move,
                 maxZIndex:              10,
 
-                contexMenu: {
+                contextMenu: {
                     active:         false,
                     recognizer:     null,
                     recognizedText: "",

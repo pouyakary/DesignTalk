@@ -16,7 +16,7 @@ namespace Shapes {
 
         window.onload = ( ) => {
             Storage.initStorage( )
-            StateManipulotrs.init( )
+            StateManipulators.init( )
             MouseDriver.init( )
             ScreenDriver.init( )
 

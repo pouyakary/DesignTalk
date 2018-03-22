@@ -16,7 +16,7 @@ namespace Shapes.Storage {
             previousSelectionIDs:   string[ ]
             shapes:                 Shape[ ]
             showLineGuides:         boolean
-            contexMenu:             ContexMenu
+            contextMenu:            ContextMenu
         }
 
     //
@@ -53,7 +53,7 @@ namespace Shapes.Storage {
     // ─── SPEACH RECOGNITION SYSTEM ──────────────────────────────────────────────────
     //
 
-        export interface ContexMenu {
+        export interface ContextMenu {
             active:             boolean
             mouseX:             number
             mouseY:             number

@@ -5,11 +5,11 @@
 
 /// <reference path="../storage/storage" />
 /// <reference path="../typings/webkitspeechrecognition" />
-/// <reference path="../logic/state-actions/contex-menu" />
+/// <reference path="../logic/state-actions/context-menu" />
 
 /// <reference path="mouse.ts" />
 
-namespace Shapes.SpeachCommandEngine {
+namespace Shapes.SpeechCommandEngine {
 
     //
     // ─── START RECOGNITION ──────────────────────────────────────────────────────────
@@ -18,7 +18,7 @@ namespace Shapes.SpeachCommandEngine {
         export function trigger ( ) {
             const state = Storage.getState( )
 
-            if ( state.contexMenu.active )
+            if ( state.contextMenu.active )
                 end( )
             else
                 start( )
@@ -38,7 +38,7 @@ namespace Shapes.SpeachCommandEngine {
                     showLineGuides:     false,
                     mouseMode:          Storage.MouseMode.Resize,
 
-                    contexMenu: { ...state.contexMenu,
+                    contextMenu: { ...state.contextMenu,
                         active:    true,
                         recognizer:     recognizer,
                         recognizedText:    "",
@@ -57,13 +57,13 @@ namespace Shapes.SpeachCommandEngine {
             Storage.setState( state => {
                 const newState =
                     DesignTalk.runWithGivenState(
-                        state.contexMenu.recognizedText, state
+                        state.contextMenu.recognizedText, state
                     )
 
                 return newState
             })
 
-            Shapes.Logic.ContexMenu.close( )
+            Shapes.Logic.ContextMenu.close( )
         }
 
     //
@@ -100,10 +100,10 @@ namespace Shapes.SpeachCommandEngine {
 
         function updateScreenText ( newPart: string ) {
             Storage.setState( state => {
-                console.log( state.contexMenu )
+                console.log( state.contextMenu )
                 return { ...state,
-                    contexMenu: { ...state.contexMenu,
-                        recognizedText: updateText( state.contexMenu.recognizedText, newPart )
+                    contextMenu: { ...state.contextMenu,
+                        recognizedText: updateText( state.contextMenu.recognizedText, newPart )
                     }
                 }
             })

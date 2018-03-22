@@ -5,7 +5,7 @@
 
 /// <reference path="../../storage/storage" />
 
-namespace Shapes.StateManipulotrs {
+namespace Shapes.StateManipulators {
 
     //
     // ─── DELETOR ────────────────────────────────────────────────────────────────────

@@ -6,7 +6,7 @@
 /// <reference path="../../storage/model.ts" />
 /// <reference path="../../globals/key.ts" />
 /// <reference path="../../logic/designtalk/core/parser" />
-/// <reference path="../../logic/state-actions/contex-menu" />
+/// <reference path="../../logic/state-actions/context-menu" />
 /// <reference path="../../logic/state-actions/model" />
 
 namespace Shapes.Render.HTMLLayers.RightClick {
@@ -23,7 +23,7 @@ namespace Shapes.Render.HTMLLayers.RightClick {
     //
 
         export function render ( model: Storage.Model ) {
-            return (( model.contexMenu.active )
+            return (( model.contextMenu.active )
                 ? shapeOnWorkingMode( model )
                 : [ ]
                 )
@@ -52,7 +52,7 @@ namespace Shapes.Render.HTMLLayers.RightClick {
     //
 
         function recordingIcon ( model: Storage.Model ) {
-            const { mouseX, mouseY } = model.contexMenu
+            const { mouseX, mouseY } = model.contextMenu
 
             return  <div style = {{
                         backgroundColor:    "black",
@@ -63,7 +63,7 @@ namespace Shapes.Render.HTMLLayers.RightClick {
                         width:              iconSize,
                         height:             iconSize,
                     }} >
-                        <div className = "recoderIcon" style = {{
+                        <div className = "recorderIcon" style = {{
                             width:              iconSize,
                             height:             iconSize,
                             borderRadius:       iconSize / 2,
@@ -80,7 +80,7 @@ namespace Shapes.Render.HTMLLayers.RightClick {
     //
 
         function createTextView ( model: Storage.Model ) {
-            const { mouseX, mouseY, recognizedText } = model.contexMenu
+            const { mouseX, mouseY, recognizedText } = model.contextMenu
 
             if ( recognizedText === "" )
                 return <div />
@@ -101,14 +101,14 @@ namespace Shapes.Render.HTMLLayers.RightClick {
                         userSelect:         "none",
                     }}>
 
-                        { /* Disply for the Text */ }
+                        { /* Display for the Text */ }
                         <div style = {{
                             padding: "5px 10px 7px 10px",
                         }}>
                             { recognizedText }
                         </div>
 
-                        { /* Disply for compilation check */ }
+                        { /* Display for compilation check */ }
                         <div style = {{
                             borderTopColor:     "black",
                             borderTopWidth:     2,
@@ -131,11 +131,11 @@ namespace Shapes.Render.HTMLLayers.RightClick {
                                 XX: number, YY: number, onClickFunction: ( ) => void ) {
 
             const { mouseX, mouseY } =
-                state.contexMenu
+                state.contextMenu
 
             const functionForClick = ( ) => {
                 onClickFunction( )
-                Logic.ContexMenu.close( )
+                Logic.ContextMenu.close( )
             }
 
             return  <div onClick = { functionForClick } style = {{

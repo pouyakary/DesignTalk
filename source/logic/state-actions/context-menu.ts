@@ -6,7 +6,7 @@
 
 /// <reference path="../../storage/storage" />
 
-namespace Shapes.Logic.ContexMenu {
+namespace Shapes.Logic.ContextMenu {
 
     //
     // ─── CLOSE CONTEXT MENU ─────────────────────────────────────────────────────────
@@ -14,11 +14,11 @@ namespace Shapes.Logic.ContexMenu {
 
         export function close ( ) {
             Storage.setState( state => {
-                if ( state.contexMenu.recognizer !== null )
-                    state.contexMenu.recognizer.stop( )
+                if ( state.contextMenu.recognizer !== null )
+                    state.contextMenu.recognizer.stop( )
 
                 return { ...state,
-                    contexMenu: { ...state.contexMenu,
+                    contextMenu: { ...state.contextMenu,
                         active:             false,
                         recognizedText:     "",
                         recognizer:         null
