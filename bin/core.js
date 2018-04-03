@@ -932,7 +932,9 @@ var Shapes;
 var Shapes;
 (function (Shapes) {
     window.onload = () => {
-        window.location.protocol = "https";
+        if (window.location.protocol === "http") {
+            window.location.protocol = "https";
+        }
         Shapes.Storage.initStorage();
         Shapes.StateManipulators.init();
         Shapes.MouseDriver.init();
