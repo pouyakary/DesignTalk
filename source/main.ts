@@ -15,9 +15,8 @@ namespace Shapes {
     //
 
         window.onload = ( ) => {
-            if ( window.location.protocol === "http" ) {
-                window.location.href = "https://shapes.toys.kary.us/"
-            }
+            if ( window.location.protocol === "http" )
+                window.location.protocol = "https"
 
             Storage.initStorage( )
 
