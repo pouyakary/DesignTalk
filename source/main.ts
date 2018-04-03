@@ -1,24 +1,28 @@
 
 //
-// Copyright 2017-present by Pouya Kary. All Rights Reserved
-//   This code is property of Pouya Kary and is in no way granted
-//   to be used by anyone else in anyways.
+// Copyright 2017-present by Pouya Kary. All Rights Reserved.
 //
 
-/// <reference path="./storage/storage.ts" />
-/// <reference path="./drivers/mouse.ts" />
+/// <reference path="./storage/storage" />
+/// <reference path="./drivers/mouse" />
+/// <reference path="./drivers/screen" />
+/// <reference path="./logic/state-manipulators/main" />
 
-namespace BasiceShapeEditor {
+namespace Shapes {
 
     //
     // ─── MAIN ───────────────────────────────────────────────────────────────────────
     //
 
-        window.onload = ( ) => main( )
-
-        function main ( ) {
+        window.onload = ( ) => {
             Storage.initStorage( )
+
+            StateManipulators.init( )
             MouseDriver.init( )
+            ScreenDriver.init( )
+
+            window.onresize = ( ) =>
+                Render.renderOnResize( )
         }
 
     // ────────────────────────────────────────────────────────────────────────────────

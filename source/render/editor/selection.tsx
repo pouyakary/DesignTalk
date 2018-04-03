@@ -7,7 +7,7 @@
 /// <reference path="../../storage/storage.ts" />
 /// <reference path="../../drivers/mouse.ts" />
 
-namespace BasiceShapeEditor.Render.SelectionTool {
+namespace Shapes.Render.SelectionTool {
 
     //
     // ─── SETTINGS ───────────────────────────────────────────────────────────────────
@@ -22,7 +22,7 @@ namespace BasiceShapeEditor.Render.SelectionTool {
     // ─── SHOW SELECTION ─────────────────────────────────────────────────────────────
     //
 
-        export function render ( model: Storage.IModel ) {
+        export function render ( model: Storage.Model ) {
             if ( model.selectedId )
                 return createSelectionTool( model )
             else
@@ -34,26 +34,27 @@ namespace BasiceShapeEditor.Render.SelectionTool {
     //
 
         function computeHaskligBold12TextLength ( text: string ) {
-            return text.length * 7.5 + 10
+            return text.length * 7.5 + 11
         }
 
     //
     // ─── CREATE SELECTION TOOL ──────────────────────────────────────────────────────
     //
 
-        function createSelectionTool ( state: Storage.IModel ) {
+        function createSelectionTool ( state: Storage.Model ) {
             const shape =
                 state.shapes.find( shape =>
                     shape.id === state.selectedId )!
 
             // order is important
-            const guideLines = createGuideLines( shape, state )
-            const tooltip = createToolTipShape( shape, state )
-            const rectangle = createSelectionRectangle( shape )
-            const resizeHandle = createResizeHandle( shape, state )
-            const deleteButton = createDeleteButton( shape, state )
-            const colorButtons = createColorButtons( shape, state )
-            const shapeButtons = changeShapeModelButtons( shape, state )
+            const guideLines        = createGuideLines( shape, state )
+            const tooltip           = createToolTipShape( shape, state )
+            const rectangle         = createSelectionRectangle( shape )
+            const resizeHandle      = createResizeHandle( shape, state )
+            const deleteButton      = createDeleteButton( shape, state )
+            const duplicateButton   = createDuplicateButton( shape, state )
+            const colorButtons      = createColorButtons( shape, state )
+            const shapeButtons      = changeShapeModelButtons( shape, state )
 
             return [
                 ...guideLines,
@@ -61,6 +62,7 @@ namespace BasiceShapeEditor.Render.SelectionTool {
                 rectangle,
                 resizeHandle,
                 deleteButton,
+                duplicateButton,
                 colorButtons,
                 ...shapeButtons,
             ]
@@ -70,7 +72,7 @@ namespace BasiceShapeEditor.Render.SelectionTool {
     // ─── CREATE RECTANGLE ───────────────────────────────────────────────────────────
     //
 
-        function createSelectionRectangle ( shape: Storage.IShape ) {
+        function createSelectionRectangle ( shape: Storage.Shape ) {
             const x =
                 shape.x - margin
             const y =
@@ -102,7 +104,7 @@ namespace BasiceShapeEditor.Render.SelectionTool {
     // ─── TIP TEXT BOX ───────────────────────────────────────────────────────────────
     //
 
-        function createToolTipShape ( shape: Storage.IShape, state: Storage.IModel ) {
+        function createToolTipShape ( shape: Storage.Shape, state: Storage.Model ) {
             const x =
                 shape.x - margin
             const y =
@@ -142,7 +144,7 @@ namespace BasiceShapeEditor.Render.SelectionTool {
     // ─── DESCRIPTION TEXT ───────────────────────────────────────────────────────────
     //
 
-        function getDescriptionText ( shape: Storage.IShape, state: Storage.IModel ) {
+        function getDescriptionText ( shape: Storage.Shape, state: Storage.Model ) {
             if ( state.showLineGuides && state.mouseMode === Storage.MouseMode.Resize )
                 return 'SIZE ' + shape.width + ':' + shape.height
 
@@ -156,7 +158,7 @@ namespace BasiceShapeEditor.Render.SelectionTool {
     // ─── CREATE GUIDE LINES ─────────────────────────────────────────────────────────
     //
 
-        function createGuideLines ( shape: Storage.IShape, model: Storage.IModel ) {
+        function createGuideLines ( shape: Storage.Shape, model: Storage.Model ) {
             if ( !model.showLineGuides )
                 return [ ]
 
@@ -252,7 +254,7 @@ namespace BasiceShapeEditor.Render.SelectionTool {
     // ─── CREATE RESIZE BUTTON ───────────────────────────────────────────────────────
     //
 
-        function createResizeHandle ( shape: Storage.IShape, state: Storage.IModel ) {
+        function createResizeHandle ( shape: Storage.Shape, state: Storage.Model ) {
             const x = shape.x + shape.width + margin
             const y = shape.y + shape.height + margin
 
@@ -282,19 +284,7 @@ namespace BasiceShapeEditor.Render.SelectionTool {
     // ─── REMOVE BOTTON ──────────────────────────────────────────────────────────────
     //
 
-        function createDeleteButton ( shape: Storage.IShape, state: Storage.IModel ) {
-            if ( state.showLineGuides )
-                return <g key = { generateKey( ) } />
-
-            const buttonText =
-                'DEL'
-            const textLength =
-                computeHaskligBold12TextLength( buttonText )
-            const x =
-                shape.x - margin - textLength - 10
-            const y =
-                shape.y - margin
-
+        function createDeleteButton ( shape: Storage.Shape, state: Storage.Model ) {
             function onDeleteButtonClicked ( ) {
                 const newShapes = state.shapes.filter( element =>
                     element.id !== state.selectedId )
@@ -306,6 +296,47 @@ namespace BasiceShapeEditor.Render.SelectionTool {
                     showLineGuides: false
                 }))
             }
+
+            return createButton( shape, state, 'DEL', 0, 0, onDeleteButtonClicked )
+        }
+
+    //
+    // ─── DUPLICATE BUTTON ───────────────────────────────────────────────────────────
+    //
+
+        function createDuplicateButton ( shape: Storage.Shape, state: Storage.Model ) {
+            function onDuplicateButtonClicked ( ) {
+                Logic.Model.duplicateShape( )
+            }
+
+            return createButton( shape, state, 'DUP', 0,
+                -2 * ( textBackgroundHeight + margin ), onDuplicateButtonClicked )
+        }
+
+    //
+    // ─── CREATE BUTTON ──────────────────────────────────────────────────────────────
+    //
+
+        type OnClickFunction =
+            ( ) => void
+
+        function createButton ( shape: Storage.Shape,
+                                state: Storage.Model,
+                           buttonText: string,
+                                xDiff: number,
+                                yDiff: number,
+                               action: OnClickFunction ) {
+
+            if ( state.showLineGuides )
+                return <g key = { generateKey( ) } />
+
+            const textLength =
+                computeHaskligBold12TextLength( buttonText )
+            const x =
+                shape.x - margin - textLength - 10 - xDiff
+            const y =
+                shape.y - margin - yDiff
+
 
             const backgroundRect =
                 <rect fill = "#eee"
@@ -331,7 +362,7 @@ namespace BasiceShapeEditor.Render.SelectionTool {
                        y = { y - textBackgroundHeight - 10 }
                    width = { textLength }
                   height = { textBackgroundHeight }
-                 onClick = { event => onDeleteButtonClicked( ) }
+                 onClick = { event => action( ) }
                     fill = "transparent" />
 
             return  <g key = { generateKey( ) }>
@@ -345,7 +376,7 @@ namespace BasiceShapeEditor.Render.SelectionTool {
     // ─── COLOR BUTTONS ──────────────────────────────────────────────────────────────
     //
 
-        function createColorButtons ( shape: Storage.IShape, state: Storage.IModel ) {
+        function createColorButtons ( shape: Storage.Shape, state: Storage.Model ) {
             if ( state.showLineGuides )
                 return <g key = { generateKey( ) } />
 
@@ -364,7 +395,7 @@ namespace BasiceShapeEditor.Render.SelectionTool {
 
         function createSingleColorButton ( color: string,
                                            index: number,
-                                           shape: Storage.IShape ) {
+                                           shape: Storage.Shape ) {
             const x =
                 shape.x - margin - 5 - index * ( textBackgroundHeight + 5 )
 
@@ -373,7 +404,7 @@ namespace BasiceShapeEditor.Render.SelectionTool {
                     const newShapes =
                         state.shapes.map( x => ({
                             ...x,
-                            color: x.id === shape.id ? color : x.color,
+                            color: ( x.id === shape.id ? color : x.color ) as Storage.ShapeColor,
                         }))
 
                     return { ...state, shapes: newShapes }
@@ -398,7 +429,7 @@ namespace BasiceShapeEditor.Render.SelectionTool {
     // ─── CHANGE SHAPE BUTTON ────────────────────────────────────────────────────────
     //
 
-        function changeShapeModelButtons ( shape: Storage.IShape, state: Storage.IModel ) {
+        function changeShapeModelButtons ( shape: Storage.Shape, state: Storage.Model ) {
             if ( state.showLineGuides )
                 return [ <g key = { generateKey( ) } /> ]
 
@@ -410,7 +441,7 @@ namespace BasiceShapeEditor.Render.SelectionTool {
                             if ( shape.id === x.id )
                                 return { ...x,
                                     type: ( x.id == shape.id && x.type === 'rect' )?
-                                        'circle' : 'rect' as Storage.IShapeType
+                                        'circle' : 'rect' as Storage.ShapeType
                                 }
                             else
                                 return x
@@ -425,7 +456,7 @@ namespace BasiceShapeEditor.Render.SelectionTool {
             const x =
                 shape.x - 2 * margin - textBackgroundHeight
             const y =
-                shape.y + 1 * ( textBackgroundHeight )
+                shape.y + 2 * ( textBackgroundHeight ) + margin
 
             const mainBackground =
                 <rect x = { x }
@@ -444,8 +475,8 @@ namespace BasiceShapeEditor.Render.SelectionTool {
                 shapeSize / 2
             const shapeIcon =
                 ( shape.type === 'circle'
-                    ? <rect x = { x + 5 } y = { y + 5 } width = { shapeSize } height = { shapeSize } fill="black" />
-                    : <circle cx = { x + 5 + halfShape } cy = { y + 5 + halfShape } r = { shapeSize / 2 }  fill="black" />
+                    ? <rect x = { x + 5 } y = { y + 5 } width = { shapeSize } height = { shapeSize } fill={ shape.color } />
+                    : <circle cx = { x + 5 + halfShape } cy = { y + 5 + halfShape } r = { shapeSize / 2 }  fill={ shape.color } />
                     )
 
 

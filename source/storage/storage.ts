@@ -8,27 +8,40 @@
 /// <reference path="actions.ts" />
 /// <reference path="base-model.ts" />
 /// <reference path="../render/main.tsx" />
+/// <reference path="../drivers/localstorage" />
 
-namespace BasiceShapeEditor.Storage {
+namespace Shapes.Storage {
 
     //
     // ─── MAIN STORAGE ───────────────────────────────────────────────────────────────
     //
 
-        const StorageContainer = new Array<IModel>( )
+        const StorageContainer = new Array<Model>( )
 
     //
     // ─── SUBSCRIPTIONS ──────────────────────────────────────────────────────────────
     //
 
-        type TStorageSubscriber = ( model: IModel ) => void
+        type StorageSubscriber =
+            ( model: Model ) => void
 
-        const StorageSubcriptions: TStorageSubscriber[ ] = [
+        const StorageSubscriptions: StorageSubscriber[ ] = [
+            LocalStorageDriver.storageUpdaterFunction,
             Render.renderApp,
         ]
 
     //
-    // ─── SET INITAL STATE ───────────────────────────────────────────────────────────
+    // ─── ON CHANGE STORAGE MODIFIERS ────────────────────────────────────────────────
+    //
+
+        export type OnStateChangeManipulationFunction =
+            ( state: Model ) => Model
+
+        const OnStateChangeManipulationFunctions =
+            new Set<OnStateChangeManipulationFunction>( )
+
+    //
+    // ─── SET INITIAL STATE ──────────────────────────────────────────────────────────
     //
 
         export function initStorage ( ) {
@@ -36,7 +49,10 @@ namespace BasiceShapeEditor.Storage {
                 createInitialModelState( )
             )
 
-            setTimeout(( ) => runSubscribersOnChange( getState( ) ), 100)
+            setTimeout(
+                ( ) => runSubscribersOnChange( getState( ) )
+                , 100
+                )
         }
 
     //
@@ -59,8 +75,8 @@ namespace BasiceShapeEditor.Storage {
     // ─── RUN SUBSCRIBERS ON CHANGE ──────────────────────────────────────────────────
     //
 
-        function runSubscribersOnChange ( state: IModel ) {
-            for ( const subscriber of StorageSubcriptions )
+        function runSubscribersOnChange ( state: Model ) {
+            for ( const subscriber of StorageSubscriptions )
                 subscriber( state )
         }
 
@@ -69,13 +85,16 @@ namespace BasiceShapeEditor.Storage {
     //
 
         export type TStateSetter =
-            ( lastState: IModel ) => IModel
+            ( lastState: Model ) => Model
 
         export function setState ( setter: TStateSetter ) {
             const lastState =
                 getState( )
-            const newState =
+            let newState =
                 setter( lastState )
+
+            for ( const manipulator of OnStateChangeManipulationFunctions )
+                newState = manipulator( newState )
 
             StorageContainer.push( newState )
 
@@ -95,6 +114,14 @@ namespace BasiceShapeEditor.Storage {
 
                 runSubscribersOnChange( newTopOfTheStack )
             }
+        }
+
+    //
+    // ─── ADD ON STATE CHANGE MANIPULATION FUNCTION ──────────────────────────────────
+    //
+
+        export function addManipulationFunction ( manipulator: OnStateChangeManipulationFunction ) {
+            OnStateChangeManipulationFunctions.add( manipulator )
         }
 
     // ────────────────────────────────────────────────────────────────────────────────

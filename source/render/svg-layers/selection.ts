@@ -7,13 +7,13 @@
 /// <reference path="../editor/selection.tsx" />
 /// <reference path="../../globals/key.ts" />
 
-namespace BasiceShapeEditor.Render.Layers.Selection {
+namespace Shapes.Render.SVGLayers.Selection {
 
     //
     // ─── RENDER SHAPES LAYER ────────────────────────────────────────────────────────
     //
 
-        export function render ( model: Storage.IModel ) {
+        export function render ( model: Storage.Model ) {
             return Render.SelectionTool.render( model )
         }
 

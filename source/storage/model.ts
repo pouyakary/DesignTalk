@@ -3,18 +3,20 @@
 // Copyright 2017-present by Pouya Kary. All Rights Reserved.
 //
 
-namespace BasiceShapeEditor.Storage {
+namespace Shapes.Storage {
 
     //
     // ─── MODEL ──────────────────────────────────────────────────────────────────────
     //
 
-        export interface IModel {
-            shapes:             IShape[ ]
-            selectedId:         string | null
-            showLineGuides:     boolean
-            mouseMode:          MouseMode
-            maxZIndex:          number
+        export interface Model {
+            maxZIndex:              number
+            mouseMode:              MouseMode
+            selectedId:             string | null
+            previousSelectionIDs:   string[ ]
+            shapes:                 Shape[ ]
+            showLineGuides:         boolean
+            contextMenu:            ContextMenu
         }
 
     //
@@ -29,18 +31,34 @@ namespace BasiceShapeEditor.Storage {
     // ─── SHAPES ─────────────────────────────────────────────────────────────────────
     //
 
-        export type IShapeType =
+        export type ShapeType =
             "rect" | "circle"
 
-        export interface IShape {
+        export type ShapeColor =
+            "red" | "blue" | "black"
+
+        export interface Shape {
             zIndex:     number
             id:         string
-            type:       IShapeType
-            color:      string
+            remove:     boolean,
+            type:       ShapeType
+            color:      ShapeColor
             width:      number
             height:     number
             x:          number
             y:          number
+        }
+
+    //
+    // ─── SPEACH RECOGNITION SYSTEM ──────────────────────────────────────────────────
+    //
+
+        export interface ContextMenu {
+            active:             boolean
+            mouseX:             number
+            mouseY:             number
+            recognizedText:     string
+            recognizer:         webkitSpeechRecognition | null
         }
 
     // ────────────────────────────────────────────────────────────────────────────────

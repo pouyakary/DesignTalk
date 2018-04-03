@@ -4,8 +4,10 @@
 //
 
 /// <reference path="../storage/storage" />
+/// <reference path="speech.ts" />
 
-namespace BasiceShapeEditor.MouseDriver {
+
+namespace Shapes.MouseDriver {
 
     //
     // ─── STORAGE ────────────────────────────────────────────────────────────────────
@@ -18,11 +20,12 @@ namespace BasiceShapeEditor.MouseDriver {
         let shouldMove = false
 
     //
-    // ─── MOUSE POSITION UPDATOR ─────────────────────────────────────────────────────
+    // ─── MOUSE POSITION UPDATER ─────────────────────────────────────────────────────
     //
 
         export function init ( ) {
-            mouseClcikeEvents ( )
+            mouseClickEvents ( )
+            onRightClick( )
             mouseMoveEvents( )
         }
 
@@ -64,7 +67,7 @@ namespace BasiceShapeEditor.MouseDriver {
 
         let moveReseter: NodeJS.Timer
 
-        function updateSelectedShapeSizeOnMouseMove ( event: MouseEvent, state: Storage.IModel ) {
+        function updateSelectedShapeSizeOnMouseMove ( event: MouseEvent, state: Storage.Model ) {
 
             clearTimeout( moveReseter )
             moveReseter = setTimeout(( ) => {
@@ -110,7 +113,7 @@ namespace BasiceShapeEditor.MouseDriver {
     // ─── UPDATE SHAPE POSITION ON CHANGE ────────────────────────────────────────────
     //
 
-        function updateSelectedShapePositionOnMouseMove ( event: MouseEvent, state: Storage.IModel ) {
+        function updateSelectedShapePositionOnMouseMove ( event: MouseEvent, state: Storage.Model ) {
 
             const selectedShape =
                 state.shapes.find( x => x.id == state.selectedId )!
@@ -148,12 +151,29 @@ namespace BasiceShapeEditor.MouseDriver {
         }
 
     //
-    // ─── UPDATE CLICKE STATUES ──────────────────────────────────────────────────────
+    // ─── UPDATE CLICK STATUES ───────────────────────────────────────────────────────
     //
 
-        function mouseClcikeEvents ( ) {
-            document.body.onmousedown = ( ) => Clicked = true
-            document.body.onmouseup = ( ) => Clicked = false
+        function mouseClickEvents ( ) {
+            document.body.onmousedown = event => {
+                Clicked = true
+            }
+            document.body.onmouseup = event => {
+                updateMousePosition( event )
+                Clicked = false
+            }
+        }
+
+    //
+    // ─── ON RIGHT CLICK ─────────────────────────────────────────────────────────────
+    //
+
+        function onRightClick ( ) {
+            document.oncontextmenu = event => {
+                event.preventDefault( )
+                updateMousePosition( event )
+                SpeechCommandEngine.trigger( )
+            }
         }
 
     // ────────────────────────────────────────────────────────────────────────────────

@@ -3,7 +3,7 @@
 // Copyright 2017-present by Pouya Kary. All Rights Reserved.
 //
 
-namespace BasiceShapeEditor.Storage {
+namespace Shapes.Storage {
 
     //
     // ─── ACTION TYPE ────────────────────────────────────────────────────────────────

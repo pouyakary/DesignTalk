@@ -7,20 +7,21 @@
 /// <reference path="../editor/shape.tsx" />
 /// <reference path="../../globals/key.ts" />
 
-namespace BasiceShapeEditor.Render.Layers.Shapes {
+namespace Shapes.Render.SVGLayers.Shapes {
 
     //
     // ─── RENDER SHAPES LAYER ────────────────────────────────────────────────────────
     //
 
-        export function render ( model: Storage.IModel ) {
+        export function render ( model: Storage.Model ) {
             const sortedShapes =
                 model.shapes.sort(( a, b ) =>
                     a.zIndex - b.zIndex )
 
             const elementedShapes =
                 sortedShapes.map( shape =>
-                    <Editor.Shape shape = { shape } key = { generateKey( ) } />
+                    <Editor.Shape shape = { shape }
+                                    key = { generateKey( ) } />
                 )
 
             return elementedShapes

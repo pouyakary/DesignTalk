@@ -6,24 +6,40 @@
 /// <reference path="model.ts" />
 /// <reference path="../globals/key.ts" />
 
-namespace BasiceShapeEditor.Storage {
+namespace Shapes.Storage {
 
     //
     // ─── INITIAL MODEL ──────────────────────────────────────────────────────────────
     //
 
-        export function createInitialModelState ( ): IModel {
-            const someShapes = new Array<IShape>( )
+        export function createInitialModelState ( ): Model {
+            const someShapes =
+                new Array<Shape>( )
+            const localStorageShapes =
+                Shapes.LocalStorageDriver.load( )
 
-            for ( let counter = 0; counter < 10; counter++ )
-                someShapes.push( createShape( counter ) )
+            if ( localStorageShapes !== null ) {
+                someShapes.push( ...localStorageShapes )
+            } else {
+                for ( let counter = 0; counter < 10; counter++ )
+                    someShapes.push( createRandomShape( counter ) )
+            }
 
             return {
-                shapes:         someShapes,
-                showLineGuides: false,
-                selectedId:     null,
-                mouseMode:      MouseMode.Move,
-                maxZIndex:      10
+                shapes:                 someShapes,
+                showLineGuides:         false,
+                selectedId:             null,
+                previousSelectionIDs:   [ ],
+                mouseMode:              MouseMode.Move,
+                maxZIndex:              10,
+
+                contextMenu: {
+                    active:         false,
+                    recognizer:     null,
+                    recognizedText: "",
+                    mouseX:         0,
+                    mouseY:         0,
+                }
             }
         }
 
@@ -53,17 +69,18 @@ namespace BasiceShapeEditor.Storage {
     // ─── CREATE SHAPE ───────────────────────────────────────────────────────────────
     //
 
-        export function createShape ( zIndex: number ): IShape {
+        export function createRandomShape ( zIndex: number ): Shape {
             const color =
-                chooseRandom([ 'red', 'black', 'blue' ])
+                chooseRandom([ 'red', 'black', 'blue' ]) as ShapeColor
             const type =
-                chooseRandom([ 'rect', 'circle' ]) as IShapeType
+                chooseRandom([ 'rect', 'circle' ]) as ShapeType
             const { x, y } =
                 getRandomCoordinates( )
 
             return {
                 color:      color,
                 id:         generateKey( ),
+                remove:     false,
                 type:       type,
                 width:      100,
                 height:     100,
@@ -72,6 +89,22 @@ namespace BasiceShapeEditor.Storage {
                 zIndex:     zIndex,
             }
         }
+
+
+        export function duplicateShape ( zIndex: number, baseShape: Shape ): Shape {
+            return {
+                color:      baseShape.color,
+                id:         generateKey( ),
+                remove:     false,
+                type:       baseShape.type,
+                width:      baseShape.width,
+                height:     baseShape.height,
+                x:          baseShape.x + 15,
+                y:          baseShape.y + 15,
+                zIndex:     zIndex,
+            }
+        }
+
 
     // ────────────────────────────────────────────────────────────────────────────────
 

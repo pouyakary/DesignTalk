@@ -8,14 +8,14 @@
 /// <reference path="../../globals/key.ts" />
 
 
-namespace BasiceShapeEditor.Render.Editor {
+namespace Shapes.Render.Editor {
 
     //
     // ─── PROPS ──────────────────────────────────────────────────────────────────────
     //
 
         export interface IShapeContainerProps {
-            shape: Storage.IShape
+            shape: Storage.Shape
         }
 
     //
@@ -50,7 +50,7 @@ namespace BasiceShapeEditor.Render.Editor {
             // ─── RENDER SHAPE ────────────────────────────────────────────────
             //
 
-                private renderShape ( shape: Storage.IShape ): JSX.Element {
+                private renderShape ( shape: Storage.Shape ): JSX.Element {
                     const color =
                         this.props.shape.color
                     const opacity =
@@ -69,7 +69,7 @@ namespace BasiceShapeEditor.Render.Editor {
             // ─── GET SHAPE OPACITY ───────────────────────────────────────────
             //
 
-                private getShapeOpacity ( shape: Storage.IShape ): number {
+                private getShapeOpacity ( shape: Storage.Shape ): number {
                     if ( this.lastState.selectedId !== null &&
                          this.lastState.selectedId !== shape.id ) {
                             return 0.5
@@ -103,11 +103,10 @@ namespace BasiceShapeEditor.Render.Editor {
             //
 
                 private onClick ( ) {
-                    Storage.setState( state => ({
-                        ...state,
-                        selectedId: this.props.shape.id,
-                        showLineGuides: false,
-                        mouseMode: Storage.MouseMode.Move
+                    Storage.setState( state => ({ ...state,
+                        selectedId:         this.props.shape.id,
+                        showLineGuides:     false,
+                        mouseMode:          Storage.MouseMode.Move
                     }))
 
                     // Storage.setState( state => {
@@ -133,7 +132,7 @@ namespace BasiceShapeEditor.Render.Editor {
             // ─── CREATE CIRCLE ───────────────────────────────────────────────
             //
 
-                private createCircle ( shape: Storage.IShape, color: string, opacity: number ) {
+                private createCircle ( shape: Storage.Shape, color: string, opacity: number ) {
                     const rX = shape.width / 2
                     const rY = shape.height / 2
 
@@ -155,7 +154,7 @@ namespace BasiceShapeEditor.Render.Editor {
             // ─── CREATE RECT ─────────────────────────────────────────────────
             //
 
-                private createRect ( shape: Storage.IShape, color: string, opacity: number ) {
+                private createRect ( shape: Storage.Shape, color: string, opacity: number ) {
                     return <rect
                         x               = { shape.x }
                         y               = { shape.y }

@@ -1,6 +1,6 @@
 "use strict";
-var BasiceShapeEditor;
-(function (BasiceShapeEditor) {
+var Shapes;
+(function (Shapes) {
     var Storage;
     (function (Storage) {
         let MouseMode;
@@ -8,40 +8,54 @@ var BasiceShapeEditor;
             MouseMode[MouseMode["Move"] = 0] = "Move";
             MouseMode[MouseMode["Resize"] = 1] = "Resize";
         })(MouseMode = Storage.MouseMode || (Storage.MouseMode = {}));
-    })(Storage = BasiceShapeEditor.Storage || (BasiceShapeEditor.Storage = {}));
-})(BasiceShapeEditor || (BasiceShapeEditor = {}));
-var BasiceShapeEditor;
-(function (BasiceShapeEditor) {
+    })(Storage = Shapes.Storage || (Shapes.Storage = {}));
+})(Shapes || (Shapes = {}));
+var Shapes;
+(function (Shapes) {
     var Storage;
     (function (Storage) {
         let EActionType;
         (function (EActionType) {
             EActionType[EActionType["Select"] = 0] = "Select";
         })(EActionType = Storage.EActionType || (Storage.EActionType = {}));
-    })(Storage = BasiceShapeEditor.Storage || (BasiceShapeEditor.Storage = {}));
-})(BasiceShapeEditor || (BasiceShapeEditor = {}));
-var BasiceShapeEditor;
-(function (BasiceShapeEditor) {
+    })(Storage = Shapes.Storage || (Shapes.Storage = {}));
+})(Shapes || (Shapes = {}));
+var Shapes;
+(function (Shapes) {
     let __KeyValueStorage = 1;
     function generateKey() {
         return (__KeyValueStorage++).toString();
     }
-    BasiceShapeEditor.generateKey = generateKey;
-})(BasiceShapeEditor || (BasiceShapeEditor = {}));
-var BasiceShapeEditor;
-(function (BasiceShapeEditor) {
+    Shapes.generateKey = generateKey;
+})(Shapes || (Shapes = {}));
+var Shapes;
+(function (Shapes) {
     var Storage;
     (function (Storage) {
         function createInitialModelState() {
             const someShapes = new Array();
-            for (let counter = 0; counter < 10; counter++)
-                someShapes.push(createShape(counter));
+            const localStorageShapes = Shapes.LocalStorageDriver.load();
+            if (localStorageShapes !== null) {
+                someShapes.push(...localStorageShapes);
+            }
+            else {
+                for (let counter = 0; counter < 10; counter++)
+                    someShapes.push(createRandomShape(counter));
+            }
             return {
                 shapes: someShapes,
                 showLineGuides: false,
                 selectedId: null,
+                previousSelectionIDs: [],
                 mouseMode: Storage.MouseMode.Move,
-                maxZIndex: 10
+                maxZIndex: 10,
+                contextMenu: {
+                    active: false,
+                    recognizer: null,
+                    recognizedText: "",
+                    mouseX: 0,
+                    mouseY: 0,
+                }
             };
         }
         Storage.createInitialModelState = createInitialModelState;
@@ -55,13 +69,14 @@ var BasiceShapeEditor;
                 y: randomSize(window.innerHeight),
             };
         }
-        function createShape(zIndex) {
+        function createRandomShape(zIndex) {
             const color = chooseRandom(['red', 'black', 'blue']);
             const type = chooseRandom(['rect', 'circle']);
             const { x, y } = getRandomCoordinates();
             return {
                 color: color,
-                id: BasiceShapeEditor.generateKey(),
+                id: Shapes.generateKey(),
+                remove: false,
                 type: type,
                 width: 100,
                 height: 100,
@@ -70,11 +85,25 @@ var BasiceShapeEditor;
                 zIndex: zIndex,
             };
         }
-        Storage.createShape = createShape;
-    })(Storage = BasiceShapeEditor.Storage || (BasiceShapeEditor.Storage = {}));
-})(BasiceShapeEditor || (BasiceShapeEditor = {}));
-var BasiceShapeEditor;
-(function (BasiceShapeEditor) {
+        Storage.createRandomShape = createRandomShape;
+        function duplicateShape(zIndex, baseShape) {
+            return {
+                color: baseShape.color,
+                id: Shapes.generateKey(),
+                remove: false,
+                type: baseShape.type,
+                width: baseShape.width,
+                height: baseShape.height,
+                x: baseShape.x + 15,
+                y: baseShape.y + 15,
+                zIndex: zIndex,
+            };
+        }
+        Storage.duplicateShape = duplicateShape;
+    })(Storage = Shapes.Storage || (Shapes.Storage = {}));
+})(Shapes || (Shapes = {}));
+var Shapes;
+(function (Shapes) {
     var Render;
     (function (Render) {
         var Editor;
@@ -82,7 +111,7 @@ var BasiceShapeEditor;
             class Shape extends React.Component {
                 constructor() {
                     super(...arguments);
-                    this.lastState = BasiceShapeEditor.Storage.getState();
+                    this.lastState = Shapes.Storage.getState();
                 }
                 render() {
                     return this.renderShape(this.props.shape);
@@ -110,71 +139,163 @@ var BasiceShapeEditor;
                     return 1;
                 }
                 onMouseEnter() {
-                    BasiceShapeEditor.Storage.setState(state => (Object.assign({}, state, { hoveredId: this.props.shape.id, showLineGuides: false })));
+                    Shapes.Storage.setState(state => (Object.assign({}, state, { hoveredId: this.props.shape.id, showLineGuides: false })));
                 }
                 onMouseLeave() {
-                    BasiceShapeEditor.Storage.setState(state => (Object.assign({}, state, { hoveredId: null })));
+                    Shapes.Storage.setState(state => (Object.assign({}, state, { hoveredId: null })));
                 }
                 onClick() {
-                    BasiceShapeEditor.Storage.setState(state => (Object.assign({}, state, { selectedId: this.props.shape.id, showLineGuides: false, mouseMode: BasiceShapeEditor.Storage.MouseMode.Move })));
+                    Shapes.Storage.setState(state => (Object.assign({}, state, { selectedId: this.props.shape.id, showLineGuides: false, mouseMode: Shapes.Storage.MouseMode.Move })));
                 }
                 createCircle(shape, color, opacity) {
                     const rX = shape.width / 2;
                     const rY = shape.height / 2;
-                    return React.createElement("ellipse", { cx: shape.x + rX, cy: shape.y + rY, fill: color, rx: rX, ry: rY, opacity: opacity, key: BasiceShapeEditor.generateKey(), onMouseEnter: event => this.onMouseEnter(), onMouseLeave: event => this.onMouseLeave(), onClick: event => this.onClick() });
+                    return React.createElement("ellipse", { cx: shape.x + rX, cy: shape.y + rY, fill: color, rx: rX, ry: rY, opacity: opacity, key: Shapes.generateKey(), onMouseEnter: event => this.onMouseEnter(), onMouseLeave: event => this.onMouseLeave(), onClick: event => this.onClick() });
                 }
                 createRect(shape, color, opacity) {
-                    return React.createElement("rect", { x: shape.x, y: shape.y, width: shape.width, height: shape.height, key: BasiceShapeEditor.generateKey(), opacity: opacity, fill: color, onMouseEnter: event => this.onMouseEnter(), onMouseLeave: event => this.onMouseLeave(), onClick: event => this.onClick() });
+                    return React.createElement("rect", { x: shape.x, y: shape.y, width: shape.width, height: shape.height, key: Shapes.generateKey(), opacity: opacity, fill: color, onMouseEnter: event => this.onMouseEnter(), onMouseLeave: event => this.onMouseLeave(), onClick: event => this.onClick() });
                 }
             }
             Editor.Shape = Shape;
         })(Editor = Render.Editor || (Render.Editor = {}));
-    })(Render = BasiceShapeEditor.Render || (BasiceShapeEditor.Render = {}));
-})(BasiceShapeEditor || (BasiceShapeEditor = {}));
-var BasiceShapeEditor;
-(function (BasiceShapeEditor) {
+    })(Render = Shapes.Render || (Shapes.Render = {}));
+})(Shapes || (Shapes = {}));
+var Shapes;
+(function (Shapes) {
     var Render;
     (function (Render) {
-        var Layers;
-        (function (Layers) {
+        var SVGLayers;
+        (function (SVGLayers) {
             var Background;
             (function (Background) {
                 function render() {
+                    const mustBeSmallCopyRight = window.innerWidth < 500;
+                    const copyright = (mustBeSmallCopyRight
+                        ? "2017-present, Pouya Kary"
+                        : "2017-present by Pouya Kary, All rights reserved.");
+                    const copyrightRightDistance = (mustBeSmallCopyRight
+                        ? 180
+                        : 300);
                     return [
-                        React.createElement("g", { key: BasiceShapeEditor.generateKey() },
+                        React.createElement("g", { key: Shapes.generateKey() },
                             React.createElement("rect", { fill: "white", onClick: onClick, style: { width: "100vw", height: "100vh" } }),
                             React.createElement("text", { x: 30, y: 40, fill: "black", fontFamily: "Roboto", fontWeight: "500", fontSize: "30" }, "Shapes"),
-                            React.createElement("text", { x: window.innerWidth - 345, y: 38, fill: "#ccc", fontFamily: "Roboto", fontSize: "12" }, "Copyright \u00A9 2017-present by Pouya Kary, All rights reserved."))
+                            React.createElement("text", { x: window.innerWidth - copyrightRightDistance, y: 38, fill: "#ccc", fontFamily: "Roboto", fontSize: "12" },
+                                "\u00A9 ",
+                                copyright))
                     ];
                 }
                 Background.render = render;
                 function onClick() {
-                    BasiceShapeEditor.Storage.setState(state => (Object.assign({}, state, { selectedId: null })));
+                    Shapes.Storage.setState(state => (Object.assign({}, state, { selectedId: null })));
                 }
-            })(Background = Layers.Background || (Layers.Background = {}));
-        })(Layers = Render.Layers || (Render.Layers = {}));
-    })(Render = BasiceShapeEditor.Render || (BasiceShapeEditor.Render = {}));
-})(BasiceShapeEditor || (BasiceShapeEditor = {}));
-var BasiceShapeEditor;
-(function (BasiceShapeEditor) {
+            })(Background = SVGLayers.Background || (SVGLayers.Background = {}));
+        })(SVGLayers = Render.SVGLayers || (Render.SVGLayers = {}));
+    })(Render = Shapes.Render || (Shapes.Render = {}));
+})(Shapes || (Shapes = {}));
+var Shapes;
+(function (Shapes_1) {
     var Render;
     (function (Render) {
-        var Layers;
-        (function (Layers) {
+        var SVGLayers;
+        (function (SVGLayers) {
             var Shapes;
             (function (Shapes) {
                 function render(model) {
                     const sortedShapes = model.shapes.sort((a, b) => a.zIndex - b.zIndex);
-                    const elementedShapes = sortedShapes.map(shape => React.createElement(Render.Editor.Shape, { shape: shape, key: BasiceShapeEditor.generateKey() }));
+                    const elementedShapes = sortedShapes.map(shape => React.createElement(Render.Editor.Shape, { shape: shape, key: Shapes_1.generateKey() }));
                     return elementedShapes;
                 }
                 Shapes.render = render;
-            })(Shapes = Layers.Shapes || (Layers.Shapes = {}));
-        })(Layers = Render.Layers || (Render.Layers = {}));
-    })(Render = BasiceShapeEditor.Render || (BasiceShapeEditor.Render = {}));
-})(BasiceShapeEditor || (BasiceShapeEditor = {}));
-var BasiceShapeEditor;
-(function (BasiceShapeEditor) {
+            })(Shapes = SVGLayers.Shapes || (SVGLayers.Shapes = {}));
+        })(SVGLayers = Render.SVGLayers || (Render.SVGLayers = {}));
+    })(Render = Shapes_1.Render || (Shapes_1.Render = {}));
+})(Shapes || (Shapes = {}));
+var Shapes;
+(function (Shapes) {
+    var Logic;
+    (function (Logic) {
+        var ContextMenu;
+        (function (ContextMenu) {
+            function close() {
+                Shapes.Storage.setState(state => {
+                    if (state.contextMenu.recognizer !== null)
+                        state.contextMenu.recognizer.stop();
+                    return Object.assign({}, state, { contextMenu: Object.assign({}, state.contextMenu, { active: false, recognizedText: "", recognizer: null }) });
+                });
+            }
+            ContextMenu.close = close;
+        })(ContextMenu = Logic.ContextMenu || (Logic.ContextMenu = {}));
+    })(Logic = Shapes.Logic || (Shapes.Logic = {}));
+})(Shapes || (Shapes = {}));
+var Shapes;
+(function (Shapes) {
+    var SpeechCommandEngine;
+    (function (SpeechCommandEngine) {
+        function trigger() {
+            const state = Shapes.Storage.getState();
+            if (state.contextMenu.active)
+                end();
+            else
+                start();
+        }
+        SpeechCommandEngine.trigger = trigger;
+        function start() {
+            const recognizer = createNewRecognizer();
+            recognizer.start();
+            Shapes.Storage.setState(state => {
+                return Object.assign({}, state, { selectedId: null, showLineGuides: false, mouseMode: Shapes.Storage.MouseMode.Resize, contextMenu: Object.assign({}, state.contextMenu, { active: true, recognizer: recognizer, recognizedText: "", mouseX: Shapes.MouseDriver.X, mouseY: Shapes.MouseDriver.Y }) });
+            });
+        }
+        function end() {
+            Shapes.Storage.setState(state => {
+                const newState = Shapes.DesignTalk.runWithGivenState(state.contextMenu.recognizedText, state);
+                return newState;
+            });
+            Shapes.Logic.ContextMenu.close();
+        }
+        function createNewRecognizer() {
+            const recognizer = new webkitSpeechRecognition();
+            recognizer.continuous = true;
+            recognizer.onresult = event => onResult(event);
+            return recognizer;
+        }
+        function onResult(event) {
+            for (let i = event.resultIndex; i < event.results.length; i++) {
+                const transcript = event.results[i][0].transcript;
+                if (transcript.trim().toLocaleLowerCase() === "done")
+                    end();
+                else
+                    updateScreenText(transcript);
+            }
+        }
+        function updateScreenText(newPart) {
+            Shapes.Storage.setState(state => {
+                console.log(state.contextMenu);
+                return Object.assign({}, state, { contextMenu: Object.assign({}, state.contextMenu, { recognizedText: updateText(state.contextMenu.recognizedText, newPart) }) });
+            });
+        }
+        function updateText(buffer, newPart) {
+            switch (newPart.trim()) {
+                case 'oops':
+                case 'sorry':
+                case 'back':
+                case 'ignore':
+                    const words = buffer.split(' ');
+                    words.pop();
+                    return words.join(' ');
+                case 'clear':
+                case 'clean':
+                case 'reset':
+                    return '';
+                default:
+                    return buffer + newPart;
+            }
+        }
+    })(SpeechCommandEngine = Shapes.SpeechCommandEngine || (Shapes.SpeechCommandEngine = {}));
+})(Shapes || (Shapes = {}));
+var Shapes;
+(function (Shapes) {
     var MouseDriver;
     (function (MouseDriver) {
         MouseDriver.X = 0;
@@ -182,7 +303,8 @@ var BasiceShapeEditor;
         MouseDriver.Clicked = false;
         let shouldMove = false;
         function init() {
-            mouseClcikeEvents();
+            mouseClickEvents();
+            onRightClick();
             mouseMoveEvents();
         }
         MouseDriver.init = init;
@@ -193,10 +315,10 @@ var BasiceShapeEditor;
             };
         }
         function handleMouseMove(event) {
-            const state = BasiceShapeEditor.Storage.getState();
+            const state = Shapes.Storage.getState();
             if (MouseDriver.Clicked) {
                 if (state.selectedId !== null) {
-                    if (state.mouseMode == BasiceShapeEditor.Storage.MouseMode.Move) {
+                    if (state.mouseMode == Shapes.Storage.MouseMode.Move) {
                         updateSelectedShapePositionOnMouseMove(event, state);
                     }
                     else {
@@ -212,10 +334,10 @@ var BasiceShapeEditor;
             clearTimeout(moveReseter);
             moveReseter = setTimeout(() => {
                 if (!MouseDriver.Clicked)
-                    BasiceShapeEditor.Storage.setState(state => (Object.assign({}, state, { mouseMode: BasiceShapeEditor.Storage.MouseMode.Move })));
+                    Shapes.Storage.setState(state => (Object.assign({}, state, { mouseMode: Shapes.Storage.MouseMode.Move })));
             }, 30);
             const selectedShape = state.shapes.find(x => x.id == state.selectedId);
-            BasiceShapeEditor.Storage.setState(state => {
+            Shapes.Storage.setState(state => {
                 const margin = 10;
                 const newShapes = state.shapes.map(shape => {
                     if (shape.id === state.selectedId) {
@@ -235,7 +357,7 @@ var BasiceShapeEditor;
             const selectedShape = state.shapes.find(x => x.id == state.selectedId);
             const XDiff = selectedShape.x - MouseDriver.X;
             const YDiff = selectedShape.y - MouseDriver.Y;
-            BasiceShapeEditor.Storage.setState(state => {
+            Shapes.Storage.setState(state => {
                 const newShapes = state.shapes.map(shape => {
                     if (shape.id === state.selectedId) {
                         shape.x = event.clientX + XDiff;
@@ -250,14 +372,26 @@ var BasiceShapeEditor;
             MouseDriver.X = event.clientX;
             MouseDriver.Y = event.clientY;
         }
-        function mouseClcikeEvents() {
-            document.body.onmousedown = () => MouseDriver.Clicked = true;
-            document.body.onmouseup = () => MouseDriver.Clicked = false;
+        function mouseClickEvents() {
+            document.body.onmousedown = event => {
+                MouseDriver.Clicked = true;
+            };
+            document.body.onmouseup = event => {
+                updateMousePosition(event);
+                MouseDriver.Clicked = false;
+            };
         }
-    })(MouseDriver = BasiceShapeEditor.MouseDriver || (BasiceShapeEditor.MouseDriver = {}));
-})(BasiceShapeEditor || (BasiceShapeEditor = {}));
-var BasiceShapeEditor;
-(function (BasiceShapeEditor) {
+        function onRightClick() {
+            document.oncontextmenu = event => {
+                event.preventDefault();
+                updateMousePosition(event);
+                Shapes.SpeechCommandEngine.trigger();
+            };
+        }
+    })(MouseDriver = Shapes.MouseDriver || (Shapes.MouseDriver = {}));
+})(Shapes || (Shapes = {}));
+var Shapes;
+(function (Shapes) {
     var Render;
     (function (Render) {
         var SelectionTool;
@@ -273,7 +407,7 @@ var BasiceShapeEditor;
             }
             SelectionTool.render = render;
             function computeHaskligBold12TextLength(text) {
-                return text.length * 7.5 + 10;
+                return text.length * 7.5 + 11;
             }
             function createSelectionTool(state) {
                 const shape = state.shapes.find(shape => shape.id === state.selectedId);
@@ -282,6 +416,7 @@ var BasiceShapeEditor;
                 const rectangle = createSelectionRectangle(shape);
                 const resizeHandle = createResizeHandle(shape, state);
                 const deleteButton = createDeleteButton(shape, state);
+                const duplicateButton = createDuplicateButton(shape, state);
                 const colorButtons = createColorButtons(shape, state);
                 const shapeButtons = changeShapeModelButtons(shape, state);
                 return [
@@ -290,6 +425,7 @@ var BasiceShapeEditor;
                     rectangle,
                     resizeHandle,
                     deleteButton,
+                    duplicateButton,
                     colorButtons,
                     ...shapeButtons,
                 ];
@@ -299,25 +435,25 @@ var BasiceShapeEditor;
                 const y = shape.y - margin;
                 const width = shape.width + margin * 2;
                 const height = shape.height + margin * 2;
-                const onMouseLeave = () => BasiceShapeEditor.Storage.setState(state => (Object.assign({}, state, { showLineGuides: false })));
-                const rectangle = React.createElement("rect", { fill: "transparent", stroke: "black", strokeWidth: "2", key: BasiceShapeEditor.generateKey(), onMouseLeave: event => onMouseLeave(), x: x, y: y, width: width, height: height });
+                const onMouseLeave = () => Shapes.Storage.setState(state => (Object.assign({}, state, { showLineGuides: false })));
+                const rectangle = React.createElement("rect", { fill: "transparent", stroke: "black", strokeWidth: "2", key: Shapes.generateKey(), onMouseLeave: event => onMouseLeave(), x: x, y: y, width: width, height: height });
                 return rectangle;
             }
             function createToolTipShape(shape, state) {
                 const x = shape.x - margin;
                 const y = shape.y - margin;
                 const descriptionText = getDescriptionText(shape, state);
-                const descriptionBackground = React.createElement("rect", { fill: "yellow", key: BasiceShapeEditor.generateKey(), x: x, y: y - textBackgroundHeight - 10, width: computeHaskligBold12TextLength(descriptionText), height: textBackgroundHeight, stroke: "black", strokeWidth: 2 });
-                const description = React.createElement("text", { x: x + strokeWidth + 6, y: y - textBackgroundHeight + 6, key: BasiceShapeEditor.generateKey(), fill: "black", fontFamily: "HaskligBold", fontSize: "12" }, descriptionText);
+                const descriptionBackground = React.createElement("rect", { fill: "yellow", key: Shapes.generateKey(), x: x, y: y - textBackgroundHeight - 10, width: computeHaskligBold12TextLength(descriptionText), height: textBackgroundHeight, stroke: "black", strokeWidth: 2 });
+                const description = React.createElement("text", { x: x + strokeWidth + 6, y: y - textBackgroundHeight + 6, key: Shapes.generateKey(), fill: "black", fontFamily: "HaskligBold", fontSize: "12" }, descriptionText);
                 return [
                     descriptionBackground,
                     description,
                 ];
             }
             function getDescriptionText(shape, state) {
-                if (state.showLineGuides && state.mouseMode === BasiceShapeEditor.Storage.MouseMode.Resize)
+                if (state.showLineGuides && state.mouseMode === Shapes.Storage.MouseMode.Resize)
                     return 'SIZE ' + shape.width + ':' + shape.height;
-                if (state.showLineGuides && state.mouseMode === BasiceShapeEditor.Storage.MouseMode.Move)
+                if (state.showLineGuides && state.mouseMode === Shapes.Storage.MouseMode.Move)
                     return 'X ' + shape.x + ' • Y ' + shape.y;
                 return 'X ' + shape.x + ' • Y ' + shape.y + ' • SIZE ' + shape.width + ':' + shape.height;
             }
@@ -360,7 +496,7 @@ var BasiceShapeEditor;
                         ? 'red'
                         : (isThereANormalPoint() ? 'cyan' : '#ccc'));
                     const lineStrokeWidth = (lineColor !== '#ccc' ? 2 : 1);
-                    return React.createElement("line", { strokeWidth: lineStrokeWidth, stroke: lineColor, key: BasiceShapeEditor.generateKey(), x1: x1, y1: y1, x2: x2, y2: y2 });
+                    return React.createElement("line", { strokeWidth: lineStrokeWidth, stroke: lineColor, key: Shapes.generateKey(), x1: x1, y1: y1, x2: x2, y2: y2 });
                 };
                 const topGuideLine = createLine(0, shape.y, window.innerWidth, shape.y, LineDirection.Horoizantal);
                 const bottomGuideLine = createLine(0, shape.y + shape.height, window.innerWidth, shape.y + shape.height, LineDirection.Horoizantal);
@@ -376,55 +512,63 @@ var BasiceShapeEditor;
             function createResizeHandle(shape, state) {
                 const x = shape.x + shape.width + margin;
                 const y = shape.y + shape.height + margin;
-                const setMouseMoveMode = (mode) => BasiceShapeEditor.Storage.setState(state => (Object.assign({}, state, { mouseMode: mode })));
-                const setToResize = () => setMouseMoveMode(BasiceShapeEditor.Storage.MouseMode.Resize);
-                const setToMove = () => setMouseMoveMode(BasiceShapeEditor.Storage.MouseMode.Move);
-                const radius = state.mouseMode === BasiceShapeEditor.Storage.MouseMode.Resize ? 5 : 7;
-                return React.createElement("circle", { fill: "black", cx: x, cy: y, onMouseEnter: event => setToResize(), onMouseLeave: event => setToMove(), key: BasiceShapeEditor.generateKey(), r: radius });
+                const setMouseMoveMode = (mode) => Shapes.Storage.setState(state => (Object.assign({}, state, { mouseMode: mode })));
+                const setToResize = () => setMouseMoveMode(Shapes.Storage.MouseMode.Resize);
+                const setToMove = () => setMouseMoveMode(Shapes.Storage.MouseMode.Move);
+                const radius = state.mouseMode === Shapes.Storage.MouseMode.Resize ? 5 : 7;
+                return React.createElement("circle", { fill: "black", cx: x, cy: y, onMouseEnter: event => setToResize(), onMouseLeave: event => setToMove(), key: Shapes.generateKey(), r: radius });
             }
             function createDeleteButton(shape, state) {
-                if (state.showLineGuides)
-                    return React.createElement("g", { key: BasiceShapeEditor.generateKey() });
-                const buttonText = 'DEL';
-                const textLength = computeHaskligBold12TextLength(buttonText);
-                const x = shape.x - margin - textLength - 10;
-                const y = shape.y - margin;
                 function onDeleteButtonClicked() {
                     const newShapes = state.shapes.filter(element => element.id !== state.selectedId);
-                    BasiceShapeEditor.Storage.setState(state => (Object.assign({}, state, { shapes: newShapes, selectedId: null, mouseMode: BasiceShapeEditor.Storage.MouseMode.Move, showLineGuides: false })));
+                    Shapes.Storage.setState(state => (Object.assign({}, state, { shapes: newShapes, selectedId: null, mouseMode: Shapes.Storage.MouseMode.Move, showLineGuides: false })));
                 }
+                return createButton(shape, state, 'DEL', 0, 0, onDeleteButtonClicked);
+            }
+            function createDuplicateButton(shape, state) {
+                function onDuplicateButtonClicked() {
+                    Shapes.Logic.Model.duplicateShape();
+                }
+                return createButton(shape, state, 'DUP', 0, -2 * (textBackgroundHeight + margin), onDuplicateButtonClicked);
+            }
+            function createButton(shape, state, buttonText, xDiff, yDiff, action) {
+                if (state.showLineGuides)
+                    return React.createElement("g", { key: Shapes.generateKey() });
+                const textLength = computeHaskligBold12TextLength(buttonText);
+                const x = shape.x - margin - textLength - 10 - xDiff;
+                const y = shape.y - margin - yDiff;
                 const backgroundRect = React.createElement("rect", { fill: "#eee", x: x, y: y - textBackgroundHeight - 10, width: textLength, height: textBackgroundHeight, strokeWidth: 2, stroke: "black" });
                 const deleteText = React.createElement("text", { fill: "Black", x: x + 6, y: y - textBackgroundHeight + 6, fontFamily: "HaskligBold", fontSize: "12" }, buttonText);
-                const buttonableLayer = React.createElement("rect", { x: x, y: y - textBackgroundHeight - 10, width: textLength, height: textBackgroundHeight, onClick: event => onDeleteButtonClicked(), fill: "transparent" });
-                return React.createElement("g", { key: BasiceShapeEditor.generateKey() },
+                const buttonableLayer = React.createElement("rect", { x: x, y: y - textBackgroundHeight - 10, width: textLength, height: textBackgroundHeight, onClick: event => action(), fill: "transparent" });
+                return React.createElement("g", { key: Shapes.generateKey() },
                     backgroundRect,
                     deleteText,
                     buttonableLayer);
             }
             function createColorButtons(shape, state) {
                 if (state.showLineGuides)
-                    return React.createElement("g", { key: BasiceShapeEditor.generateKey() });
+                    return React.createElement("g", { key: Shapes.generateKey() });
                 const colors = ['red', 'black', 'blue']
                     .filter(x => shape.color !== x);
                 const buttons = colors.map((color, index) => createSingleColorButton(color, index + 1, shape));
-                return React.createElement("g", { key: BasiceShapeEditor.generateKey() }, buttons);
+                return React.createElement("g", { key: Shapes.generateKey() }, buttons);
             }
             function createSingleColorButton(color, index, shape) {
                 const x = shape.x - margin - 5 - index * (textBackgroundHeight + 5);
                 function onSetColor() {
-                    BasiceShapeEditor.Storage.setState(state => {
-                        const newShapes = state.shapes.map(x => (Object.assign({}, x, { color: x.id === shape.id ? color : x.color })));
+                    Shapes.Storage.setState(state => {
+                        const newShapes = state.shapes.map(x => (Object.assign({}, x, { color: (x.id === shape.id ? color : x.color) })));
                         return Object.assign({}, state, { shapes: newShapes });
                     });
                 }
-                const button = React.createElement("rect", { x: x, y: shape.y - margin, width: textBackgroundHeight, height: textBackgroundHeight, fill: color, key: BasiceShapeEditor.generateKey(), onClick: event => onSetColor(), strokeWidth: "2", stroke: "black" });
+                const button = React.createElement("rect", { x: x, y: shape.y - margin, width: textBackgroundHeight, height: textBackgroundHeight, fill: color, key: Shapes.generateKey(), onClick: event => onSetColor(), strokeWidth: "2", stroke: "black" });
                 return button;
             }
             function changeShapeModelButtons(shape, state) {
                 if (state.showLineGuides)
-                    return [React.createElement("g", { key: BasiceShapeEditor.generateKey() })];
+                    return [React.createElement("g", { key: Shapes.generateKey() })];
                 function onChangeShapeType() {
-                    BasiceShapeEditor.Storage.setState(state => {
+                    Shapes.Storage.setState(state => {
                         const newShapes = state.shapes.map(x => {
                             if (shape.id === x.id)
                                 return Object.assign({}, x, { type: (x.id == shape.id && x.type === 'rect') ?
@@ -436,13 +580,13 @@ var BasiceShapeEditor;
                     });
                 }
                 const x = shape.x - 2 * margin - textBackgroundHeight;
-                const y = shape.y + 1 * (textBackgroundHeight);
-                const mainBackground = React.createElement("rect", { x: x, y: y, width: textBackgroundHeight, height: textBackgroundHeight, stroke: "black", key: BasiceShapeEditor.generateKey(), strokeWidth: "2", fill: "#eee" });
+                const y = shape.y + 2 * (textBackgroundHeight) + margin;
+                const mainBackground = React.createElement("rect", { x: x, y: y, width: textBackgroundHeight, height: textBackgroundHeight, stroke: "black", key: Shapes.generateKey(), strokeWidth: "2", fill: "#eee" });
                 const shapeSize = textBackgroundHeight - 10;
                 const halfShape = shapeSize / 2;
                 const shapeIcon = (shape.type === 'circle'
-                    ? React.createElement("rect", { x: x + 5, y: y + 5, width: shapeSize, height: shapeSize, fill: "black" })
-                    : React.createElement("circle", { cx: x + 5 + halfShape, cy: y + 5 + halfShape, r: shapeSize / 2, fill: "black" }));
+                    ? React.createElement("rect", { x: x + 5, y: y + 5, width: shapeSize, height: shapeSize, fill: shape.color })
+                    : React.createElement("circle", { cx: x + 5 + halfShape, cy: y + 5 + halfShape, r: shapeSize / 2, fill: shape.color }));
                 const transparentButtonableRect = React.createElement("rect", { x: x, y: y, height: textBackgroundHeight, width: textBackgroundHeight, onClick: event => onChangeShapeType(), fill: "transparent" });
                 return [
                     mainBackground,
@@ -451,104 +595,266 @@ var BasiceShapeEditor;
                 ];
             }
         })(SelectionTool = Render.SelectionTool || (Render.SelectionTool = {}));
-    })(Render = BasiceShapeEditor.Render || (BasiceShapeEditor.Render = {}));
-})(BasiceShapeEditor || (BasiceShapeEditor = {}));
-var BasiceShapeEditor;
-(function (BasiceShapeEditor) {
+    })(Render = Shapes.Render || (Shapes.Render = {}));
+})(Shapes || (Shapes = {}));
+var Shapes;
+(function (Shapes) {
     var Render;
     (function (Render) {
-        var Layers;
-        (function (Layers) {
+        var SVGLayers;
+        (function (SVGLayers) {
             var Selection;
             (function (Selection) {
                 function render(model) {
                     return Render.SelectionTool.render(model);
                 }
                 Selection.render = render;
-            })(Selection = Layers.Selection || (Layers.Selection = {}));
-        })(Layers = Render.Layers || (Render.Layers = {}));
-    })(Render = BasiceShapeEditor.Render || (BasiceShapeEditor.Render = {}));
-})(BasiceShapeEditor || (BasiceShapeEditor = {}));
-var BasiceShapeEditor;
-(function (BasiceShapeEditor) {
+            })(Selection = SVGLayers.Selection || (SVGLayers.Selection = {}));
+        })(SVGLayers = Render.SVGLayers || (Render.SVGLayers = {}));
+    })(Render = Shapes.Render || (Shapes.Render = {}));
+})(Shapes || (Shapes = {}));
+var Shapes;
+(function (Shapes) {
+    var DesignTalk;
+    (function (DesignTalk) {
+        var Core;
+        (function (Core) {
+            const normalizationRegExp = /(?:'|\bthe\b)/g;
+            function parse(code) {
+                const normalizedCode = normalize(code);
+                return DesignTalkParser.parse(normalizedCode);
+            }
+            Core.parse = parse;
+            function normalize(code) {
+                return code.replace(normalizationRegExp, '');
+            }
+        })(Core = DesignTalk.Core || (DesignTalk.Core = {}));
+    })(DesignTalk = Shapes.DesignTalk || (Shapes.DesignTalk = {}));
+})(Shapes || (Shapes = {}));
+var Shapes;
+(function (Shapes) {
+    var Logic;
+    (function (Logic) {
+        var Model;
+        (function (Model) {
+            function createNewShape() {
+                Shapes.Storage.setState(state => {
+                    const newMaxZIndex = state.maxZIndex + 1;
+                    const newShape = Shapes.Storage.createRandomShape(newMaxZIndex);
+                    state.shapes.push(newShape);
+                    return Object.assign({}, state, { selectedId: newShape.id, mouseMode: Shapes.Storage.MouseMode.Move, maxZIndex: newMaxZIndex, showLineGuides: false });
+                });
+            }
+            Model.createNewShape = createNewShape;
+            function duplicateShape() {
+                Shapes.Storage.setState(state => {
+                    if (state.selectedId === null)
+                        return state;
+                    const newMaxZIndex = state.maxZIndex + 1;
+                    const currentShape = state.shapes.find(shape => shape.id === state.selectedId);
+                    const newShape = Shapes.Storage.duplicateShape(newMaxZIndex, currentShape);
+                    state.shapes.push(newShape);
+                    return Object.assign({}, state, { selectedId: newShape.id, mouseMode: Shapes.Storage.MouseMode.Move, maxZIndex: newMaxZIndex, showLineGuides: false });
+                });
+            }
+            Model.duplicateShape = duplicateShape;
+        })(Model = Logic.Model || (Logic.Model = {}));
+    })(Logic = Shapes.Logic || (Shapes.Logic = {}));
+})(Shapes || (Shapes = {}));
+var Shapes;
+(function (Shapes) {
+    var Render;
+    (function (Render) {
+        var HTMLLayers;
+        (function (HTMLLayers) {
+            var RightClick;
+            (function (RightClick) {
+                const iconSize = 30;
+                const backgroundSize = iconSize + 14;
+                function render(model) {
+                    return ((model.contextMenu.active)
+                        ? shapeOnWorkingMode(model)
+                        : []);
+                }
+                RightClick.render = render;
+                function shapeOnWorkingMode(model) {
+                    return React.createElement("div", { key: Shapes.generateKey(), style: {
+                            backgroundColor: "rgba(255, 255, 255, 0.9)",
+                            position: "fixed",
+                            left: "0",
+                            top: "0",
+                            width: "100vw",
+                            height: "100vh",
+                        } },
+                        recordingIcon(model),
+                        createTextView(model));
+                }
+                function recordingIcon(model) {
+                    const { mouseX, mouseY } = model.contextMenu;
+                    return React.createElement("div", { style: {
+                            backgroundColor: "black",
+                            position: "fixed",
+                            left: mouseX - (backgroundSize / 2),
+                            top: mouseY - (backgroundSize / 2),
+                            padding: (backgroundSize - iconSize) / 2,
+                            width: iconSize,
+                            height: iconSize,
+                        } },
+                        React.createElement("div", { className: "recorderIcon", style: {
+                                width: iconSize,
+                                height: iconSize,
+                                borderRadius: iconSize / 2,
+                                backgroundColor: "red",
+                            } }),
+                        createNewShapeButton(model),
+                        createHelpButton(model));
+                }
+                function createTextView(model) {
+                    const { mouseX, mouseY, recognizedText } = model.contextMenu;
+                    if (recognizedText === "")
+                        return React.createElement("div", null);
+                    return React.createElement("div", { style: {
+                            maxWidth: "160px",
+                            position: "fixed",
+                            left: mouseX - backgroundSize + 75,
+                            top: mouseY - (backgroundSize / 2),
+                            fontFamily: "HaskligBold",
+                            fontSize: "12",
+                            color: "black",
+                            textTransform: "uppercase",
+                            backgroundColor: "yellow",
+                            borderWidth: "2px",
+                            borderStyle: "solid",
+                            borderColor: "black",
+                            userSelect: "none",
+                        } },
+                        React.createElement("div", { style: {
+                                padding: "5px 10px 7px 10px",
+                            } }, recognizedText),
+                        React.createElement("div", { style: {
+                                borderTopColor: "black",
+                                borderTopWidth: 2,
+                                borderTopStyle: "dashed",
+                                padding: "5px 10px 7px 10px"
+                            } }, Shapes.DesignTalk.isParsable(recognizedText)
+                            ? "Looks Good"
+                            : "Can't Understand"));
+                }
+                function createButton(name, state, XX, YY, onClickFunction) {
+                    const { mouseX, mouseY } = state.contextMenu;
+                    const functionForClick = () => {
+                        onClickFunction();
+                        Shapes.Logic.ContextMenu.close();
+                    };
+                    return React.createElement("div", { onClick: functionForClick, style: {
+                            backgroundColor: "#eee",
+                            fontFamily: "HaskligBold",
+                            fontSize: 12,
+                            border: "2px solid black",
+                            padding: "3px 5px 5px 5px",
+                            position: "fixed",
+                            left: mouseX - XX,
+                            top: mouseY - YY,
+                            textTransform: "uppercase",
+                            WebkitUserSelect: "none",
+                        } }, name);
+                }
+                function createNewShapeButton(model) {
+                    return createButton("new shape", model, 80, 65, () => {
+                        Shapes.Logic.Model.createNewShape();
+                    });
+                }
+                function createHelpButton(model) {
+                    return createButton("wiki & help", model, 130, 25, () => {
+                        window.open("https://www.notion.so/Shapes-dad307e81f1e46869ad6c355b1705921", "_blank");
+                    });
+                }
+            })(RightClick = HTMLLayers.RightClick || (HTMLLayers.RightClick = {}));
+        })(HTMLLayers = Render.HTMLLayers || (Render.HTMLLayers = {}));
+    })(Render = Shapes.Render || (Shapes.Render = {}));
+})(Shapes || (Shapes = {}));
+var Shapes;
+(function (Shapes) {
     var Render;
     (function (Render) {
         function renderApp(model) {
             const container = document.getElementById('container');
-            const scene = createScence(model);
+            const scene = createScene(model);
             ReactDOM.render(scene, container);
         }
         Render.renderApp = renderApp;
-        function createScence(model) {
+        function createScene(model) {
             const layerElements = [
-                Render.Layers.Background.render(),
-                Render.Layers.Shapes.render(model),
-                Render.Layers.Selection.render(model),
+                Render.SVGLayers.Background.render(),
+                Render.SVGLayers.Shapes.render(model),
+                Render.SVGLayers.Selection.render(model),
             ];
             const layers = layerElements.map((elements, index) => renderLayer(index, elements));
             return React.createElement("div", null,
                 createMainSVG(layers),
-                addNewShapeButton(),
-                clearDisplayButton(),
-                createUndoButton());
+                Render.HTMLLayers.RightClick.render(model));
         }
         function createMainSVG(layers) {
-            return React.createElement("svg", { style: { width: "100vw", height: "100vh" }, key: BasiceShapeEditor.generateKey() }, layers);
-        }
-        const WindowDivButtonStyle = {
-            position: "fixed",
-            top: '13pt',
-            left: '120pt',
-            backgroundColor: '#eee',
-            fontSize: '12px',
-            fontFamily: 'HaskligBold',
-            borderWidth: '2px',
-            borderStyle: 'solid',
-            borderColor: 'black',
-            paddingBottom: '5px',
-            paddingTop: '3px',
-            paddingLeft: '7px',
-            paddingRight: '8px',
-            MozUserSelect: 'none',
-            WebkitUserSelect: 'none',
-            msUserSelect: 'none',
-        };
-        function addNewShapeButton() {
-            function onAddNewShape() {
-                BasiceShapeEditor.Storage.setState(state => {
-                    const newMaxZIndex = state.maxZIndex + 1;
-                    const newShape = BasiceShapeEditor.Storage.createShape(newMaxZIndex);
-                    state.shapes.push(newShape);
-                    return Object.assign({}, state, { selectedId: newShape.id, mouseMode: BasiceShapeEditor.Storage.MouseMode.Move, maxZIndex: newMaxZIndex, showLineGuides: false });
-                });
-            }
-            return React.createElement("div", { onClick: event => onAddNewShape(), style: Object.assign({}, WindowDivButtonStyle, { left: '120pt' }) }, "ADD NEW SHAPE");
-        }
-        function createUndoButton() {
-            function onUndoClicked() {
-                BasiceShapeEditor.Storage.undoState();
-            }
-            return React.createElement("div", { onClick: event => onUndoClicked(), style: Object.assign({}, WindowDivButtonStyle, { left: '284pt' }) }, "UNDO");
-        }
-        function clearDisplayButton() {
-            function onDeleteAllShapes() {
-                BasiceShapeEditor.Storage.setState(state => (Object.assign({}, state, { shapes: [], selectedId: null, mouseMode: BasiceShapeEditor.Storage.MouseMode.Move })));
-            }
-            return React.createElement("div", { onClick: event => onDeleteAllShapes(), style: Object.assign({}, WindowDivButtonStyle, { left: '210pt' }) }, "DEL SHAPES");
+            return React.createElement("svg", { style: { width: "100vw", height: "100vh" }, key: Shapes.generateKey() }, layers);
         }
         function renderLayer(layer, elements) {
-            return React.createElement("g", { key: BasiceShapeEditor.generateKey() }, elements);
+            return React.createElement("g", { key: Shapes.generateKey() }, elements);
         }
-    })(Render = BasiceShapeEditor.Render || (BasiceShapeEditor.Render = {}));
-})(BasiceShapeEditor || (BasiceShapeEditor = {}));
-var BasiceShapeEditor;
-(function (BasiceShapeEditor) {
+        function renderOnResize() {
+            Shapes.Storage.setState(state => {
+                const { innerHeight, innerWidth } = window;
+                const newShapes = state.shapes.map(shape => (Object.assign({}, shape, { x: ((shape.x + shape.width < innerWidth)
+                        ? shape.x
+                        : innerWidth - shape.width - 10), y: ((shape.y + shape.height < innerHeight)
+                        ? shape.y
+                        : innerHeight - shape.height - 10) })));
+                return Object.assign({}, state, { shapes: newShapes });
+            });
+        }
+        Render.renderOnResize = renderOnResize;
+    })(Render = Shapes.Render || (Shapes.Render = {}));
+})(Shapes || (Shapes = {}));
+var Shapes;
+(function (Shapes) {
+    var LocalStorageDriver;
+    (function (LocalStorageDriver) {
+        const LOCAL_STORAGE_ID = "us.kary.toys.shapes.model";
+        let driverStorageTimeoutSetter;
+        function storageUpdaterFunction(state) {
+            const encodedStateString = JSON.stringify(state.shapes);
+            localStorage.setItem(LOCAL_STORAGE_ID, encodedStateString);
+        }
+        LocalStorageDriver.storageUpdaterFunction = storageUpdaterFunction;
+        function update(state) {
+            clearTimeout(driverStorageTimeoutSetter);
+            driverStorageTimeoutSetter =
+                setTimeout(storageUpdaterFunction, 1000);
+        }
+        function load() {
+            try {
+                const encodedStateString = localStorage.getItem(LOCAL_STORAGE_ID);
+                if (encodedStateString === null)
+                    return null;
+                const stateObject = JSON.parse(encodedStateString);
+                return stateObject;
+            }
+            catch (e) {
+                return null;
+            }
+        }
+        LocalStorageDriver.load = load;
+    })(LocalStorageDriver = Shapes.LocalStorageDriver || (Shapes.LocalStorageDriver = {}));
+})(Shapes || (Shapes = {}));
+var Shapes;
+(function (Shapes) {
     var Storage;
     (function (Storage) {
         const StorageContainer = new Array();
-        const StorageSubcriptions = [
-            BasiceShapeEditor.Render.renderApp,
+        const StorageSubscriptions = [
+            Shapes.LocalStorageDriver.storageUpdaterFunction,
+            Shapes.Render.renderApp,
         ];
+        const OnStateChangeManipulationFunctions = new Set();
         function initStorage() {
             StorageContainer.push(Storage.createInitialModelState());
             setTimeout(() => runSubscribersOnChange(getState()), 100);
@@ -563,12 +869,14 @@ var BasiceShapeEditor;
         }
         Storage.getState = getState;
         function runSubscribersOnChange(state) {
-            for (const subscriber of StorageSubcriptions)
+            for (const subscriber of StorageSubscriptions)
                 subscriber(state);
         }
         function setState(setter) {
             const lastState = getState();
-            const newState = setter(lastState);
+            let newState = setter(lastState);
+            for (const manipulator of OnStateChangeManipulationFunctions)
+                newState = manipulator(newState);
             StorageContainer.push(newState);
             runSubscribersOnChange(newState);
         }
@@ -581,14 +889,332 @@ var BasiceShapeEditor;
             }
         }
         Storage.undoState = undoState;
-    })(Storage = BasiceShapeEditor.Storage || (BasiceShapeEditor.Storage = {}));
-})(BasiceShapeEditor || (BasiceShapeEditor = {}));
-var BasiceShapeEditor;
-(function (BasiceShapeEditor) {
-    window.onload = () => main();
-    function main() {
-        BasiceShapeEditor.Storage.initStorage();
-        BasiceShapeEditor.MouseDriver.init();
-    }
-})(BasiceShapeEditor || (BasiceShapeEditor = {}));
+        function addManipulationFunction(manipulator) {
+            OnStateChangeManipulationFunctions.add(manipulator);
+        }
+        Storage.addManipulationFunction = addManipulationFunction;
+    })(Storage = Shapes.Storage || (Shapes.Storage = {}));
+})(Shapes || (Shapes = {}));
+var Shapes;
+(function (Shapes) {
+    var ScreenDriver;
+    (function (ScreenDriver) {
+        ScreenDriver.PointSize = 0;
+        function init() {
+            const div = document.getElementById('dpi');
+            div.style.width = '1pt';
+            var result = window
+                .getComputedStyle(div)
+                .getPropertyValue('width');
+            const pointSize = parseFloat(result);
+            ScreenDriver.PointSize = pointSize;
+        }
+        ScreenDriver.init = init;
+    })(ScreenDriver = Shapes.ScreenDriver || (Shapes.ScreenDriver = {}));
+})(Shapes || (Shapes = {}));
+var Shapes;
+(function (Shapes) {
+    var StateManipulators;
+    (function (StateManipulators) {
+        StateManipulators.ShapeDeleteManipulator = (state) => (Object.assign({}, state, { shapes: state.shapes.filter(x => !x.remove) }));
+    })(StateManipulators = Shapes.StateManipulators || (Shapes.StateManipulators = {}));
+})(Shapes || (Shapes = {}));
+var Shapes;
+(function (Shapes) {
+    var StateManipulators;
+    (function (StateManipulators) {
+        function init() {
+            Shapes.Storage.addManipulationFunction(StateManipulators.ShapeDeleteManipulator);
+        }
+        StateManipulators.init = init;
+    })(StateManipulators = Shapes.StateManipulators || (Shapes.StateManipulators = {}));
+})(Shapes || (Shapes = {}));
+var Shapes;
+(function (Shapes) {
+    window.onload = () => {
+        Shapes.Storage.initStorage();
+        Shapes.StateManipulators.init();
+        Shapes.MouseDriver.init();
+        Shapes.ScreenDriver.init();
+        window.onresize = () => Shapes.Render.renderOnResize();
+    };
+})(Shapes || (Shapes = {}));
+var Shapes;
+(function (Shapes) {
+    var DesignTalk;
+    (function (DesignTalk) {
+        function isParsable(code) {
+            try {
+                DesignTalk.Core.parse(code);
+                return true;
+            }
+            catch (_a) {
+                return false;
+            }
+        }
+        DesignTalk.isParsable = isParsable;
+        function runWithGivenState(code, state) {
+            return DesignTalk.Core.run(code, state);
+        }
+        DesignTalk.runWithGivenState = runWithGivenState;
+        function runAndApply(code) {
+            Shapes.Storage.setState(state => DesignTalk.Core.run(code, state));
+        }
+        DesignTalk.runAndApply = runAndApply;
+    })(DesignTalk = Shapes.DesignTalk || (Shapes.DesignTalk = {}));
+})(Shapes || (Shapes = {}));
+var Shapes;
+(function (Shapes) {
+    var DesignTalk;
+    (function (DesignTalk) {
+        var Core;
+        (function (Core) {
+            var QueryCompiler;
+            (function (QueryCompiler) {
+                function generate(query, state) {
+                    if (query.mode === "new")
+                        return generateNewQueryFunction(query);
+                    else
+                        return generatePreviousSelectionsFunction(state);
+                }
+                QueryCompiler.generate = generate;
+                function generatePreviousSelectionsFunction(state) {
+                    const shapeTable = {};
+                    for (const shape of state.shapes)
+                        shapeTable[shape.id] = shape;
+                    return (shapes) => state.previousSelectionIDs.map(id => shapeTable[id]);
+                }
+                function generateNewQueryFunction(query) {
+                    const checkers = [
+                        generateCheckerForColor(query),
+                        generateCheckerForShapeKind(query),
+                    ];
+                    for (const condition of query.conditions)
+                        checkers.push(generateConditionChecker(condition));
+                    return generateQueryFunction(query, checkers);
+                }
+                function generateQueryFunction(query, checkers) {
+                    const effectiveCheckers = checkers.filter(checker => checker !== null);
+                    const checker = (shape) => {
+                        for (const checker of effectiveCheckers)
+                            if (!checker(shape))
+                                return false;
+                        return true;
+                    };
+                    const rangedFilterFunction = generateRangeFilterFunction(query, checker);
+                    return rangedFilterFunction;
+                }
+                function generateCheckerForColor(query) {
+                    if (query.color === "all")
+                        return null;
+                    return (shape) => shape.color === query.color;
+                }
+                function generateCheckerForShapeKind(query) {
+                    if (query.kind === "all")
+                        return null;
+                    return (shape) => shape.type === query.kind;
+                }
+                function generateConditionChecker(condition) {
+                    switch (condition.query) {
+                        case 'size':
+                        default:
+                            return generateCheckerForSizeQuery(condition);
+                    }
+                }
+                function generateCheckerForSizeQuery(sizeQuery) {
+                    if (sizeQuery.dimension === "both")
+                        return generateCheckerForSize2DQuery(sizeQuery);
+                    else
+                        return generateCheckerForSize1DQuery(sizeQuery);
+                }
+                function generateCheckerForSize1DQuery(sizeQuery) {
+                    const comparisonFunction = composeComparisonFunction(sizeQuery.operator);
+                    const { size, unit } = sizeQuery.size;
+                    const comparable = Core.convertSizeToPixel(size, unit);
+                    const checker = (shape) => {
+                        const baseSize = ((sizeQuery.dimension === "width")
+                            ? shape.width
+                            : shape.height);
+                        return comparisonFunction(baseSize, comparable);
+                    };
+                    return checker;
+                }
+                function generateCheckerForSize2DQuery(sizeQuery) {
+                    const comparisonFunction = composeComparisonFunction(sizeQuery.operator);
+                    const { width, height, unit } = sizeQuery.size;
+                    const widthSize = Core.convertSizeToPixel(width, unit);
+                    const heightSize = Core.convertSizeToPixel(height, unit);
+                    const checker = (shape) => comparisonFunction(shape.width, widthSize) &&
+                        comparisonFunction(shape.height, heightSize);
+                    return checker;
+                }
+                function composeComparisonFunction(operator) {
+                    let comparisonFunction = (a, b) => true;
+                    switch (operator.operator) {
+                        case '=':
+                            comparisonFunction =
+                                (a, b) => a === b;
+                            break;
+                        case '>':
+                            comparisonFunction =
+                                (a, b) => a > b;
+                            break;
+                        case '<':
+                            comparisonFunction =
+                                (a, b) => a < b;
+                            break;
+                        case '<=':
+                            comparisonFunction =
+                                (a, b) => a <= b;
+                            break;
+                        case '>=':
+                            comparisonFunction =
+                                (a, b) => a >= b;
+                            break;
+                    }
+                    const functionWithNegationApplied = (operator.negation
+                        ? (a, b) => !comparisonFunction(a, b)
+                        : comparisonFunction);
+                    return functionWithNegationApplied;
+                }
+                function generateRangeFilterFunction(query, checker) {
+                    switch (query.range.mode) {
+                        case "biggest":
+                            return createSmallestBiggestRangeSelector(query, checker, (a, b) => a - b);
+                        case "smallest":
+                            return createSmallestBiggestRangeSelector(query, checker, (a, b) => a + b);
+                        case "all":
+                        default:
+                            return (shapes) => shapes.filter(checker);
+                    }
+                }
+                function createSmallestBiggestRangeSelector(query, checker, operator) {
+                    return (shapes) => {
+                        const filteredShapes = shapes.filter(checker);
+                        const rangeFilteredShapes = filteredShapes
+                            .sort((a, b) => operator((b.width * b.height), (a.width * b.height)))
+                            .splice(0, query.range.range);
+                        return rangeFilteredShapes;
+                    };
+                }
+            })(QueryCompiler = Core.QueryCompiler || (Core.QueryCompiler = {}));
+        })(Core = DesignTalk.Core || (DesignTalk.Core = {}));
+    })(DesignTalk = Shapes.DesignTalk || (Shapes.DesignTalk = {}));
+})(Shapes || (Shapes = {}));
+var Shapes;
+(function (Shapes) {
+    var DesignTalk;
+    (function (DesignTalk) {
+        var Core;
+        (function (Core) {
+            var CommandCompiler;
+            (function (CommandCompiler) {
+                function generate(instruction) {
+                    switch (instruction.command) {
+                        case "remove":
+                            return CommandCompiler.generateRemoveInstruction(instruction);
+                        default:
+                            return (shapes) => shapes;
+                    }
+                }
+                CommandCompiler.generate = generate;
+            })(CommandCompiler = Core.CommandCompiler || (Core.CommandCompiler = {}));
+        })(Core = DesignTalk.Core || (DesignTalk.Core = {}));
+    })(DesignTalk = Shapes.DesignTalk || (Shapes.DesignTalk = {}));
+})(Shapes || (Shapes = {}));
+var Shapes;
+(function (Shapes) {
+    var DesignTalk;
+    (function (DesignTalk) {
+        var Core;
+        (function (Core) {
+            function run(code, state) {
+                try {
+                    const commands = Core.parse(code);
+                    return executeCommands(commands, state);
+                }
+                catch (error) {
+                    console.error(error);
+                    return state;
+                }
+            }
+            Core.run = run;
+            function executeCommands(commands, state) {
+                for (const command of commands)
+                    state = runCommand(command, state);
+                return state;
+            }
+            function runCommand(command, state) {
+                const { queryFunction, manipulationFunction } = compileCommand(command, state);
+                const selectedShapes = queryFunction(state.shapes);
+                console.log(selectedShapes);
+                const manipulatedShapes = manipulationFunction(selectedShapes);
+                const newState = mergeShapes(state, manipulatedShapes);
+                return newState;
+            }
+            function mergeShapes(state, manipulatedShapes) {
+                const manipulatedShapeTable = {};
+                const previousSelectionIDs = new Array();
+                for (const shape of manipulatedShapes)
+                    manipulatedShapeTable[shape.id] = shape;
+                const shapes = state.shapes.map(shape => {
+                    if (manipulatedShapeTable[shape.id] !== undefined) {
+                        previousSelectionIDs.push(shape.id);
+                        return manipulatedShapeTable[shape.id];
+                    }
+                    return shape;
+                });
+                return Object.assign({}, state, { shapes,
+                    previousSelectionIDs });
+            }
+            function compileCommand(command, state) {
+                const queryFunction = Core.QueryCompiler.generate(command.query, state);
+                const manipulationFunction = Core.CommandCompiler.generate(command.instruction);
+                return {
+                    manipulationFunction,
+                    queryFunction,
+                };
+            }
+        })(Core = DesignTalk.Core || (DesignTalk.Core = {}));
+    })(DesignTalk = Shapes.DesignTalk || (Shapes.DesignTalk = {}));
+})(Shapes || (Shapes = {}));
+var Shapes;
+(function (Shapes) {
+    var DesignTalk;
+    (function (DesignTalk) {
+        var Core;
+        (function (Core) {
+            function convertSizeToPixel(size, unit) {
+                switch (unit) {
+                    case 'point':
+                        return pointToPixel(size);
+                    case 'pixel':
+                    default:
+                        return size;
+                }
+            }
+            Core.convertSizeToPixel = convertSizeToPixel;
+            function pointToPixel(points) {
+                return points * Shapes.ScreenDriver.PointSize;
+            }
+            Core.pointToPixel = pointToPixel;
+        })(Core = DesignTalk.Core || (DesignTalk.Core = {}));
+    })(DesignTalk = Shapes.DesignTalk || (Shapes.DesignTalk = {}));
+})(Shapes || (Shapes = {}));
+var Shapes;
+(function (Shapes) {
+    var DesignTalk;
+    (function (DesignTalk) {
+        var Core;
+        (function (Core) {
+            var CommandCompiler;
+            (function (CommandCompiler) {
+                function generateRemoveInstruction(instruction) {
+                    return (shapes) => shapes.map(shape => (Object.assign({}, shape, { remove: true })));
+                }
+                CommandCompiler.generateRemoveInstruction = generateRemoveInstruction;
+            })(CommandCompiler = Core.CommandCompiler || (Core.CommandCompiler = {}));
+        })(Core = DesignTalk.Core || (DesignTalk.Core = {}));
+    })(DesignTalk = Shapes.DesignTalk || (Shapes.DesignTalk = {}));
+})(Shapes || (Shapes = {}));
 //# sourceMappingURL=core.js.map

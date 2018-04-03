@@ -3,27 +3,29 @@
 // Copyright 2017-present by Pouya Kary. All Rights Reserved.
 //
 
+/// <reference path="svg-layers/background.tsx" />
+/// <reference path="svg-layers/shapes.tsx" />
+/// <reference path="svg-layers/selection.ts" />
+
+/// <reference path="html-layers/rightclick.tsx" />
+
 /// <reference path="../storage/model.ts" />
 /// <reference path="../globals/key.ts" />
-/// <reference path="layers/background.tsx" />
-/// <reference path="layers/shapes.tsx" />
-/// <reference path="layers/selection.ts" />
 /// <reference path="../storage/base-model.ts" />
 
 
-
-namespace BasiceShapeEditor.Render {
+namespace Shapes.Render {
 
     //
     // ─── MAIN RENDERER ──────────────────────────────────────────────────────────────
     //
 
-        export function renderApp ( model: Storage.IModel ) {
+        export function renderApp ( model: Storage.Model ) {
             const container =
                 document.getElementById('container')
 
             const scene =
-                createScence( model )
+                createScene( model )
 
             ReactDOM.render( scene, container )
         }
@@ -32,11 +34,11 @@ namespace BasiceShapeEditor.Render {
     // ─── CREATE SCENE ───────────────────────────────────────────────────────────────
     //
 
-        function createScence ( model: Storage.IModel ) {
+        function createScene ( model: Storage.Model ) {
             const layerElements = [
-                Render.Layers.Background.render( ),
-                Render.Layers.Shapes.render( model ),
-                Render.Layers.Selection.render( model ),
+                Render.SVGLayers.Background.render( ),
+                Render.SVGLayers.Shapes.render( model ),
+                Render.SVGLayers.Selection.render( model ),
             ]
 
             const layers =
@@ -45,9 +47,7 @@ namespace BasiceShapeEditor.Render {
 
             return  <div>
                         { createMainSVG( layers ) }
-                        { addNewShapeButton( ) }
-                        { clearDisplayButton( ) }
-                        { createUndoButton( ) }
+                        { Render.HTMLLayers.RightClick.render( model ) }
                     </div>
         }
 
@@ -63,92 +63,6 @@ namespace BasiceShapeEditor.Render {
         }
 
     //
-    // ─── CONST WINDOW BUTTON STYLES ─────────────────────────────────────────────────
-    //
-
-        const WindowDivButtonStyle = {
-            position:           "fixed",
-            top:                '13pt',
-            left:               '120pt',
-            backgroundColor:    '#eee',
-            fontSize:           '12px',
-            fontFamily:         'HaskligBold',
-            borderWidth:        '2px',
-            borderStyle:        'solid',
-            borderColor:        'black',
-            paddingBottom:      '5px',
-            paddingTop:         '3px',
-            paddingLeft:        '7px',
-            paddingRight:       '8px',
-            MozUserSelect:      'none',
-            WebkitUserSelect:   'none',
-            msUserSelect:       'none',
-        }
-
-    //
-    // ─── ON NEW SHAPE ───────────────────────────────────────────────────────────────
-    //
-
-        function addNewShapeButton ( ) {
-            function onAddNewShape ( ) {
-                Storage.setState( state => {
-                    const newMaxZIndex =
-                        state.maxZIndex + 1
-                    const newShape =
-                        Storage.createShape( newMaxZIndex )
-
-                    state.shapes.push( newShape )
-
-                    return { ...state,
-                        selectedId: newShape.id,
-                        mouseMode: Storage.MouseMode.Move,
-                        maxZIndex: newMaxZIndex,
-                        showLineGuides: false,
-                    }
-                })
-            }
-
-            return  <div onClick = { event => onAddNewShape( ) }
-                           style = {{ ...WindowDivButtonStyle, left: '120pt' } as any }>
-                        ADD NEW SHAPE
-                    </div>
-        }
-
-    //
-    // ─── UNDO BUTTON ────────────────────────────────────────────────────────────────
-    //
-
-        function createUndoButton ( ) {
-            function onUndoClicked ( ) {
-                Storage.undoState( )
-            }
-
-            return  <div onClick = { event => onUndoClicked( ) }
-                           style = {{ ...WindowDivButtonStyle, left: '284pt' } as any }>
-                        UNDO
-                    </div>
-        }
-
-    //
-    // ─── ON CLEAR ALL SHAPES ────────────────────────────────────────────────────────
-    //
-
-        function clearDisplayButton ( ) {
-            function onDeleteAllShapes ( ) {
-                Storage.setState( state => ({ ...state,
-                    shapes: [ ],
-                    selectedId: null,
-                    mouseMode: Storage.MouseMode.Move
-                }))
-            }
-
-            return  <div onClick = { event => onDeleteAllShapes( ) }
-                           style = {{ ...WindowDivButtonStyle, left: '210pt' } as any }>
-                        DEL SHAPES
-                    </div>
-        }
-
-    //
     // ─── COMPOSE LAYERS ─────────────────────────────────────────────────────────────
     //
 
@@ -156,6 +70,33 @@ namespace BasiceShapeEditor.Render {
             return  <g key = { generateKey( ) }>
                         { elements }
                     </g>
+        }
+
+    //
+    // ─── ON RESIZE ──────────────────────────────────────────────────────────────────
+    //
+
+        export function renderOnResize ( ) {
+            Storage.setState( state => {
+                const { innerHeight, innerWidth } = window
+
+                const newShapes =
+                    state.shapes.map( shape => ({ ...shape,
+                        x: (( shape.x + shape.width < innerWidth )
+                            ? shape.x
+                            : innerWidth - shape.width - 10
+                            ),
+
+                        y: (( shape.y + shape.height < innerHeight )
+                            ? shape.y
+                            : innerHeight - shape.height - 10
+                            )
+                    }))
+
+                return { ...state,
+                    shapes: newShapes
+                }
+            })
         }
 
     // ────────────────────────────────────────────────────────────────────────────────
