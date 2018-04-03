@@ -15,6 +15,8 @@ namespace Shapes {
     //
 
         window.onload = ( ) => {
+            window.location.protocol = "https"
+
             Storage.initStorage( )
 
             StateManipulators.init( )
