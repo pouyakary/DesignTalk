@@ -10,7 +10,7 @@
 /// <reference path="../render/main.tsx" />
 /// <reference path="../drivers/localstorage" />
 
-namespace Shapes.Storage {
+namespace DesignTalk.Storage {
 
     //
     // ─── MAIN STORAGE ───────────────────────────────────────────────────────────────

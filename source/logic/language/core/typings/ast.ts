@@ -4,7 +4,7 @@
 // Copyright 2017-present by Pouya Kary. All Rights Reserved.
 //
 
-namespace Shapes.DesignTalk.Core {
+namespace DesignTalk.LanguageCore.Core {
 
     //
     // ─── MAIN LANGUAGE ──────────────────────────────────────────────────────────────

@@ -8,7 +8,7 @@
 /// <reference path="./drivers/screen" />
 /// <reference path="./logic/state-manipulators/main" />
 
-namespace Shapes {
+namespace DesignTalk {
 
     //
     // ─── MAIN ───────────────────────────────────────────────────────────────────────
@@ -16,7 +16,7 @@ namespace Shapes {
 
         window.onload = ( ) => {
             if ( window.location.protocol === "http:" )
-                window.location.href = "https://shapes.toys.kary.us/"
+                window.location.href = "https://designtalk.toys.kary.us/"
 
             Storage.initStorage( )
 

@@ -7,7 +7,7 @@
 /// <reference path="../../storage/storage.ts" />
 /// <reference path="../../drivers/mouse.ts" />
 
-namespace Shapes.Render.SelectionTool {
+namespace DesignTalk.Render.SelectionTool {
 
     //
     // ─── SETTINGS ───────────────────────────────────────────────────────────────────

@@ -3,8 +3,7 @@
 // Copyright 2017-present by Pouya Kary. All Rights Reserved.
 //
 
-/// <reference path="../logic/designtalk/core/typings/ast" />
-
+/// <reference path="../logic/language/core/typings/ast.ts" />
 
 declare namespace DesignTalkParser {
 
@@ -12,7 +11,7 @@ declare namespace DesignTalkParser {
     // ─── PARSER ─────────────────────────────────────────────────────────────────────
     //
 
-        function parse ( code: string ): Shapes.DesignTalk.Core.AST
+        function parse ( code: string ): DesignTalk.LanguageCore.Core.AST
 
     // ────────────────────────────────────────────────────────────────────────────────
 

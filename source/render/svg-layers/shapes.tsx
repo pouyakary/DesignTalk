@@ -7,7 +7,7 @@
 /// <reference path="../editor/shape.tsx" />
 /// <reference path="../../globals/key.ts" />
 
-namespace Shapes.Render.SVGLayers.Shapes {
+namespace DesignTalk.Render.SVGLayers.Shapes {
 
     //
     // ─── RENDER SHAPES LAYER ────────────────────────────────────────────────────────

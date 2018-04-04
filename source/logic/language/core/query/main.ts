@@ -7,7 +7,7 @@
 /// <reference path="../main" />
 
 
-namespace Shapes.DesignTalk.Core.QueryCompiler {
+namespace DesignTalk.LanguageCore.Core.QueryCompiler {
 
     //
     // ─── TYPES ──────────────────────────────────────────────────────────────────────

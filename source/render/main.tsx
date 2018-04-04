@@ -14,7 +14,7 @@
 /// <reference path="../storage/base-model.ts" />
 
 
-namespace Shapes.Render {
+namespace DesignTalk.Render {
 
     //
     // ─── MAIN RENDERER ──────────────────────────────────────────────────────────────

@@ -7,7 +7,7 @@
 /// <reference path="../editor/selection.tsx" />
 /// <reference path="../../globals/key.ts" />
 
-namespace Shapes.Render.SVGLayers.Selection {
+namespace DesignTalk.Render.SVGLayers.Selection {
 
     //
     // ─── RENDER SHAPES LAYER ────────────────────────────────────────────────────────

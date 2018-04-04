@@ -5,7 +5,7 @@
 
 /// <reference path="../../../drivers/screen" />
 
-namespace Shapes.DesignTalk.Core {
+namespace DesignTalk.LanguageCore.Core {
 
     //
     // ─── GET PIXEL ──────────────────────────────────────────────────────────────────

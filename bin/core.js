@@ -1,6 +1,6 @@
 "use strict";
-var Shapes;
-(function (Shapes) {
+var DesignTalk;
+(function (DesignTalk) {
     var Storage;
     (function (Storage) {
         let MouseMode;
@@ -8,33 +8,33 @@ var Shapes;
             MouseMode[MouseMode["Move"] = 0] = "Move";
             MouseMode[MouseMode["Resize"] = 1] = "Resize";
         })(MouseMode = Storage.MouseMode || (Storage.MouseMode = {}));
-    })(Storage = Shapes.Storage || (Shapes.Storage = {}));
-})(Shapes || (Shapes = {}));
-var Shapes;
-(function (Shapes) {
+    })(Storage = DesignTalk.Storage || (DesignTalk.Storage = {}));
+})(DesignTalk || (DesignTalk = {}));
+var DesignTalk;
+(function (DesignTalk) {
     var Storage;
     (function (Storage) {
         let EActionType;
         (function (EActionType) {
             EActionType[EActionType["Select"] = 0] = "Select";
         })(EActionType = Storage.EActionType || (Storage.EActionType = {}));
-    })(Storage = Shapes.Storage || (Shapes.Storage = {}));
-})(Shapes || (Shapes = {}));
-var Shapes;
-(function (Shapes) {
+    })(Storage = DesignTalk.Storage || (DesignTalk.Storage = {}));
+})(DesignTalk || (DesignTalk = {}));
+var DesignTalk;
+(function (DesignTalk) {
     let __KeyValueStorage = 1;
     function generateKey() {
         return (__KeyValueStorage++).toString();
     }
-    Shapes.generateKey = generateKey;
-})(Shapes || (Shapes = {}));
-var Shapes;
-(function (Shapes) {
+    DesignTalk.generateKey = generateKey;
+})(DesignTalk || (DesignTalk = {}));
+var DesignTalk;
+(function (DesignTalk) {
     var Storage;
     (function (Storage) {
         function createInitialModelState() {
             const someShapes = new Array();
-            const localStorageShapes = Shapes.LocalStorageDriver.load();
+            const localStorageShapes = DesignTalk.LocalStorageDriver.load();
             if (localStorageShapes !== null) {
                 someShapes.push(...localStorageShapes);
             }
@@ -75,7 +75,7 @@ var Shapes;
             const { x, y } = getRandomCoordinates();
             return {
                 color: color,
-                id: Shapes.generateKey(),
+                id: DesignTalk.generateKey(),
                 remove: false,
                 type: type,
                 width: 100,
@@ -89,7 +89,7 @@ var Shapes;
         function duplicateShape(zIndex, baseShape) {
             return {
                 color: baseShape.color,
-                id: Shapes.generateKey(),
+                id: DesignTalk.generateKey(),
                 remove: false,
                 type: baseShape.type,
                 width: baseShape.width,
@@ -100,10 +100,10 @@ var Shapes;
             };
         }
         Storage.duplicateShape = duplicateShape;
-    })(Storage = Shapes.Storage || (Shapes.Storage = {}));
-})(Shapes || (Shapes = {}));
-var Shapes;
-(function (Shapes) {
+    })(Storage = DesignTalk.Storage || (DesignTalk.Storage = {}));
+})(DesignTalk || (DesignTalk = {}));
+var DesignTalk;
+(function (DesignTalk) {
     var Render;
     (function (Render) {
         var Editor;
@@ -111,7 +111,7 @@ var Shapes;
             class Shape extends React.Component {
                 constructor() {
                     super(...arguments);
-                    this.lastState = Shapes.Storage.getState();
+                    this.lastState = DesignTalk.Storage.getState();
                 }
                 render() {
                     return this.renderShape(this.props.shape);
@@ -139,29 +139,29 @@ var Shapes;
                     return 1;
                 }
                 onMouseEnter() {
-                    Shapes.Storage.setState(state => (Object.assign({}, state, { hoveredId: this.props.shape.id, showLineGuides: false })));
+                    DesignTalk.Storage.setState(state => (Object.assign({}, state, { hoveredId: this.props.shape.id, showLineGuides: false })));
                 }
                 onMouseLeave() {
-                    Shapes.Storage.setState(state => (Object.assign({}, state, { hoveredId: null })));
+                    DesignTalk.Storage.setState(state => (Object.assign({}, state, { hoveredId: null })));
                 }
                 onClick() {
-                    Shapes.Storage.setState(state => (Object.assign({}, state, { selectedId: this.props.shape.id, showLineGuides: false, mouseMode: Shapes.Storage.MouseMode.Move })));
+                    DesignTalk.Storage.setState(state => (Object.assign({}, state, { selectedId: this.props.shape.id, showLineGuides: false, mouseMode: DesignTalk.Storage.MouseMode.Move })));
                 }
                 createCircle(shape, color, opacity) {
                     const rX = shape.width / 2;
                     const rY = shape.height / 2;
-                    return React.createElement("ellipse", { cx: shape.x + rX, cy: shape.y + rY, fill: color, rx: rX, ry: rY, opacity: opacity, key: Shapes.generateKey(), onMouseEnter: event => this.onMouseEnter(), onMouseLeave: event => this.onMouseLeave(), onClick: event => this.onClick() });
+                    return React.createElement("ellipse", { cx: shape.x + rX, cy: shape.y + rY, fill: color, rx: rX, ry: rY, opacity: opacity, key: DesignTalk.generateKey(), onMouseEnter: event => this.onMouseEnter(), onMouseLeave: event => this.onMouseLeave(), onClick: event => this.onClick() });
                 }
                 createRect(shape, color, opacity) {
-                    return React.createElement("rect", { x: shape.x, y: shape.y, width: shape.width, height: shape.height, key: Shapes.generateKey(), opacity: opacity, fill: color, onMouseEnter: event => this.onMouseEnter(), onMouseLeave: event => this.onMouseLeave(), onClick: event => this.onClick() });
+                    return React.createElement("rect", { x: shape.x, y: shape.y, width: shape.width, height: shape.height, key: DesignTalk.generateKey(), opacity: opacity, fill: color, onMouseEnter: event => this.onMouseEnter(), onMouseLeave: event => this.onMouseLeave(), onClick: event => this.onClick() });
                 }
             }
             Editor.Shape = Shape;
         })(Editor = Render.Editor || (Render.Editor = {}));
-    })(Render = Shapes.Render || (Shapes.Render = {}));
-})(Shapes || (Shapes = {}));
-var Shapes;
-(function (Shapes) {
+    })(Render = DesignTalk.Render || (DesignTalk.Render = {}));
+})(DesignTalk || (DesignTalk = {}));
+var DesignTalk;
+(function (DesignTalk) {
     var Render;
     (function (Render) {
         var SVGLayers;
@@ -177,9 +177,9 @@ var Shapes;
                         ? 180
                         : 300);
                     return [
-                        React.createElement("g", { key: Shapes.generateKey() },
+                        React.createElement("g", { key: DesignTalk.generateKey() },
                             React.createElement("rect", { fill: "white", onClick: onClick, style: { width: "100vw", height: "100vh" } }),
-                            React.createElement("text", { x: 30, y: 40, fill: "black", fontFamily: "Roboto", fontWeight: "500", fontSize: "30" }, "Shapes"),
+                            React.createElement("text", { x: 30, y: 40, fill: "black", fontFamily: "Roboto", fontWeight: "500", fontSize: "30" }, "DesignTalk"),
                             React.createElement("text", { x: window.innerWidth - copyrightRightDistance, y: 38, fill: "#ccc", fontFamily: "Roboto", fontSize: "12" },
                                 "\u00A9 ",
                                 copyright))
@@ -187,14 +187,14 @@ var Shapes;
                 }
                 Background.render = render;
                 function onClick() {
-                    Shapes.Storage.setState(state => (Object.assign({}, state, { selectedId: null })));
+                    DesignTalk.Storage.setState(state => (Object.assign({}, state, { selectedId: null })));
                 }
             })(Background = SVGLayers.Background || (SVGLayers.Background = {}));
         })(SVGLayers = Render.SVGLayers || (Render.SVGLayers = {}));
-    })(Render = Shapes.Render || (Shapes.Render = {}));
-})(Shapes || (Shapes = {}));
-var Shapes;
-(function (Shapes_1) {
+    })(Render = DesignTalk.Render || (DesignTalk.Render = {}));
+})(DesignTalk || (DesignTalk = {}));
+var DesignTalk;
+(function (DesignTalk) {
     var Render;
     (function (Render) {
         var SVGLayers;
@@ -203,22 +203,22 @@ var Shapes;
             (function (Shapes) {
                 function render(model) {
                     const sortedShapes = model.shapes.sort((a, b) => a.zIndex - b.zIndex);
-                    const elementedShapes = sortedShapes.map(shape => React.createElement(Render.Editor.Shape, { shape: shape, key: Shapes_1.generateKey() }));
+                    const elementedShapes = sortedShapes.map(shape => React.createElement(Render.Editor.Shape, { shape: shape, key: DesignTalk.generateKey() }));
                     return elementedShapes;
                 }
                 Shapes.render = render;
             })(Shapes = SVGLayers.Shapes || (SVGLayers.Shapes = {}));
         })(SVGLayers = Render.SVGLayers || (Render.SVGLayers = {}));
-    })(Render = Shapes_1.Render || (Shapes_1.Render = {}));
-})(Shapes || (Shapes = {}));
-var Shapes;
-(function (Shapes) {
+    })(Render = DesignTalk.Render || (DesignTalk.Render = {}));
+})(DesignTalk || (DesignTalk = {}));
+var DesignTalk;
+(function (DesignTalk) {
     var Logic;
     (function (Logic) {
         var ContextMenu;
         (function (ContextMenu) {
             function close() {
-                Shapes.Storage.setState(state => {
+                DesignTalk.Storage.setState(state => {
                     if (state.contextMenu.recognizer !== null)
                         state.contextMenu.recognizer.stop();
                     return Object.assign({}, state, { contextMenu: Object.assign({}, state.contextMenu, { active: false, recognizedText: "", recognizer: null }) });
@@ -226,14 +226,14 @@ var Shapes;
             }
             ContextMenu.close = close;
         })(ContextMenu = Logic.ContextMenu || (Logic.ContextMenu = {}));
-    })(Logic = Shapes.Logic || (Shapes.Logic = {}));
-})(Shapes || (Shapes = {}));
-var Shapes;
-(function (Shapes) {
+    })(Logic = DesignTalk.Logic || (DesignTalk.Logic = {}));
+})(DesignTalk || (DesignTalk = {}));
+var DesignTalk;
+(function (DesignTalk) {
     var SpeechCommandEngine;
     (function (SpeechCommandEngine) {
         function trigger() {
-            const state = Shapes.Storage.getState();
+            const state = DesignTalk.Storage.getState();
             if (state.contextMenu.active)
                 end();
             else
@@ -243,16 +243,16 @@ var Shapes;
         function start() {
             const recognizer = createNewRecognizer();
             recognizer.start();
-            Shapes.Storage.setState(state => {
-                return Object.assign({}, state, { selectedId: null, showLineGuides: false, mouseMode: Shapes.Storage.MouseMode.Resize, contextMenu: Object.assign({}, state.contextMenu, { active: true, recognizer: recognizer, recognizedText: "", mouseX: Shapes.MouseDriver.X, mouseY: Shapes.MouseDriver.Y }) });
+            DesignTalk.Storage.setState(state => {
+                return Object.assign({}, state, { selectedId: null, showLineGuides: false, mouseMode: DesignTalk.Storage.MouseMode.Resize, contextMenu: Object.assign({}, state.contextMenu, { active: true, recognizer: recognizer, recognizedText: "", mouseX: DesignTalk.MouseDriver.X, mouseY: DesignTalk.MouseDriver.Y }) });
             });
         }
         function end() {
-            Shapes.Storage.setState(state => {
-                const newState = Shapes.DesignTalk.runWithGivenState(state.contextMenu.recognizedText, state);
+            DesignTalk.Storage.setState(state => {
+                const newState = DesignTalk.LanguageCore.runWithGivenState(state.contextMenu.recognizedText, state);
                 return newState;
             });
-            Shapes.Logic.ContextMenu.close();
+            DesignTalk.Logic.ContextMenu.close();
         }
         function createNewRecognizer() {
             const recognizer = new webkitSpeechRecognition();
@@ -270,7 +270,7 @@ var Shapes;
             }
         }
         function updateScreenText(newPart) {
-            Shapes.Storage.setState(state => {
+            DesignTalk.Storage.setState(state => {
                 console.log(state.contextMenu);
                 return Object.assign({}, state, { contextMenu: Object.assign({}, state.contextMenu, { recognizedText: updateText(state.contextMenu.recognizedText, newPart) }) });
             });
@@ -292,10 +292,10 @@ var Shapes;
                     return buffer + newPart;
             }
         }
-    })(SpeechCommandEngine = Shapes.SpeechCommandEngine || (Shapes.SpeechCommandEngine = {}));
-})(Shapes || (Shapes = {}));
-var Shapes;
-(function (Shapes) {
+    })(SpeechCommandEngine = DesignTalk.SpeechCommandEngine || (DesignTalk.SpeechCommandEngine = {}));
+})(DesignTalk || (DesignTalk = {}));
+var DesignTalk;
+(function (DesignTalk) {
     var MouseDriver;
     (function (MouseDriver) {
         MouseDriver.X = 0;
@@ -315,10 +315,10 @@ var Shapes;
             };
         }
         function handleMouseMove(event) {
-            const state = Shapes.Storage.getState();
+            const state = DesignTalk.Storage.getState();
             if (MouseDriver.Clicked) {
                 if (state.selectedId !== null) {
-                    if (state.mouseMode == Shapes.Storage.MouseMode.Move) {
+                    if (state.mouseMode == DesignTalk.Storage.MouseMode.Move) {
                         updateSelectedShapePositionOnMouseMove(event, state);
                     }
                     else {
@@ -334,10 +334,10 @@ var Shapes;
             clearTimeout(moveReseter);
             moveReseter = setTimeout(() => {
                 if (!MouseDriver.Clicked)
-                    Shapes.Storage.setState(state => (Object.assign({}, state, { mouseMode: Shapes.Storage.MouseMode.Move })));
+                    DesignTalk.Storage.setState(state => (Object.assign({}, state, { mouseMode: DesignTalk.Storage.MouseMode.Move })));
             }, 30);
             const selectedShape = state.shapes.find(x => x.id == state.selectedId);
-            Shapes.Storage.setState(state => {
+            DesignTalk.Storage.setState(state => {
                 const margin = 10;
                 const newShapes = state.shapes.map(shape => {
                     if (shape.id === state.selectedId) {
@@ -357,7 +357,7 @@ var Shapes;
             const selectedShape = state.shapes.find(x => x.id == state.selectedId);
             const XDiff = selectedShape.x - MouseDriver.X;
             const YDiff = selectedShape.y - MouseDriver.Y;
-            Shapes.Storage.setState(state => {
+            DesignTalk.Storage.setState(state => {
                 const newShapes = state.shapes.map(shape => {
                     if (shape.id === state.selectedId) {
                         shape.x = event.clientX + XDiff;
@@ -385,13 +385,13 @@ var Shapes;
             document.oncontextmenu = event => {
                 event.preventDefault();
                 updateMousePosition(event);
-                Shapes.SpeechCommandEngine.trigger();
+                DesignTalk.SpeechCommandEngine.trigger();
             };
         }
-    })(MouseDriver = Shapes.MouseDriver || (Shapes.MouseDriver = {}));
-})(Shapes || (Shapes = {}));
-var Shapes;
-(function (Shapes) {
+    })(MouseDriver = DesignTalk.MouseDriver || (DesignTalk.MouseDriver = {}));
+})(DesignTalk || (DesignTalk = {}));
+var DesignTalk;
+(function (DesignTalk) {
     var Render;
     (function (Render) {
         var SelectionTool;
@@ -435,25 +435,25 @@ var Shapes;
                 const y = shape.y - margin;
                 const width = shape.width + margin * 2;
                 const height = shape.height + margin * 2;
-                const onMouseLeave = () => Shapes.Storage.setState(state => (Object.assign({}, state, { showLineGuides: false })));
-                const rectangle = React.createElement("rect", { fill: "transparent", stroke: "black", strokeWidth: "2", key: Shapes.generateKey(), onMouseLeave: event => onMouseLeave(), x: x, y: y, width: width, height: height });
+                const onMouseLeave = () => DesignTalk.Storage.setState(state => (Object.assign({}, state, { showLineGuides: false })));
+                const rectangle = React.createElement("rect", { fill: "transparent", stroke: "black", strokeWidth: "2", key: DesignTalk.generateKey(), onMouseLeave: event => onMouseLeave(), x: x, y: y, width: width, height: height });
                 return rectangle;
             }
             function createToolTipShape(shape, state) {
                 const x = shape.x - margin;
                 const y = shape.y - margin;
                 const descriptionText = getDescriptionText(shape, state);
-                const descriptionBackground = React.createElement("rect", { fill: "yellow", key: Shapes.generateKey(), x: x, y: y - textBackgroundHeight - 10, width: computeHaskligBold12TextLength(descriptionText), height: textBackgroundHeight, stroke: "black", strokeWidth: 2 });
-                const description = React.createElement("text", { x: x + strokeWidth + 6, y: y - textBackgroundHeight + 6, key: Shapes.generateKey(), fill: "black", fontFamily: "HaskligBold", fontSize: "12" }, descriptionText);
+                const descriptionBackground = React.createElement("rect", { fill: "yellow", key: DesignTalk.generateKey(), x: x, y: y - textBackgroundHeight - 10, width: computeHaskligBold12TextLength(descriptionText), height: textBackgroundHeight, stroke: "black", strokeWidth: 2 });
+                const description = React.createElement("text", { x: x + strokeWidth + 6, y: y - textBackgroundHeight + 6, key: DesignTalk.generateKey(), fill: "black", fontFamily: "HaskligBold", fontSize: "12" }, descriptionText);
                 return [
                     descriptionBackground,
                     description,
                 ];
             }
             function getDescriptionText(shape, state) {
-                if (state.showLineGuides && state.mouseMode === Shapes.Storage.MouseMode.Resize)
+                if (state.showLineGuides && state.mouseMode === DesignTalk.Storage.MouseMode.Resize)
                     return 'SIZE ' + shape.width + ':' + shape.height;
-                if (state.showLineGuides && state.mouseMode === Shapes.Storage.MouseMode.Move)
+                if (state.showLineGuides && state.mouseMode === DesignTalk.Storage.MouseMode.Move)
                     return 'X ' + shape.x + ' • Y ' + shape.y;
                 return 'X ' + shape.x + ' • Y ' + shape.y + ' • SIZE ' + shape.width + ':' + shape.height;
             }
@@ -496,7 +496,7 @@ var Shapes;
                         ? 'red'
                         : (isThereANormalPoint() ? 'cyan' : '#ccc'));
                     const lineStrokeWidth = (lineColor !== '#ccc' ? 2 : 1);
-                    return React.createElement("line", { strokeWidth: lineStrokeWidth, stroke: lineColor, key: Shapes.generateKey(), x1: x1, y1: y1, x2: x2, y2: y2 });
+                    return React.createElement("line", { strokeWidth: lineStrokeWidth, stroke: lineColor, key: DesignTalk.generateKey(), x1: x1, y1: y1, x2: x2, y2: y2 });
                 };
                 const topGuideLine = createLine(0, shape.y, window.innerWidth, shape.y, LineDirection.Horoizantal);
                 const bottomGuideLine = createLine(0, shape.y + shape.height, window.innerWidth, shape.y + shape.height, LineDirection.Horoizantal);
@@ -512,63 +512,63 @@ var Shapes;
             function createResizeHandle(shape, state) {
                 const x = shape.x + shape.width + margin;
                 const y = shape.y + shape.height + margin;
-                const setMouseMoveMode = (mode) => Shapes.Storage.setState(state => (Object.assign({}, state, { mouseMode: mode })));
-                const setToResize = () => setMouseMoveMode(Shapes.Storage.MouseMode.Resize);
-                const setToMove = () => setMouseMoveMode(Shapes.Storage.MouseMode.Move);
-                const radius = state.mouseMode === Shapes.Storage.MouseMode.Resize ? 5 : 7;
-                return React.createElement("circle", { fill: "black", cx: x, cy: y, onMouseEnter: event => setToResize(), onMouseLeave: event => setToMove(), key: Shapes.generateKey(), r: radius });
+                const setMouseMoveMode = (mode) => DesignTalk.Storage.setState(state => (Object.assign({}, state, { mouseMode: mode })));
+                const setToResize = () => setMouseMoveMode(DesignTalk.Storage.MouseMode.Resize);
+                const setToMove = () => setMouseMoveMode(DesignTalk.Storage.MouseMode.Move);
+                const radius = state.mouseMode === DesignTalk.Storage.MouseMode.Resize ? 5 : 7;
+                return React.createElement("circle", { fill: "black", cx: x, cy: y, onMouseEnter: event => setToResize(), onMouseLeave: event => setToMove(), key: DesignTalk.generateKey(), r: radius });
             }
             function createDeleteButton(shape, state) {
                 function onDeleteButtonClicked() {
                     const newShapes = state.shapes.filter(element => element.id !== state.selectedId);
-                    Shapes.Storage.setState(state => (Object.assign({}, state, { shapes: newShapes, selectedId: null, mouseMode: Shapes.Storage.MouseMode.Move, showLineGuides: false })));
+                    DesignTalk.Storage.setState(state => (Object.assign({}, state, { shapes: newShapes, selectedId: null, mouseMode: DesignTalk.Storage.MouseMode.Move, showLineGuides: false })));
                 }
                 return createButton(shape, state, 'DEL', 0, 0, onDeleteButtonClicked);
             }
             function createDuplicateButton(shape, state) {
                 function onDuplicateButtonClicked() {
-                    Shapes.Logic.Model.duplicateShape();
+                    DesignTalk.Logic.Model.duplicateShape();
                 }
                 return createButton(shape, state, 'DUP', 0, -2 * (textBackgroundHeight + margin), onDuplicateButtonClicked);
             }
             function createButton(shape, state, buttonText, xDiff, yDiff, action) {
                 if (state.showLineGuides)
-                    return React.createElement("g", { key: Shapes.generateKey() });
+                    return React.createElement("g", { key: DesignTalk.generateKey() });
                 const textLength = computeHaskligBold12TextLength(buttonText);
                 const x = shape.x - margin - textLength - 10 - xDiff;
                 const y = shape.y - margin - yDiff;
                 const backgroundRect = React.createElement("rect", { fill: "#eee", x: x, y: y - textBackgroundHeight - 10, width: textLength, height: textBackgroundHeight, strokeWidth: 2, stroke: "black" });
                 const deleteText = React.createElement("text", { fill: "Black", x: x + 6, y: y - textBackgroundHeight + 6, fontFamily: "HaskligBold", fontSize: "12" }, buttonText);
                 const buttonableLayer = React.createElement("rect", { x: x, y: y - textBackgroundHeight - 10, width: textLength, height: textBackgroundHeight, onClick: event => action(), fill: "transparent" });
-                return React.createElement("g", { key: Shapes.generateKey() },
+                return React.createElement("g", { key: DesignTalk.generateKey() },
                     backgroundRect,
                     deleteText,
                     buttonableLayer);
             }
             function createColorButtons(shape, state) {
                 if (state.showLineGuides)
-                    return React.createElement("g", { key: Shapes.generateKey() });
+                    return React.createElement("g", { key: DesignTalk.generateKey() });
                 const colors = ['red', 'black', 'blue']
                     .filter(x => shape.color !== x);
                 const buttons = colors.map((color, index) => createSingleColorButton(color, index + 1, shape));
-                return React.createElement("g", { key: Shapes.generateKey() }, buttons);
+                return React.createElement("g", { key: DesignTalk.generateKey() }, buttons);
             }
             function createSingleColorButton(color, index, shape) {
                 const x = shape.x - margin - 5 - index * (textBackgroundHeight + 5);
                 function onSetColor() {
-                    Shapes.Storage.setState(state => {
+                    DesignTalk.Storage.setState(state => {
                         const newShapes = state.shapes.map(x => (Object.assign({}, x, { color: (x.id === shape.id ? color : x.color) })));
                         return Object.assign({}, state, { shapes: newShapes });
                     });
                 }
-                const button = React.createElement("rect", { x: x, y: shape.y - margin, width: textBackgroundHeight, height: textBackgroundHeight, fill: color, key: Shapes.generateKey(), onClick: event => onSetColor(), strokeWidth: "2", stroke: "black" });
+                const button = React.createElement("rect", { x: x, y: shape.y - margin, width: textBackgroundHeight, height: textBackgroundHeight, fill: color, key: DesignTalk.generateKey(), onClick: event => onSetColor(), strokeWidth: "2", stroke: "black" });
                 return button;
             }
             function changeShapeModelButtons(shape, state) {
                 if (state.showLineGuides)
-                    return [React.createElement("g", { key: Shapes.generateKey() })];
+                    return [React.createElement("g", { key: DesignTalk.generateKey() })];
                 function onChangeShapeType() {
-                    Shapes.Storage.setState(state => {
+                    DesignTalk.Storage.setState(state => {
                         const newShapes = state.shapes.map(x => {
                             if (shape.id === x.id)
                                 return Object.assign({}, x, { type: (x.id == shape.id && x.type === 'rect') ?
@@ -581,7 +581,7 @@ var Shapes;
                 }
                 const x = shape.x - 2 * margin - textBackgroundHeight;
                 const y = shape.y + 2 * (textBackgroundHeight) + margin;
-                const mainBackground = React.createElement("rect", { x: x, y: y, width: textBackgroundHeight, height: textBackgroundHeight, stroke: "black", key: Shapes.generateKey(), strokeWidth: "2", fill: "#eee" });
+                const mainBackground = React.createElement("rect", { x: x, y: y, width: textBackgroundHeight, height: textBackgroundHeight, stroke: "black", key: DesignTalk.generateKey(), strokeWidth: "2", fill: "#eee" });
                 const shapeSize = textBackgroundHeight - 10;
                 const halfShape = shapeSize / 2;
                 const shapeIcon = (shape.type === 'circle'
@@ -595,10 +595,10 @@ var Shapes;
                 ];
             }
         })(SelectionTool = Render.SelectionTool || (Render.SelectionTool = {}));
-    })(Render = Shapes.Render || (Shapes.Render = {}));
-})(Shapes || (Shapes = {}));
-var Shapes;
-(function (Shapes) {
+    })(Render = DesignTalk.Render || (DesignTalk.Render = {}));
+})(DesignTalk || (DesignTalk = {}));
+var DesignTalk;
+(function (DesignTalk) {
     var Render;
     (function (Render) {
         var SVGLayers;
@@ -611,12 +611,12 @@ var Shapes;
                 Selection.render = render;
             })(Selection = SVGLayers.Selection || (SVGLayers.Selection = {}));
         })(SVGLayers = Render.SVGLayers || (Render.SVGLayers = {}));
-    })(Render = Shapes.Render || (Shapes.Render = {}));
-})(Shapes || (Shapes = {}));
-var Shapes;
-(function (Shapes) {
-    var DesignTalk;
-    (function (DesignTalk) {
+    })(Render = DesignTalk.Render || (DesignTalk.Render = {}));
+})(DesignTalk || (DesignTalk = {}));
+var DesignTalk;
+(function (DesignTalk) {
+    var LanguageCore;
+    (function (LanguageCore) {
         var Core;
         (function (Core) {
             const normalizationRegExp = /(?:'|\bthe\b)/g;
@@ -628,41 +628,41 @@ var Shapes;
             function normalize(code) {
                 return code.replace(normalizationRegExp, '');
             }
-        })(Core = DesignTalk.Core || (DesignTalk.Core = {}));
-    })(DesignTalk = Shapes.DesignTalk || (Shapes.DesignTalk = {}));
-})(Shapes || (Shapes = {}));
-var Shapes;
-(function (Shapes) {
+        })(Core = LanguageCore.Core || (LanguageCore.Core = {}));
+    })(LanguageCore = DesignTalk.LanguageCore || (DesignTalk.LanguageCore = {}));
+})(DesignTalk || (DesignTalk = {}));
+var DesignTalk;
+(function (DesignTalk) {
     var Logic;
     (function (Logic) {
         var Model;
         (function (Model) {
             function createNewShape() {
-                Shapes.Storage.setState(state => {
+                DesignTalk.Storage.setState(state => {
                     const newMaxZIndex = state.maxZIndex + 1;
-                    const newShape = Shapes.Storage.createRandomShape(newMaxZIndex);
+                    const newShape = DesignTalk.Storage.createRandomShape(newMaxZIndex);
                     state.shapes.push(newShape);
-                    return Object.assign({}, state, { selectedId: newShape.id, mouseMode: Shapes.Storage.MouseMode.Move, maxZIndex: newMaxZIndex, showLineGuides: false });
+                    return Object.assign({}, state, { selectedId: newShape.id, mouseMode: DesignTalk.Storage.MouseMode.Move, maxZIndex: newMaxZIndex, showLineGuides: false });
                 });
             }
             Model.createNewShape = createNewShape;
             function duplicateShape() {
-                Shapes.Storage.setState(state => {
+                DesignTalk.Storage.setState(state => {
                     if (state.selectedId === null)
                         return state;
                     const newMaxZIndex = state.maxZIndex + 1;
                     const currentShape = state.shapes.find(shape => shape.id === state.selectedId);
-                    const newShape = Shapes.Storage.duplicateShape(newMaxZIndex, currentShape);
+                    const newShape = DesignTalk.Storage.duplicateShape(newMaxZIndex, currentShape);
                     state.shapes.push(newShape);
-                    return Object.assign({}, state, { selectedId: newShape.id, mouseMode: Shapes.Storage.MouseMode.Move, maxZIndex: newMaxZIndex, showLineGuides: false });
+                    return Object.assign({}, state, { selectedId: newShape.id, mouseMode: DesignTalk.Storage.MouseMode.Move, maxZIndex: newMaxZIndex, showLineGuides: false });
                 });
             }
             Model.duplicateShape = duplicateShape;
         })(Model = Logic.Model || (Logic.Model = {}));
-    })(Logic = Shapes.Logic || (Shapes.Logic = {}));
-})(Shapes || (Shapes = {}));
-var Shapes;
-(function (Shapes) {
+    })(Logic = DesignTalk.Logic || (DesignTalk.Logic = {}));
+})(DesignTalk || (DesignTalk = {}));
+var DesignTalk;
+(function (DesignTalk) {
     var Render;
     (function (Render) {
         var HTMLLayers;
@@ -678,7 +678,7 @@ var Shapes;
                 }
                 RightClick.render = render;
                 function shapeOnWorkingMode(model) {
-                    return React.createElement("div", { key: Shapes.generateKey(), style: {
+                    return React.createElement("div", { key: DesignTalk.generateKey(), style: {
                             backgroundColor: "rgba(255, 255, 255, 0.9)",
                             position: "fixed",
                             left: "0",
@@ -736,7 +736,7 @@ var Shapes;
                                 borderTopWidth: 2,
                                 borderTopStyle: "dashed",
                                 padding: "5px 10px 7px 10px"
-                            } }, Shapes.DesignTalk.isParsable(recognizedText)
+                            } }, DesignTalk.LanguageCore.isParsable(recognizedText)
                             ? "Looks Good"
                             : "Can't Understand"));
                 }
@@ -744,7 +744,7 @@ var Shapes;
                     const { mouseX, mouseY } = state.contextMenu;
                     const functionForClick = () => {
                         onClickFunction();
-                        Shapes.Logic.ContextMenu.close();
+                        DesignTalk.Logic.ContextMenu.close();
                     };
                     return React.createElement("div", { onClick: functionForClick, style: {
                             backgroundColor: "#eee",
@@ -761,7 +761,7 @@ var Shapes;
                 }
                 function createNewShapeButton(model) {
                     return createButton("new shape", model, 80, 65, () => {
-                        Shapes.Logic.Model.createNewShape();
+                        DesignTalk.Logic.Model.createNewShape();
                     });
                 }
                 function createHelpButton(model) {
@@ -771,10 +771,10 @@ var Shapes;
                 }
             })(RightClick = HTMLLayers.RightClick || (HTMLLayers.RightClick = {}));
         })(HTMLLayers = Render.HTMLLayers || (Render.HTMLLayers = {}));
-    })(Render = Shapes.Render || (Shapes.Render = {}));
-})(Shapes || (Shapes = {}));
-var Shapes;
-(function (Shapes) {
+    })(Render = DesignTalk.Render || (DesignTalk.Render = {}));
+})(DesignTalk || (DesignTalk = {}));
+var DesignTalk;
+(function (DesignTalk) {
     var Render;
     (function (Render) {
         function renderApp(model) {
@@ -795,13 +795,13 @@ var Shapes;
                 Render.HTMLLayers.RightClick.render(model));
         }
         function createMainSVG(layers) {
-            return React.createElement("svg", { style: { width: "100vw", height: "100vh" }, key: Shapes.generateKey() }, layers);
+            return React.createElement("svg", { style: { width: "100vw", height: "100vh" }, key: DesignTalk.generateKey() }, layers);
         }
         function renderLayer(layer, elements) {
-            return React.createElement("g", { key: Shapes.generateKey() }, elements);
+            return React.createElement("g", { key: DesignTalk.generateKey() }, elements);
         }
         function renderOnResize() {
-            Shapes.Storage.setState(state => {
+            DesignTalk.Storage.setState(state => {
                 const { innerHeight, innerWidth } = window;
                 const newShapes = state.shapes.map(shape => (Object.assign({}, shape, { x: ((shape.x + shape.width < innerWidth)
                         ? shape.x
@@ -812,10 +812,10 @@ var Shapes;
             });
         }
         Render.renderOnResize = renderOnResize;
-    })(Render = Shapes.Render || (Shapes.Render = {}));
-})(Shapes || (Shapes = {}));
-var Shapes;
-(function (Shapes) {
+    })(Render = DesignTalk.Render || (DesignTalk.Render = {}));
+})(DesignTalk || (DesignTalk = {}));
+var DesignTalk;
+(function (DesignTalk) {
     var LocalStorageDriver;
     (function (LocalStorageDriver) {
         const LOCAL_STORAGE_ID = "us.kary.toys.shapes.model";
@@ -843,16 +843,16 @@ var Shapes;
             }
         }
         LocalStorageDriver.load = load;
-    })(LocalStorageDriver = Shapes.LocalStorageDriver || (Shapes.LocalStorageDriver = {}));
-})(Shapes || (Shapes = {}));
-var Shapes;
-(function (Shapes) {
+    })(LocalStorageDriver = DesignTalk.LocalStorageDriver || (DesignTalk.LocalStorageDriver = {}));
+})(DesignTalk || (DesignTalk = {}));
+var DesignTalk;
+(function (DesignTalk) {
     var Storage;
     (function (Storage) {
         const StorageContainer = new Array();
         const StorageSubscriptions = [
-            Shapes.LocalStorageDriver.storageUpdaterFunction,
-            Shapes.Render.renderApp,
+            DesignTalk.LocalStorageDriver.storageUpdaterFunction,
+            DesignTalk.Render.renderApp,
         ];
         const OnStateChangeManipulationFunctions = new Set();
         function initStorage() {
@@ -893,10 +893,10 @@ var Shapes;
             OnStateChangeManipulationFunctions.add(manipulator);
         }
         Storage.addManipulationFunction = addManipulationFunction;
-    })(Storage = Shapes.Storage || (Shapes.Storage = {}));
-})(Shapes || (Shapes = {}));
-var Shapes;
-(function (Shapes) {
+    })(Storage = DesignTalk.Storage || (DesignTalk.Storage = {}));
+})(DesignTalk || (DesignTalk = {}));
+var DesignTalk;
+(function (DesignTalk) {
     var ScreenDriver;
     (function (ScreenDriver) {
         ScreenDriver.PointSize = 0;
@@ -910,65 +910,65 @@ var Shapes;
             ScreenDriver.PointSize = pointSize;
         }
         ScreenDriver.init = init;
-    })(ScreenDriver = Shapes.ScreenDriver || (Shapes.ScreenDriver = {}));
-})(Shapes || (Shapes = {}));
-var Shapes;
-(function (Shapes) {
+    })(ScreenDriver = DesignTalk.ScreenDriver || (DesignTalk.ScreenDriver = {}));
+})(DesignTalk || (DesignTalk = {}));
+var DesignTalk;
+(function (DesignTalk) {
     var StateManipulators;
     (function (StateManipulators) {
         StateManipulators.ShapeDeleteManipulator = (state) => (Object.assign({}, state, { shapes: state.shapes.filter(x => !x.remove) }));
-    })(StateManipulators = Shapes.StateManipulators || (Shapes.StateManipulators = {}));
-})(Shapes || (Shapes = {}));
-var Shapes;
-(function (Shapes) {
+    })(StateManipulators = DesignTalk.StateManipulators || (DesignTalk.StateManipulators = {}));
+})(DesignTalk || (DesignTalk = {}));
+var DesignTalk;
+(function (DesignTalk) {
     var StateManipulators;
     (function (StateManipulators) {
         function init() {
-            Shapes.Storage.addManipulationFunction(StateManipulators.ShapeDeleteManipulator);
+            DesignTalk.Storage.addManipulationFunction(StateManipulators.ShapeDeleteManipulator);
         }
         StateManipulators.init = init;
-    })(StateManipulators = Shapes.StateManipulators || (Shapes.StateManipulators = {}));
-})(Shapes || (Shapes = {}));
-var Shapes;
-(function (Shapes) {
+    })(StateManipulators = DesignTalk.StateManipulators || (DesignTalk.StateManipulators = {}));
+})(DesignTalk || (DesignTalk = {}));
+var DesignTalk;
+(function (DesignTalk) {
     window.onload = () => {
         if (window.location.protocol === "http:")
-            window.location.href = "https://shapes.toys.kary.us/";
-        Shapes.Storage.initStorage();
-        Shapes.StateManipulators.init();
-        Shapes.MouseDriver.init();
-        Shapes.ScreenDriver.init();
-        window.onresize = () => Shapes.Render.renderOnResize();
+            window.location.href = "https://designtalk.toys.kary.us/";
+        DesignTalk.Storage.initStorage();
+        DesignTalk.StateManipulators.init();
+        DesignTalk.MouseDriver.init();
+        DesignTalk.ScreenDriver.init();
+        window.onresize = () => DesignTalk.Render.renderOnResize();
     };
-})(Shapes || (Shapes = {}));
-var Shapes;
-(function (Shapes) {
-    var DesignTalk;
-    (function (DesignTalk) {
+})(DesignTalk || (DesignTalk = {}));
+var DesignTalk;
+(function (DesignTalk) {
+    var LanguageCore;
+    (function (LanguageCore) {
         function isParsable(code) {
             try {
-                DesignTalk.Core.parse(code);
+                LanguageCore.Core.parse(code);
                 return true;
             }
             catch (_a) {
                 return false;
             }
         }
-        DesignTalk.isParsable = isParsable;
+        LanguageCore.isParsable = isParsable;
         function runWithGivenState(code, state) {
-            return DesignTalk.Core.run(code, state);
+            return LanguageCore.Core.run(code, state);
         }
-        DesignTalk.runWithGivenState = runWithGivenState;
+        LanguageCore.runWithGivenState = runWithGivenState;
         function runAndApply(code) {
-            Shapes.Storage.setState(state => DesignTalk.Core.run(code, state));
+            DesignTalk.Storage.setState(state => LanguageCore.Core.run(code, state));
         }
-        DesignTalk.runAndApply = runAndApply;
-    })(DesignTalk = Shapes.DesignTalk || (Shapes.DesignTalk = {}));
-})(Shapes || (Shapes = {}));
-var Shapes;
-(function (Shapes) {
-    var DesignTalk;
-    (function (DesignTalk) {
+        LanguageCore.runAndApply = runAndApply;
+    })(LanguageCore = DesignTalk.LanguageCore || (DesignTalk.LanguageCore = {}));
+})(DesignTalk || (DesignTalk = {}));
+var DesignTalk;
+(function (DesignTalk) {
+    var LanguageCore;
+    (function (LanguageCore) {
         var Core;
         (function (Core) {
             var QueryCompiler;
@@ -1100,13 +1100,13 @@ var Shapes;
                     };
                 }
             })(QueryCompiler = Core.QueryCompiler || (Core.QueryCompiler = {}));
-        })(Core = DesignTalk.Core || (DesignTalk.Core = {}));
-    })(DesignTalk = Shapes.DesignTalk || (Shapes.DesignTalk = {}));
-})(Shapes || (Shapes = {}));
-var Shapes;
-(function (Shapes) {
-    var DesignTalk;
-    (function (DesignTalk) {
+        })(Core = LanguageCore.Core || (LanguageCore.Core = {}));
+    })(LanguageCore = DesignTalk.LanguageCore || (DesignTalk.LanguageCore = {}));
+})(DesignTalk || (DesignTalk = {}));
+var DesignTalk;
+(function (DesignTalk) {
+    var LanguageCore;
+    (function (LanguageCore) {
         var Core;
         (function (Core) {
             var CommandCompiler;
@@ -1121,13 +1121,13 @@ var Shapes;
                 }
                 CommandCompiler.generate = generate;
             })(CommandCompiler = Core.CommandCompiler || (Core.CommandCompiler = {}));
-        })(Core = DesignTalk.Core || (DesignTalk.Core = {}));
-    })(DesignTalk = Shapes.DesignTalk || (Shapes.DesignTalk = {}));
-})(Shapes || (Shapes = {}));
-var Shapes;
-(function (Shapes) {
-    var DesignTalk;
-    (function (DesignTalk) {
+        })(Core = LanguageCore.Core || (LanguageCore.Core = {}));
+    })(LanguageCore = DesignTalk.LanguageCore || (DesignTalk.LanguageCore = {}));
+})(DesignTalk || (DesignTalk = {}));
+var DesignTalk;
+(function (DesignTalk) {
+    var LanguageCore;
+    (function (LanguageCore) {
         var Core;
         (function (Core) {
             function run(code, state) {
@@ -1177,13 +1177,13 @@ var Shapes;
                     queryFunction,
                 };
             }
-        })(Core = DesignTalk.Core || (DesignTalk.Core = {}));
-    })(DesignTalk = Shapes.DesignTalk || (Shapes.DesignTalk = {}));
-})(Shapes || (Shapes = {}));
-var Shapes;
-(function (Shapes) {
-    var DesignTalk;
-    (function (DesignTalk) {
+        })(Core = LanguageCore.Core || (LanguageCore.Core = {}));
+    })(LanguageCore = DesignTalk.LanguageCore || (DesignTalk.LanguageCore = {}));
+})(DesignTalk || (DesignTalk = {}));
+var DesignTalk;
+(function (DesignTalk) {
+    var LanguageCore;
+    (function (LanguageCore) {
         var Core;
         (function (Core) {
             function convertSizeToPixel(size, unit) {
@@ -1197,16 +1197,16 @@ var Shapes;
             }
             Core.convertSizeToPixel = convertSizeToPixel;
             function pointToPixel(points) {
-                return points * Shapes.ScreenDriver.PointSize;
+                return points * DesignTalk.ScreenDriver.PointSize;
             }
             Core.pointToPixel = pointToPixel;
-        })(Core = DesignTalk.Core || (DesignTalk.Core = {}));
-    })(DesignTalk = Shapes.DesignTalk || (Shapes.DesignTalk = {}));
-})(Shapes || (Shapes = {}));
-var Shapes;
-(function (Shapes) {
-    var DesignTalk;
-    (function (DesignTalk) {
+        })(Core = LanguageCore.Core || (LanguageCore.Core = {}));
+    })(LanguageCore = DesignTalk.LanguageCore || (DesignTalk.LanguageCore = {}));
+})(DesignTalk || (DesignTalk = {}));
+var DesignTalk;
+(function (DesignTalk) {
+    var LanguageCore;
+    (function (LanguageCore) {
         var Core;
         (function (Core) {
             var CommandCompiler;
@@ -1216,7 +1216,7 @@ var Shapes;
                 }
                 CommandCompiler.generateRemoveInstruction = generateRemoveInstruction;
             })(CommandCompiler = Core.CommandCompiler || (Core.CommandCompiler = {}));
-        })(Core = DesignTalk.Core || (DesignTalk.Core = {}));
-    })(DesignTalk = Shapes.DesignTalk || (Shapes.DesignTalk = {}));
-})(Shapes || (Shapes = {}));
+        })(Core = LanguageCore.Core || (LanguageCore.Core = {}));
+    })(LanguageCore = DesignTalk.LanguageCore || (DesignTalk.LanguageCore = {}));
+})(DesignTalk || (DesignTalk = {}));
 //# sourceMappingURL=core.js.map

@@ -6,7 +6,7 @@
 
 /// <reference path="../../storage/storage" />
 
-namespace Shapes.Logic.ContextMenu {
+namespace DesignTalk.Logic.ContextMenu {
 
     //
     // ─── CLOSE CONTEXT MENU ─────────────────────────────────────────────────────────

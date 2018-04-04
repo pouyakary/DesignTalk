@@ -3,7 +3,7 @@
 // Copyright 2017-present by Pouya Kary. All Rights Reserved.
 //
 
-namespace Shapes.DesignTalk.Core {
+namespace DesignTalk.LanguageCore.Core {
 
     //
     // ─── REGEXPS ────────────────────────────────────────────────────────────────────
@@ -20,7 +20,7 @@ namespace Shapes.DesignTalk.Core {
             const normalizedCode = normalize( code )
             return DesignTalkParser.parse( normalizedCode )
         }
-    
+
     //
     // ─── LANGUAGE NORMALIZER ────────────────────────────────────────────────────────
     //

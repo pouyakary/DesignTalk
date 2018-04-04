@@ -5,7 +5,7 @@
 
 /// <reference path="../storage/storage" />
 
-namespace Shapes.LocalStorageDriver {
+namespace DesignTalk.LocalStorageDriver {
 
     //
     // ─── CONSTANTS ──────────────────────────────────────────────────────────────────

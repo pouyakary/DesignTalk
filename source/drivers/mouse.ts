@@ -7,7 +7,7 @@
 /// <reference path="speech.ts" />
 
 
-namespace Shapes.MouseDriver {
+namespace DesignTalk.MouseDriver {
 
     //
     // ─── STORAGE ────────────────────────────────────────────────────────────────────

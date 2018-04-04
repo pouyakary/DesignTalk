@@ -8,7 +8,7 @@
 /// <reference path="./commands/main.ts" />
 /// <reference path="parser" />
 
-namespace Shapes.DesignTalk.Core {
+namespace DesignTalk.LanguageCore.Core {
 
     //
     // ─── TYPES ──────────────────────────────────────────────────────────────────────

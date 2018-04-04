@@ -7,7 +7,7 @@
 /// <reference path="../editor/shape.tsx" />
 /// <reference path="../../globals/key.ts" />
 
-namespace Shapes.Render.SVGLayers.Background {
+namespace DesignTalk.Render.SVGLayers.Background {
 
     //
     // ─── RENDER ─────────────────────────────────────────────────────────────────────
@@ -40,7 +40,7 @@ namespace Shapes.Render.SVGLayers.Background {
                           y = { 40 }
                        fill = "black"
                  fontFamily = "Roboto" fontWeight = "500" fontSize = "30">
-                        Shapes
+                        DesignTalk
                     </text>
 
                     <text x = { window.innerWidth - copyrightRightDistance }

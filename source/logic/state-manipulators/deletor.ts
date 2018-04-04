@@ -5,7 +5,7 @@
 
 /// <reference path="../../storage/storage" />
 
-namespace Shapes.StateManipulators {
+namespace DesignTalk.StateManipulators {
 
     //
     // ─── DELETOR ────────────────────────────────────────────────────────────────────

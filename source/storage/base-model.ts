@@ -6,7 +6,7 @@
 /// <reference path="model.ts" />
 /// <reference path="../globals/key.ts" />
 
-namespace Shapes.Storage {
+namespace DesignTalk.Storage {
 
     //
     // ─── INITIAL MODEL ──────────────────────────────────────────────────────────────
@@ -16,7 +16,7 @@ namespace Shapes.Storage {
             const someShapes =
                 new Array<Shape>( )
             const localStorageShapes =
-                Shapes.LocalStorageDriver.load( )
+                DesignTalk.LocalStorageDriver.load( )
 
             if ( localStorageShapes !== null ) {
                 someShapes.push( ...localStorageShapes )

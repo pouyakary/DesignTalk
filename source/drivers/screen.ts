@@ -4,7 +4,7 @@
 //
 
 
-namespace Shapes.ScreenDriver {
+namespace DesignTalk.ScreenDriver {
 
     //
     // ─── DPI ────────────────────────────────────────────────────────────────────────

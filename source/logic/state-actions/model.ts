@@ -7,7 +7,7 @@
 
 /// <reference path="../../storage/storage" />
 
-namespace Shapes.Logic.Model {
+namespace DesignTalk.Logic.Model {
 
     //
     // ─── NEW SHAPE ──────────────────────────────────────────────────────────────────

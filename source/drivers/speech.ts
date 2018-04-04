@@ -9,7 +9,7 @@
 
 /// <reference path="mouse.ts" />
 
-namespace Shapes.SpeechCommandEngine {
+namespace DesignTalk.SpeechCommandEngine {
 
     //
     // ─── START RECOGNITION ──────────────────────────────────────────────────────────
@@ -56,14 +56,14 @@ namespace Shapes.SpeechCommandEngine {
         function end ( ) {
             Storage.setState( state => {
                 const newState =
-                    DesignTalk.runWithGivenState(
+                    LanguageCore.runWithGivenState(
                         state.contextMenu.recognizedText, state
                     )
 
                 return newState
             })
 
-            Shapes.Logic.ContextMenu.close( )
+            DesignTalk.Logic.ContextMenu.close( )
         }
 
     //

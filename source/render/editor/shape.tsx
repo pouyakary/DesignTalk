@@ -8,7 +8,7 @@
 /// <reference path="../../globals/key.ts" />
 
 
-namespace Shapes.Render.Editor {
+namespace DesignTalk.Render.Editor {
 
     //
     // ─── PROPS ──────────────────────────────────────────────────────────────────────

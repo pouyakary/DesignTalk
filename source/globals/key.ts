@@ -3,7 +3,7 @@
 // Copyright 2017-present by Pouya Kary. All Rights Reserved.
 //
 
-namespace Shapes {
+namespace DesignTalk {
 
     //
     // ─── CREATE UNIQUE KEY ──────────────────────────────────────────────────────────

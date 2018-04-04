@@ -5,11 +5,11 @@
 
 /// <reference path="../../storage/model.ts" />
 /// <reference path="../../globals/key.ts" />
-/// <reference path="../../logic/designtalk/core/parser" />
+/// <reference path="../../logic/language/core/parser" />
 /// <reference path="../../logic/state-actions/context-menu" />
 /// <reference path="../../logic/state-actions/model" />
 
-namespace Shapes.Render.HTMLLayers.RightClick {
+namespace DesignTalk.Render.HTMLLayers.RightClick {
 
     //
     // ─── GLOBAL SETTINGS ────────────────────────────────────────────────────────────
@@ -115,7 +115,7 @@ namespace Shapes.Render.HTMLLayers.RightClick {
                             borderTopStyle:     "dashed",
                             padding:            "5px 10px 7px 10px"
                         }}>
-                            { DesignTalk.isParsable( recognizedText )
+                            { LanguageCore.isParsable( recognizedText )
                                 ? "Looks Good"
                                 : "Can't Understand"
                             }

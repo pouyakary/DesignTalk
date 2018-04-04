@@ -5,7 +5,7 @@
 
 /// <reference path="deletor" />
 
-namespace Shapes.StateManipulators {
+namespace DesignTalk.StateManipulators {
 
     //
     // ─── INIT ───────────────────────────────────────────────────────────────────────

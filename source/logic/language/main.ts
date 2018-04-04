@@ -3,7 +3,7 @@
 // Copyright 2017-present by Pouya Kary. All Rights Reserved.
 //
 
-namespace Shapes.DesignTalk {
+namespace DesignTalk.LanguageCore {
 
     //
     // ─── PARSE ──────────────────────────────────────────────────────────────────────
@@ -11,7 +11,7 @@ namespace Shapes.DesignTalk {
 
         export function isParsable ( code: string ): boolean {
             try {
-                DesignTalk.Core.parse( code )
+                LanguageCore.Core.parse( code )
                 return true
             } catch {
                 return false
@@ -23,7 +23,7 @@ namespace Shapes.DesignTalk {
     //
 
         export function runWithGivenState ( code: string, state: Storage.Model ) {
-            return DesignTalk.Core.run( code, state )
+            return LanguageCore.Core.run( code, state )
         }
 
     //
@@ -32,7 +32,7 @@ namespace Shapes.DesignTalk {
 
         export function runAndApply ( code: string ) {
             Storage.setState( state =>
-                DesignTalk.Core.run( code, state ))
+                LanguageCore.Core.run( code, state ))
         }
 
     // ────────────────────────────────────────────────────────────────────────────────

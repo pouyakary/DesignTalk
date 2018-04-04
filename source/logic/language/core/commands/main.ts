@@ -6,7 +6,7 @@
 /// <reference path="../typings/functionset" />
 /// <reference path="../main" />
 
-namespace Shapes.DesignTalk.Core.CommandCompiler {
+namespace DesignTalk.LanguageCore.Core.CommandCompiler {
 
     //
     // ─── GENERATE MANIPULATION FUNCTION ─────────────────────────────────────────────
