@@ -938,7 +938,6 @@ var DesignTalk;
         DesignTalk.StateManipulators.init();
         DesignTalk.MouseDriver.init();
         DesignTalk.ScreenDriver.init();
-        window.onresize = () => DesignTalk.Render.renderOnResize();
     };
 })(DesignTalk || (DesignTalk = {}));
 var DesignTalk;

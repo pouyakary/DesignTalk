@@ -24,8 +24,8 @@ namespace DesignTalk {
             MouseDriver.init( )
             ScreenDriver.init( )
 
-            window.onresize = ( ) =>
-                Render.renderOnResize( )
+            // window.onresize = ( ) =>
+            //     Render.renderOnResize( )
         }
 
     // ────────────────────────────────────────────────────────────────────────────────
