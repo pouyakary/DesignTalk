@@ -76,28 +76,33 @@ namespace DesignTalk.Render {
     // ─── ON RESIZE ──────────────────────────────────────────────────────────────────
     //
 
-        export function renderOnResize ( ) {
-            Storage.setState( state => {
-                const { innerHeight, innerWidth } = window
+        //
+        // THIS FUNCTION IN CURRENTLY DISABLED BECAUSE IT'S HORRIBLE
+        // BUT SINCE THE CODE MIGHT BE USEFUL WE KEEP IT HERE
+        //
 
-                const newShapes =
-                    state.shapes.map( shape => ({ ...shape,
-                        x: (( shape.x + shape.width < innerWidth )
-                            ? shape.x
-                            : innerWidth - shape.width - 10
-                            ),
+        // export function renderOnResize ( ) {
+        //     Storage.setState( state => {
+        //         const { innerHeight, innerWidth } = window
 
-                        y: (( shape.y + shape.height < innerHeight )
-                            ? shape.y
-                            : innerHeight - shape.height - 10
-                            )
-                    }))
+        //         const newShapes =
+        //             state.shapes.map( shape => ({ ...shape,
+        //                 x: (( shape.x + shape.width < innerWidth )
+        //                     ? shape.x
+        //                     : innerWidth - shape.width - 10
+        //                     ),
 
-                return { ...state,
-                    shapes: newShapes
-                }
-            })
-        }
+        //                 y: (( shape.y + shape.height < innerHeight )
+        //                     ? shape.y
+        //                     : innerHeight - shape.height - 10
+        //                     )
+        //             }))
+
+        //         return { ...state,
+        //             shapes: newShapes
+        //         }
+        //     })
+        // }
 
     // ────────────────────────────────────────────────────────────────────────────────
 
