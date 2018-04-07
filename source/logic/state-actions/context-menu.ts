@@ -19,9 +19,9 @@ namespace DesignTalk.Logic.ContextMenu {
 
                 return { ...state,
                     contextMenu: { ...state.contextMenu,
-                        active:             false,
-                        recognizedText:     "",
-                        recognizer:         null
+                        active:         false,
+                        recognizedText: "",
+                        recognizer:     null
                     }
                 }
             })
