@@ -39,9 +39,9 @@ namespace DesignTalk.SpeechCommandEngine {
                     mouseMode:          Storage.MouseMode.Resize,
 
                     contextMenu: { ...state.contextMenu,
-                        active:    true,
+                        active:         true,
                         recognizer:     recognizer,
-                        recognizedText:    "",
+                        recognizedText: "",
                         mouseX:         MouseDriver.X,
                         mouseY:         MouseDriver.Y,
                     }
