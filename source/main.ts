@@ -16,7 +16,7 @@ namespace DesignTalk {
 
         window.onload = ( ) => {
             if ( window.location.protocol === "http:" )
-                window.location.href = "https://designtalk.toys.kary.us/"
+                window.location.href = "https://designtalk.kary.us/"
 
             Storage.initStorage( )
 
