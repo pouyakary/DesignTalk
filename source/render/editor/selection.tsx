@@ -162,34 +162,34 @@ namespace DesignTalk.Render.SelectionTool {
             if ( !model.showLineGuides )
                 return [ ]
 
-            const collectionOfHoroizontalPoints = new Set<number>( )
+            const collectionOfHorizontalPoints = new Set<number>( )
             const collectionOfVerticalPoints = new Set<number>( )
-            const collectionOfMiddleHoroizontalPoints = new Set<number>( )
+            const collectionOfMiddleHorizontalPoints = new Set<number>( )
             const collectionOfMiddleVerticalPoints = new Set<number>( )
 
             model.shapes.map( obj => {
                 if ( shape.id === obj.id ) return
 
                 collectionOfVerticalPoints.add( obj.x )
-                collectionOfHoroizontalPoints.add( obj.y )
+                collectionOfHorizontalPoints.add( obj.y )
                 collectionOfVerticalPoints.add( obj.x + obj.width )
-                collectionOfHoroizontalPoints.add( obj.y + obj.height )
+                collectionOfHorizontalPoints.add( obj.y + obj.height )
                 collectionOfMiddleVerticalPoints.add( obj.x + ( obj.width / 2 ) )
-                collectionOfMiddleHoroizontalPoints.add( obj.y + ( obj.height / 2 ) )
+                collectionOfMiddleHorizontalPoints.add( obj.y + ( obj.height / 2 ) )
             })
 
 
-            enum LineDirection { Horoizantal, Vertical }
+            enum LineDirection { Horizontal, Vertical }
             const createLine = ( x1: number, y1: number, x2: number, y2: number, direction: LineDirection ) => {
                 const normalCollection =
-                    ( direction === LineDirection.Horoizantal
-                        ? collectionOfHoroizontalPoints
+                    ( direction === LineDirection.Horizontal
+                        ? collectionOfHorizontalPoints
                         : collectionOfVerticalPoints
                         )
 
                 const middleCollection =
-                    ( direction === LineDirection.Horoizantal
-                        ? collectionOfMiddleHoroizontalPoints
+                    ( direction === LineDirection.Horizontal
+                        ? collectionOfMiddleHorizontalPoints
                         : collectionOfMiddleVerticalPoints
                         )
 
@@ -225,12 +225,12 @@ namespace DesignTalk.Render.SelectionTool {
             const topGuideLine =
                 createLine( 0, shape.y,
                             window.innerWidth, shape.y,
-                            LineDirection.Horoizantal )
+                            LineDirection.Horizontal )
 
             const bottomGuideLine =
                 createLine( 0, shape.y + shape.height,
                             window.innerWidth, shape.y + shape.height,
-                            LineDirection.Horoizantal )
+                            LineDirection.Horizontal )
 
             const leftGuideLine =
                 createLine( shape.x, 0,
@@ -281,7 +281,7 @@ namespace DesignTalk.Render.SelectionTool {
         }
 
     //
-    // ─── REMOVE BOTTON ──────────────────────────────────────────────────────────────
+    // ─── REMOVE BUTTON ──────────────────────────────────────────────────────────────
     //
 
         function createDeleteButton ( shape: Storage.Shape, state: Storage.Model ) {

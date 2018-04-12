@@ -526,31 +526,31 @@ var DesignTalk;
             function createGuideLines(shape, model) {
                 if (!model.showLineGuides)
                     return [];
-                const collectionOfHoroizontalPoints = new Set();
+                const collectionOfHorizontalPoints = new Set();
                 const collectionOfVerticalPoints = new Set();
-                const collectionOfMiddleHoroizontalPoints = new Set();
+                const collectionOfMiddleHorizontalPoints = new Set();
                 const collectionOfMiddleVerticalPoints = new Set();
                 model.shapes.map(obj => {
                     if (shape.id === obj.id)
                         return;
                     collectionOfVerticalPoints.add(obj.x);
-                    collectionOfHoroizontalPoints.add(obj.y);
+                    collectionOfHorizontalPoints.add(obj.y);
                     collectionOfVerticalPoints.add(obj.x + obj.width);
-                    collectionOfHoroizontalPoints.add(obj.y + obj.height);
+                    collectionOfHorizontalPoints.add(obj.y + obj.height);
                     collectionOfMiddleVerticalPoints.add(obj.x + (obj.width / 2));
-                    collectionOfMiddleHoroizontalPoints.add(obj.y + (obj.height / 2));
+                    collectionOfMiddleHorizontalPoints.add(obj.y + (obj.height / 2));
                 });
                 let LineDirection;
                 (function (LineDirection) {
-                    LineDirection[LineDirection["Horoizantal"] = 0] = "Horoizantal";
+                    LineDirection[LineDirection["Horizontal"] = 0] = "Horizontal";
                     LineDirection[LineDirection["Vertical"] = 1] = "Vertical";
                 })(LineDirection || (LineDirection = {}));
                 const createLine = (x1, y1, x2, y2, direction) => {
-                    const normalCollection = (direction === LineDirection.Horoizantal
-                        ? collectionOfHoroizontalPoints
+                    const normalCollection = (direction === LineDirection.Horizontal
+                        ? collectionOfHorizontalPoints
                         : collectionOfVerticalPoints);
-                    const middleCollection = (direction === LineDirection.Horoizantal
-                        ? collectionOfMiddleHoroizontalPoints
+                    const middleCollection = (direction === LineDirection.Horizontal
+                        ? collectionOfMiddleHorizontalPoints
                         : collectionOfMiddleVerticalPoints);
                     function isThereANormalPoint() {
                         return normalCollection.has(x1) || normalCollection.has(y1) ||
@@ -564,8 +564,8 @@ var DesignTalk;
                     const lineStrokeWidth = (lineColor !== '#ccc' ? 2 : 1);
                     return React.createElement("line", { strokeWidth: lineStrokeWidth, stroke: lineColor, key: DesignTalk.generateKey(), x1: x1, y1: y1, x2: x2, y2: y2 });
                 };
-                const topGuideLine = createLine(0, shape.y, window.innerWidth, shape.y, LineDirection.Horoizantal);
-                const bottomGuideLine = createLine(0, shape.y + shape.height, window.innerWidth, shape.y + shape.height, LineDirection.Horoizantal);
+                const topGuideLine = createLine(0, shape.y, window.innerWidth, shape.y, LineDirection.Horizontal);
+                const bottomGuideLine = createLine(0, shape.y + shape.height, window.innerWidth, shape.y + shape.height, LineDirection.Horizontal);
                 const leftGuideLine = createLine(shape.x, 0, shape.x, window.innerHeight, LineDirection.Vertical);
                 const rightGuideLine = createLine(shape.x + shape.width, 0, shape.x + shape.width, window.innerHeight, LineDirection.Vertical);
                 return [
