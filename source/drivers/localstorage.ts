@@ -12,7 +12,7 @@ namespace DesignTalk.LocalStorageDriver {
     //
 
         const LOCAL_STORAGE_ID =
-            "us.kary.toys.shapes.model"
+            "us.kary.designtalk.shapes"
 
     //
     // ─── LOCAL TIMEOUT SYSTEM ───────────────────────────────────────────────────────

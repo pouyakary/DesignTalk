@@ -826,7 +826,7 @@ var DesignTalk;
 (function (DesignTalk) {
     var LocalStorageDriver;
     (function (LocalStorageDriver) {
-        const LOCAL_STORAGE_ID = "us.kary.toys.shapes.model";
+        const LOCAL_STORAGE_ID = "us.kary.designtalk.shapes";
         let driverStorageTimeoutSetter;
         function storageUpdaterFunction(state) {
             const encodedStateString = JSON.stringify(state.shapes);
