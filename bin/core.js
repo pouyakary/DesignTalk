@@ -30,16 +30,20 @@ var DesignTalk;
 })(DesignTalk || (DesignTalk = {}));
 var DesignTalk;
 (function (DesignTalk) {
+    function chooseRandom(arr) {
+        return arr[Math.floor(Math.random() * arr.length)];
+    }
+    DesignTalk.chooseRandom = chooseRandom;
+})(DesignTalk || (DesignTalk = {}));
+var DesignTalk;
+(function (DesignTalk) {
     var Storage;
     (function (Storage) {
-        const one = {
-            width: 643,
-            height: 481,
-            code: [{ "color": "blue", "id": "8", "remove": false, "type": "rect", "width": 100, "height": 100, "x": 130, "y": 151, "zIndex": 7 }, { "color": "blue", "id": "10806", "remove": false, "type": "rect", "width": 100, "height": 100, "x": 393, "y": 21, "zIndex": 12 }, { "color": "red", "id": "5719", "remove": false, "type": "rect", "width": 100, "height": 100, "x": 133, "y": 21, "zIndex": 13 }, { "color": "red", "id": "7560", "remove": false, "type": "rect", "width": 100, "height": 100, "x": 262, "y": 151, "zIndex": 14 }, { "color": "black", "id": "20450", "remove": false, "type": "circle", "width": 100, "height": 100, "x": 413, "y": 1, "zIndex": 15 }, { "color": "black", "id": "9688", "remove": false, "type": "rect", "width": 100, "height": 100, "x": 263, "y": 21, "zIndex": 15 }, { "color": "red", "id": "74106", "remove": false, "type": "rect", "width": 100, "height": 100, "x": 0, "y": 281, "zIndex": 15 }, { "color": "black", "id": "24476", "remove": false, "type": "rect", "width": 100, "height": 100, "x": 393, "y": 151, "zIndex": 16 }, { "color": "blue", "id": "11937", "remove": false, "type": "circle", "width": 100, "height": 100, "x": 150, "y": 0, "zIndex": 16 }, { "color": "blue", "id": "80129", "remove": false, "type": "circle", "width": 100, "height": 100, "x": 22, "y": 261, "zIndex": 16 }, { "color": "red", "id": "29516", "remove": false, "type": "circle", "width": 100, "height": 100, "x": 413, "y": 131, "zIndex": 17 }, { "color": "red", "id": "100621", "remove": false, "type": "rect", "width": 100, "height": 100, "x": 523, "y": 21, "zIndex": 18 }, { "color": "red", "id": "20389", "remove": false, "type": "circle", "width": 100, "height": 100, "x": 283, "y": 0, "zIndex": 18 }, { "color": "black", "id": "25478", "remove": false, "type": "circle", "width": 100, "height": 100, "x": 150, "y": 131, "zIndex": 19 }, { "color": "blue", "id": "30875", "remove": false, "type": "circle", "width": 100, "height": 100, "x": 283, "y": 131, "zIndex": 20 }, { "color": "blue", "id": "118774", "remove": false, "type": "circle", "width": 100, "height": 100, "x": 543, "y": 1, "zIndex": 20 }, { "color": "blue", "id": "125650", "remove": false, "type": "rect", "width": 100, "height": 100, "x": 523, "y": 151, "zIndex": 21 }, { "color": "black", "id": "132679", "remove": false, "type": "circle", "width": 100, "height": 100, "x": 543, "y": 131, "zIndex": 22 }, { "color": "black", "id": "64447", "remove": false, "type": "rect", "width": 100, "height": 100, "x": 130, "y": 281, "zIndex": 23 }, { "color": "black", "id": "139693", "remove": false, "type": "rect", "width": 100, "height": 100, "x": 523, "y": 281, "zIndex": 23 }, { "color": "blue", "id": "69301", "remove": false, "type": "rect", "width": 100, "height": 100, "x": 263, "y": 281, "zIndex": 24 }, { "color": "red", "id": "152052", "remove": false, "type": "circle", "width": 100, "height": 100, "x": 543, "y": 261, "zIndex": 24 }, { "color": "red", "id": "73998", "remove": false, "type": "rect", "width": 100, "height": 100, "x": 393, "y": 281, "zIndex": 25 }, { "color": "blue", "id": "77280", "remove": false, "type": "circle", "width": 100, "height": 100, "x": 413, "y": 261, "zIndex": 26 }, { "color": "black", "id": "96542", "remove": false, "type": "circle", "width": 100, "height": 100, "x": 283, "y": 261, "zIndex": 29 }, { "color": "red", "id": "102654", "remove": false, "type": "circle", "width": 100, "height": 100, "x": 150, "y": 261, "zIndex": 30 }, { "color": "blue", "id": "400351", "remove": false, "type": "rect", "width": 100, "height": 100, "x": 3, "y": 21, "zIndex": 47 }, { "color": "black", "id": "428663", "remove": false, "type": "circle", "width": 100, "height": 100, "x": 22, "y": 1, "zIndex": 50 }, { "color": "black", "id": "438883", "remove": false, "type": "rect", "width": 100, "height": 100, "x": 0, "y": 151, "zIndex": 51 }, { "color": "red", "id": "443649", "remove": false, "type": "circle", "width": 100, "height": 100, "x": 22, "y": 131, "zIndex": 52 }]
-        };
-        Storage.Samples = [
-            one
-        ];
+        const one = '{"height":381,"width":643,"code":[{"color":"blue","id":"8","remove":false,"type":"rect","width":100,"height":100,"x":130,"y":151,"zIndex":7},{"color":"blue","id":"10806","remove":false,"type":"rect","width":100,"height":100,"x":393,"y":21,"zIndex":12},{"color":"red","id":"5719","remove":false,"type":"rect","width":100,"height":100,"x":133,"y":21,"zIndex":13},{"color":"red","id":"7560","remove":false,"type":"rect","width":100,"height":100,"x":262,"y":151,"zIndex":14},{"color":"black","id":"20450","remove":false,"type":"circle","width":100,"height":100,"x":413,"y":1,"zIndex":15},{"color":"black","id":"9688","remove":false,"type":"rect","width":100,"height":100,"x":263,"y":21,"zIndex":15},{"color":"red","id":"74106","remove":false,"type":"rect","width":100,"height":100,"x":0,"y":281,"zIndex":15},{"color":"black","id":"24476","remove":false,"type":"rect","width":100,"height":100,"x":393,"y":151,"zIndex":16},{"color":"blue","id":"11937","remove":false,"type":"circle","width":100,"height":100,"x":150,"y":0,"zIndex":16},{"color":"blue","id":"80129","remove":false,"type":"circle","width":100,"height":100,"x":22,"y":261,"zIndex":16},{"color":"red","id":"29516","remove":false,"type":"circle","width":100,"height":100,"x":413,"y":131,"zIndex":17},{"color":"red","id":"100621","remove":false,"type":"rect","width":100,"height":100,"x":523,"y":21,"zIndex":18},{"color":"red","id":"20389","remove":false,"type":"circle","width":100,"height":100,"x":283,"y":0,"zIndex":18},{"color":"black","id":"25478","remove":false,"type":"circle","width":100,"height":100,"x":150,"y":131,"zIndex":19},{"color":"blue","id":"30875","remove":false,"type":"circle","width":100,"height":100,"x":283,"y":131,"zIndex":20},{"color":"blue","id":"118774","remove":false,"type":"circle","width":100,"height":100,"x":543,"y":1,"zIndex":20},{"color":"blue","id":"125650","remove":false,"type":"rect","width":100,"height":100,"x":523,"y":151,"zIndex":21},{"color":"black","id":"132679","remove":false,"type":"circle","width":100,"height":100,"x":543,"y":131,"zIndex":22},{"color":"black","id":"64447","remove":false,"type":"rect","width":100,"height":100,"x":130,"y":281,"zIndex":23},{"color":"black","id":"139693","remove":false,"type":"rect","width":100,"height":100,"x":523,"y":281,"zIndex":23},{"color":"blue","id":"69301","remove":false,"type":"rect","width":100,"height":100,"x":263,"y":281,"zIndex":24},{"color":"red","id":"152052","remove":false,"type":"circle","width":100,"height":100,"x":543,"y":261,"zIndex":24},{"color":"red","id":"73998","remove":false,"type":"rect","width":100,"height":100,"x":393,"y":281,"zIndex":25},{"color":"blue","id":"77280","remove":false,"type":"circle","width":100,"height":100,"x":413,"y":261,"zIndex":26},{"color":"black","id":"96542","remove":false,"type":"circle","width":100,"height":100,"x":283,"y":261,"zIndex":29},{"color":"red","id":"102654","remove":false,"type":"circle","width":100,"height":100,"x":150,"y":261,"zIndex":30},{"color":"blue","id":"400351","remove":false,"type":"rect","width":100,"height":100,"x":3,"y":21,"zIndex":47},{"color":"black","id":"428663","remove":false,"type":"circle","width":100,"height":100,"x":22,"y":1,"zIndex":50},{"color":"black","id":"438883","remove":false,"type":"rect","width":100,"height":100,"x":0,"y":151,"zIndex":51},{"color":"red","id":"443649","remove":false,"type":"circle","width":100,"height":100,"x":22,"y":131,"zIndex":52}]}';
+        function getRandomSamples() {
+            return JSON.parse(DesignTalk.chooseRandom([one]));
+        }
+        Storage.getRandomSamples = getRandomSamples;
     })(Storage = DesignTalk.Storage || (DesignTalk.Storage = {}));
 })(DesignTalk || (DesignTalk = {}));
 var DesignTalk;
@@ -72,9 +76,6 @@ var DesignTalk;
             };
         }
         Storage.createInitialModelState = createInitialModelState;
-        function chooseRandom(arr) {
-            return arr[Math.floor(Math.random() * arr.length)];
-        }
         function getRandomCoordinates() {
             const randomSize = (size) => Math.floor(Math.random() * (size - 300)) + 100;
             return {
@@ -83,16 +84,14 @@ var DesignTalk;
             };
         }
         function getRandomSample() {
-            const model = chooseRandom(Storage.Samples);
-            const additionalX = Math.floor((screen.availWidth - model.width) / 2);
-            const additionalY = Math.floor((screen.availHeight - model.height) / 2);
-            const resultModel = model.code.map(shape => (Object.assign({}, shape, { x: shape.x + additionalX, y: shape.y + additionalY })));
-            return resultModel;
+            const model = Storage.getRandomSamples();
+            const centeredShapes = DesignTalk.Logic.Canvas.getScreenCenteredShapes(model);
+            return centeredShapes;
         }
         Storage.getRandomSample = getRandomSample;
         function createRandomShape(zIndex) {
-            const color = chooseRandom(['red', 'black', 'blue']);
-            const type = chooseRandom(['rect', 'circle']);
+            const color = DesignTalk.chooseRandom(['red', 'black', 'blue']);
+            const type = DesignTalk.chooseRandom(['rect', 'circle']);
             const { x, y } = getRandomCoordinates();
             return {
                 color: color,
@@ -948,6 +947,58 @@ var DesignTalk;
         DesignTalk.MouseDriver.init();
         DesignTalk.ScreenDriver.init();
     };
+})(DesignTalk || (DesignTalk = {}));
+var DesignTalk;
+(function (DesignTalk) {
+    var Developer;
+    (function (Developer) {
+        function CreateSample() {
+            const { shapes } = DesignTalk.Storage.getState();
+            const croppedShapes = DesignTalk.Logic.Canvas.getCroppedShapes(shapes);
+            console.log(JSON.stringify(croppedShapes));
+        }
+        Developer.CreateSample = CreateSample;
+    })(Developer = DesignTalk.Developer || (DesignTalk.Developer = {}));
+})(DesignTalk || (DesignTalk = {}));
+var DesignTalk;
+(function (DesignTalk) {
+    var Logic;
+    (function (Logic) {
+        var Canvas;
+        (function (Canvas) {
+            function getCroppedShapes(shapes) {
+                let minX = Infinity;
+                let minY = Infinity;
+                let maxX = -Infinity;
+                let maxY = -Infinity;
+                for (const shape of shapes) {
+                    if (shape.x < minX)
+                        minX = shape.x;
+                    if (shape.x + shape.width > maxX)
+                        maxX = shape.x + shape.width;
+                    if (shape.y < minY)
+                        minY = shape.y;
+                    if (shape.y + shape.height > maxY)
+                        maxY = shape.y + shape.height;
+                }
+                const resultCode = shapes.map(shape => (Object.assign({}, shape, { x: shape.x - minX, y: shape.y - minY })));
+                const result = {
+                    height: maxY - minY,
+                    width: maxX - minX,
+                    code: resultCode
+                };
+                return result;
+            }
+            Canvas.getCroppedShapes = getCroppedShapes;
+            function getScreenCenteredShapes(model) {
+                const additionalX = Math.floor((window.innerWidth - model.width) / 2);
+                const additionalY = Math.floor((window.innerHeight - model.height) / 2);
+                const resultShapes = model.code.map(shape => (Object.assign({}, shape, { x: shape.x + additionalX, y: shape.y + additionalY })));
+                return resultShapes;
+            }
+            Canvas.getScreenCenteredShapes = getScreenCenteredShapes;
+        })(Canvas = Logic.Canvas || (Logic.Canvas = {}));
+    })(Logic = DesignTalk.Logic || (DesignTalk.Logic = {}));
 })(DesignTalk || (DesignTalk = {}));
 var DesignTalk;
 (function (DesignTalk) {

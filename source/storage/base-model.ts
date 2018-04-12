@@ -5,6 +5,7 @@
 
 /// <reference path="model.ts" />
 /// <reference path="../globals/key.ts" />
+/// <reference path="../globals/helpers.ts" />
 /// <reference path="./samples.ts" />
 
 namespace DesignTalk.Storage {
@@ -44,14 +45,6 @@ namespace DesignTalk.Storage {
         }
 
     //
-    // ─── CHOOSE RANDOM ──────────────────────────────────────────────────────────────
-    //
-
-        function chooseRandom<T> ( arr: T[ ] ): T {
-            return arr[ Math.floor( Math.random( ) * arr.length ) ]
-        }
-
-    //
     // ─── RANDOM COORDINATES ─────────────────────────────────────────────────────────
     //
 
@@ -71,20 +64,11 @@ namespace DesignTalk.Storage {
 
         export function getRandomSample ( ) {
             const model =
-                chooseRandom( Samples )
+                getRandomSamples( )
+            const centeredShapes =
+                Logic.Canvas.getScreenCenteredShapes( model )
 
-            const additionalX =
-                Math.floor( ( screen.availWidth - model.width ) / 2 )
-            const additionalY =
-                Math.floor( ( screen.availHeight - model.height ) / 2 )
-
-            const resultModel =
-                model.code.map( shape => ({ ...shape,
-                    x: shape.x + additionalX,
-                    y: shape.y + additionalY
-                }))
-
-            return resultModel
+            return centeredShapes
         }
 
     //
