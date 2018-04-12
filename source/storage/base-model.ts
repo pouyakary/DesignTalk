@@ -64,7 +64,7 @@ namespace DesignTalk.Storage {
 
         export function getRandomSample ( ) {
             const model =
-                getRandomSamples( )
+                getARandomSampleModel( )
             const centeredShapes =
                 Logic.Canvas.getScreenCenteredShapes( model )
 
