@@ -73,6 +73,17 @@ namespace DesignTalk.Logic.Canvas {
             return resultShapes
         }
 
+    //
+    // ─── CENTER DRAWINGS ────────────────────────────────────────────────────────────
+    //
+
+        export function centerDrawingsInTheCanvas ( ) {
+            Storage.setState( state => ({
+                ...state,
+                shapes: getScreenCenteredShapes( getCroppedShapes( state.shapes ) )
+            }))
+        }
+
     // ────────────────────────────────────────────────────────────────────────────────
 
 }
