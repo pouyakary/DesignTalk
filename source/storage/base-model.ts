@@ -5,6 +5,7 @@
 
 /// <reference path="model.ts" />
 /// <reference path="../globals/key.ts" />
+/// <reference path="./samples.ts" />
 
 namespace DesignTalk.Storage {
 
@@ -21,8 +22,7 @@ namespace DesignTalk.Storage {
             if ( localStorageShapes !== null ) {
                 someShapes.push( ...localStorageShapes )
             } else {
-                for ( let counter = 0; counter < 10; counter++ )
-                    someShapes.push( createRandomShape( counter ) )
+                someShapes.push( ...getRandomSample( ) )
             }
 
             return {
@@ -66,6 +66,28 @@ namespace DesignTalk.Storage {
         }
 
     //
+    // ─── GET SAMPLE ─────────────────────────────────────────────────────────────────
+    //
+
+        export function getRandomSample ( ) {
+            const model =
+                chooseRandom( Samples )
+
+            const additionalX =
+                Math.floor( ( screen.availWidth - model.width ) / 2 )
+            const additionalY =
+                Math.floor( ( screen.availHeight - model.height ) / 2 )
+
+            const resultModel =
+                model.code.map( shape => ({ ...shape,
+                    x: shape.x + additionalX,
+                    y: shape.y + additionalY
+                }))
+
+            return resultModel
+        }
+
+    //
     // ─── CREATE SHAPE ───────────────────────────────────────────────────────────────
     //
 
@@ -104,7 +126,6 @@ namespace DesignTalk.Storage {
                 zIndex:     zIndex,
             }
         }
-
 
     // ────────────────────────────────────────────────────────────────────────────────
 
