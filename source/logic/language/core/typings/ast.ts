@@ -17,7 +17,8 @@ namespace DesignTalk.LanguageCore.Core {
     //
 
         export interface Command {
-            query:          Query
+            type:           "static" | "mapper"
+            query?:         Query
             instruction:    InstructionBase
         }
 
@@ -45,7 +46,7 @@ namespace DesignTalk.LanguageCore.Core {
     //
 
         export interface InstructionBase {
-            command:    "resize" | "remove"
+            command:    "resize" | "remove" | "center-canvas"
         }
 
     //

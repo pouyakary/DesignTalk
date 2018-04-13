@@ -24,8 +24,26 @@
         }
 
     Command
-        = MakeCommands
+        = StaticCommands
+        / MakeCommands
         / DeleteCommand
+
+//
+// ─── ONE WORD COMMANDS ──────────────────────────────────────────────────────────
+//
+
+    StaticCommands
+        = CenterCanvasCommand
+
+    CenterCanvasCommand
+        = "center" _ "canvas" {
+            return {
+                type:   "static",
+                instruction: {
+                    command: "center-canvas"
+                }
+            }
+        }
 
 //
 // ─── DELETE COMMAND ─────────────────────────────────────────────────────────────
@@ -34,9 +52,10 @@
     DeleteCommand
         = ( "delete" / "remove" ) _ query: Query {
             return {
+                type:   "mapper",
                 query,
                 instruction: {
-                    command: "remove",
+                    command:    "remove",
                 }
             }
         }
@@ -48,6 +67,7 @@
     MakeCommands
         = "make" _ query: Query _ options: ResizeCommandOptions {
             return {
+                type:   "mapper",
                 query,
 
                 instruction: {
@@ -60,6 +80,7 @@
         / "make" _ direction: ( "width" / "height" ) _ "of" _ query: Query
           _ options: ResizeCommandOptions {
               return {
+                  type:   "mapper",
                   query,
 
                   instruction: {

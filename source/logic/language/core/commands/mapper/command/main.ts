@@ -3,8 +3,9 @@
 // Copyright 2017-present by Pouya Kary. All Rights Reserved.
 //
 
-/// <reference path="../typings/functionset" />
+/// <reference path="../../../typings/functionset" />
 /// <reference path="../main" />
+/// <reference path="./instructions/remove.ts" />
 
 namespace DesignTalk.LanguageCore.Core.CommandCompiler {
 

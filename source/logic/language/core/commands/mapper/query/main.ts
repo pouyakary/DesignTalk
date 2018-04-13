@@ -3,9 +3,8 @@
 // Copyright 2017-present by Pouya Kary. All Rights Reserved.
 //
 
-/// <reference path="../typings/functionset" />
+/// <reference path="../../../typings/functionset" />
 /// <reference path="../main" />
-
 
 namespace DesignTalk.LanguageCore.Core.QueryCompiler {
 
