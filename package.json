@@ -1,0 +1,17 @@
+{
+  "name": "basic-shape-editor",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc; npm run compile-parser",
+    "compile-parser": "pegjs -o bin/parser.js --format globals -e DesignTalkParser -- source/logic/designtalk/designtalk.pegjs",
+    "start": "tsc -w && jekyll server",
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/react": "^16.0.31",
+    "@types/react-dom": "^16.0.3"
+  }
+}
